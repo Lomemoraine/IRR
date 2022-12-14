@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'investment.apps.InvestmentConfig',
+    # 'investment.apps.InvestmentConfig',
     'bootstrap4',
+    'investment'
 ]
 
 MIDDLEWARE = [
@@ -77,11 +79,15 @@ WSGI_APPLICATION = 'mainpage.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'irr',
-        'USER': 'raine',
-    'PASSWORD':'',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'irr',
+    #     'USER': 'raine',
+    #     'PASSWORD':'',
+    # }
 }
 
 # Password validation
@@ -124,3 +130,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = "investment.CustomUser"
