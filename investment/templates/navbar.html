@@ -1,5 +1,5 @@
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark bg-secondary">
-    <a class="navbar-brand" href="{% url 'home' %}" style="font-family: 'Henny Penny', cursive; ">The<i class="fas fa-home"></i>ood</a>
+    <a class="navbar-brand" href="{% url 'home' %}" style="font-family: 'Henny Penny', cursive; ">Real<i class="fas fa-home"></i>Estate</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
       aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -7,12 +7,14 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
       <ul class="navbar-nav mr-auto">
         {% if user.is_authenticated %}
-        
         <li class="nav-item active">
-          <a class="nav-link" href="{%url 'hood'%}">NeighbourHoods</a>
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'new_hood' %}">New Hood</a>
+          <a class="nav-link" href="{% url 'addimages' %}">Add Images</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'addproperty' %}">Add Property</a>
         </li>
         <li class="nav-item active">
           <a class="nav-link" href="admin/">Admin</a>
@@ -26,21 +28,8 @@
         {% if user.is_authenticated %}
   
   
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-            <img width="120%" height="120%" src="{{user.profile.prof_pic.url }}" alt=""
-            style="border-radius: 50%; width:30px; height:30px; ">
-            <span class="text-white">{{user.username|title}}</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
-            <a class="dropdown-item" href="{%url 'profile' user.username%}">
-              <span>
-                <i class="fas fa-user"></i>
-              </span>
-              profile</a>
-            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-          </div>
+        <li class="nav-item">
+          <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
         </li>
   
   
@@ -50,10 +39,7 @@
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'login' %}">Log In</a>
           </li>
-  
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
-          </li>
+
   
           {% endif %}
   

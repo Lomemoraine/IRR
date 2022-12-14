@@ -114,7 +114,7 @@ class Property(models.Model):
     purchase_date = models.DateField(auto_now_add=True, null=True)
     purchase_price = models.FloatField(null=True)
     deposit = models.FloatField(null=True)
-    # market_value = models.IntegerField(max_length=252, null=True)
+    location = models.ForeignKey(Location, null=True, on_delete=models.CASCADE)
     other_cost = models.ForeignKey(OtherCosts, null=True, on_delete=models.CASCADE)
     bond_value = models.IntegerField(max_length=252, null=True)
     notes = models.TextField(max_length=1260, null=True)
@@ -126,9 +126,10 @@ class Property(models.Model):
     def market_value(self):
         # assumption -> market value is based on depreciation
         today = date.today()
-        period = self.purchase_date - today
+        diff = self.purchase_date - (today)
+        period = diff.days
         value = self.purchase_price - (period * 0.10)
-        return period
+        return value
 
 
 class Images(models.Model):
