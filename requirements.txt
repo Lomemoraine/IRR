@@ -1,4 +1,15 @@
 asgiref==3.5.2
 backports.zoneinfo==0.2.1
-Django==4.1.4
+beautifulsoup4==4.11.1
+
+
+soupsieve==2.3.2.post1
 sqlparse==0.4.3
+cloudinary==1.29.0
+dj-database-url==0.5.0
+Django==4.0.5
+django-bootstrap4==22.1
+django-crispy-forms==1.14.0
+django-heroku==0.3.1
+django-phonenumber-field==6.3.0
+djangorestframework==3.13.1
