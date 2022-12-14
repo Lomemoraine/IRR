@@ -1,0 +1,34 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container-fluid property-item-page">
+    <div class="jumbotron mt-4">
+        <h1 class="item-title">{{property_obj.name}}</h1>
+        <div class="item-page">
+            {% for image in image %}
+            {% if image %}
+            <div class="carousel-item">
+                <img class="d-block w-100 property-img-page" src="{{image.image.url}}" alt="Third slide">
+            </div>
+            {% else %}
+            <p align="center">No images have been uploaded</p>
+            {% endif %}
+            {% endfor %}
+            <div class="row pt-4">
+                <div class="col-6">
+                    <h5>Property Type - <span class="small">{{ property_obj.property_type }}</span></h5>
+                    <h5>Purchase date - <span class="small">{{ property_obj.purchase_date }}</span></h5>
+                    <h5>Purchase price - <span class="small">{{ property_obj.purchase_price }}</span></h5>
+                    <h5>Deposit - <span class="small">{{ property_obj.deposit }}</span></h5>
+                    <h5>Location - <span
+                            class="small">{{ property_obj.location }}, {{ property_obj.location.country }}</span></h5>
+                    <h5>Other costs - <span class="small">{{ property_obj.other_cost }}</span></h5>
+                </div>
+                <div class="col-6">
+                    <h5>Notes - <span class="small">{{ property_obj.notes }}</span></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

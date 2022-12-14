@@ -3,19 +3,11 @@ from . import views
 
 urlpatterns = [
     path('', views.welcome, name="home"),
-    # path('property/', views.propertylist, name="propertylist"),
-    # path('property/<str:id>/', views.propertyitem, name="propertyitem"),
-    # path('propertytype/', views.propertytype, name="propertytype"),
-    # path('contactus/',views.contactus, name="contactus"),
+    path('/logout', views.log_out_user, name="logout"),
+    path('/addproperty', views.add_property, name="addproperty"),
+    path('/addimages', views.addimages, name="addimages"),
+    path('/property/<str:id>/', views.view_one_property, name="propertyitem"),
 
-    # path('login/', views.loginuser, name='login'),
-    # path('logout', views.logoutuser, name='logout'),
-
-    # path('administrator/',views.administrator, name="administrator"),
-    # path('administrator/propertytype',views.admin_property_type, name='admin-propertytype'),
-    # path('administrator/currency',views.admin_currency, name='admin-currency'),
-    # path('administrator/region',views.admin_region, name='admin-region'),
-    # path('administrator/location',views.admin_location, name='admin-location'),
-    # path('administrator/images',views.admin_images, name='admin-images'),
-
+    path('login/', views.login_user, name='login'),
+    path('logout', views.log_out_user, name='logout'),
 ]

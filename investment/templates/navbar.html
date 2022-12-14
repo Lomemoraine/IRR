@@ -1,0 +1,54 @@
+<nav class="mb-1 navbar navbar-expand-lg navbar-dark bg-secondary">
+    <a class="navbar-brand" href="{% url 'home' %}" style="font-family: 'Henny Penny', cursive; ">Real<i class="fas fa-home"></i>Estate</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
+      aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
+      <ul class="navbar-nav mr-auto">
+        {% if user.is_authenticated %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'addimages' %}">Add Images</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'addproperty' %}">Add Property</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="admin/">Admin</a>
+        </li>
+        {% endif %}
+      </ul>
+  
+  
+  
+      <ul class="navbar-nav ml-auto nav-flex-icons">
+        {% if user.is_authenticated %}
+  
+  
+        <li class="nav-item">
+          <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+        </li>
+  
+  
+  
+        {% else %}
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'login' %}">Log In</a>
+          </li>
+
+  
+          {% endif %}
+  
+  
+  
+  
+  
+  
+  
+        </ul>
+    </div>
+  </nav>
