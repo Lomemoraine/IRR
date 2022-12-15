@@ -12,6 +12,7 @@ from .forms import *
 
 # Create your views here.
 # Homepage
+@login_required(login_url='login')
 def welcome(request):
     all_property = Property.objects.all()
 
@@ -19,9 +20,12 @@ def welcome(request):
         'all_property': all_property
     }
     return render(request, 'home.html', context=context)
+
+
 def index(request):
-    
     return render(request, 'index.html')
+
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -30,13 +34,13 @@ def signup(request):
             login(request, user)
             return redirect('login')
     else:
-        form = SignUpForm()   
+        form = SignUpForm()
     return render(request, 'users/signup.html', {'form': form})
 
 
 def log_in(request):
     error = False
-   
+
     if request.method == "POST":
         form = LogInForm(request.POST)
         if form.is_valid():
@@ -44,7 +48,7 @@ def log_in(request):
             password = form.cleaned_data["password"]
             user = authenticate(email=email, password=password)
             if user:
-                login(request, user)  
+                login(request, user)
                 return redirect('home')
             else:
                 error = True
@@ -52,6 +56,8 @@ def log_in(request):
         form = LogInForm()
 
     return render(request, 'users/login.html', {'form': form, 'error': error})
+
+
 # def login_user(request):
 #     if request.method == 'POST':
 #         form = loginForm(request.POST)
@@ -70,14 +76,14 @@ def log_in(request):
 #     return render(request, 'users/login.html', context=context)
 
 
-@login_required
+@login_required(login_url='login')
 def log_out(request):
     logout(request)
     return redirect(reverse('login'))
 
 
 # Add property
-@login_required()
+@login_required(login_url='login')
 def add_property(request):
     property_form = PropertyForm()
     if request.method == 'POST':
@@ -103,7 +109,7 @@ def add_property(request):
     return render(request, 'users/addproperty.html', context=context)
 
 
-@login_required()
+@login_required(login_url='login')
 def addimages(request):
     property = Property.objects.all()
 
@@ -126,7 +132,7 @@ def addimages(request):
     return render(request, 'users/addimages.html', context=context)
 
 
-@login_required()
+@login_required(login_url='login')
 def view_one_property(request, id):
     property_obj = Property.objects.get(id=id)
     image = Images.objects.filter(property=property_obj)
