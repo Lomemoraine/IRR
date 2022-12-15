@@ -1,6 +1,6 @@
 # from django.http  import HttpResponse
 from typing import Any
-
+from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -68,9 +68,9 @@ def log_in(request):
 
 
 @login_required
-def log_out_user(request):
+def log_out(request):
     logout(request)
-    return render(request, 'users/home.html')
+    return redirect(reverse('login'))
 
 
 # Add property
