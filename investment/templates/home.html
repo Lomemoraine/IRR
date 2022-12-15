@@ -1,2 +1,38 @@
-{% load bootstrap4 %}
-<h1 <i class="textcenter">Welcome to the Moringa Tribune</h1>
+{% extends "base.html" %} {% block content %}
+<div class="container-fluid property-list p-4">
+    <h1 class="textcenter">Welcome to Real Estate</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Location</th>
+            <th scope="col">Purchase Date</th>
+            <th scope="col">Purchase Price</th>
+            <th scope="col">Deposit Amount</th>
+            <th scope="col">Market Value</th>
+            <th scope="col">IRR YR1</th>
+            <th scope="col">IRR YR2</th>
+            <th scope="col">IRR YR3</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for property in all_property %}
+        <tr>
+            <th scope="row">{{ property.name }}</th>
+            <td>{{ property.location }}, <span>{{ property.location.country}}</span></td>
+            <td>{{ property.purchase_date }}</td>
+            <td>{{ property.purchase_price }}</td>
+            <td>{{ property.deposit }}</td>
+            <td>{{ property.market_value }}</td>
+            <td>{{ property.irr_year_one }}%</td>
+            <td>{{ property.irr_year_two }}%</td>
+            <td>{{ property.irr_year_three }}%</td>
+            <td>
+                <a href="{% url 'propertyitem' property.pk %}" class="btn btn-dark">View</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
