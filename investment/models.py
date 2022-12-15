@@ -149,6 +149,13 @@ class Property(models.Model):
         irr = round(irr_calc, 2)
         return irr
 
+    @property
+    def irr_year_four(self):
+        initial_investment = -1 * self.purchase_price
+        irr_calc = round(npf.irr([initial_investment, -3999, 59, -9000, 20000]), 4) * 100
+        irr = round(irr_calc, 2)
+        return irr
+
 class Images(models.Model):
     image = CloudinaryField('images',
                             default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'

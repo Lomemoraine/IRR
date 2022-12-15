@@ -9,7 +9,7 @@
         {% if user.is_authenticated %}
         <li class="nav-item active">
         
-          <a class="nav-link" href="{% url 'home' %}"><i class="mr-2 fas fa-home" style="font-size: 18px"></i></span><span class="desc-on-sm">Home</span></a>
+          <a class="nav-link" href="{% url 'home' %}"></span><span class="desc-on-sm">Home</span></a>
         </li>
        
         
@@ -34,10 +34,10 @@
                 <a class="nav-link" href="{% url 'addimages' %}"><i class="mr-2 fas fa-user" style="font-size: 18px"></i><span class="desc-on-sm">Add Images</span></a>
             </li>
             <li class="nav-item active ml-3 mt-1">
-                <a class="nav-link" href=""><i class="mr-2 fas fa-user" style="font-size: 18px"></i><span class="desc-on-sm">ACCOUNT</span></a>
+<!--                <a class="nav-link" href=""><i class="mr-2 fas fa-user" style="font-size: 18px"></i><span class="desc-on-sm">ACCOUNT</span></a>-->
             </li>
             <li class="nav-item active">
-                <a class="nav-link ml-3 mt-1" href="/accounts/password/change"><i class="mr-2 fas fa-user-lock" style="font-size: 18px"></i><span class="desc-on-sm">Change Password</span></a>
+<!--                <a class="nav-link ml-3 mt-1" href="/accounts/password/change"><i class="mr-2 fas fa-user-lock" style="font-size: 18px"></i><span class="desc-on-sm">Change Password</span></a>-->
             </li>
             <li class="nav-item active ml-3 mt-1">
                 <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-2" style="font-size: 18px"></i><span class="desc-on-sm">Logout</span></a>
