@@ -19,6 +19,9 @@ def welcome(request):
         'all_property': all_property
     }
     return render(request, 'home.html', context=context)
+def index(request):
+    
+    return render(request, 'index.html')
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)

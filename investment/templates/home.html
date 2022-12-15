@@ -28,7 +28,13 @@
             <td>{{ property.irr_year_two }}%</td>
             <td>{{ property.irr_year_three }}%</td>
             <td>
-                <a href="{% url 'propertyitem' property.pk %}" class="btn btn-dark">View</a>
+                <a href="{% url 'index'%}" class="btn btn-dark">View</a>
+            </td>
+            <td>
+                <a href="{% url 'propertyitem' property.pk %}" class="btn btn-dark">EDIT</a>
+            </td>
+            <td>
+                <a href="{% url 'propertyitem' property.pk %}" class="btn btn-dark">DELETE</a>
             </td>
         </tr>
         {% endfor %}

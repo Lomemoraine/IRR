@@ -7,6 +7,7 @@ urlpatterns = [
     path('/addproperty', views.add_property, name="addproperty"),
     path('/addimages', views.addimages, name="addimages"),
     path('/property/<str:id>/', views.view_one_property, name="propertyitem"),
+    path('/index/', views.index, name="index"),
 
     path('login/', views.log_in, name='login'),
     path('signup/', views.signup, name='signup'),

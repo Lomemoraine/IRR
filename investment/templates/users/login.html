@@ -1,10 +1,22 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="container_fluid ">
+    <div class="container_fluid  loginn">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="card" style="width:50rem;">
+                <img src="../static/images/home.jpg">
+                </div>
+                
+            </div>
+            <div class="col-md-3"></div>
+
+        </div>
         <div class="row">
         <div class="col-md-4 "></div>
         <div class="col-md-4 container1">
+
             {% if error %}
    <p><strong>Invalid email or password.</strong></p>
           {% endif %}
