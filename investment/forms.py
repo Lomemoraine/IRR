@@ -9,10 +9,12 @@ class SignUpForm(UserCreationForm):
         model = CustomUser
         fields = ("username", "email")
 
-
 class LogInForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
+# class LogInForm(forms.Form):
+#     email = forms.EmailField()
+#     password = forms.CharField(widget=forms.PasswordInput)
 
 
 class UserUpdateForm(forms.ModelForm):

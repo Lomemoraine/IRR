@@ -1,0 +1,44 @@
+
+
+body{
+    font-family: 'K2D', sans-serif;
+    margin: 0;
+   
+  }
+h1,h2
+{
+  color: green;
+}
+
+#indexContainer{
+  background-image: url("https://images.unsplash.com/photo-1602941525421-8f8b81d3edbb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80");
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  text-align: center;
+  color: black;
+}
+
+
+#indexBtn{
+  background-color: #7CFC00;
+  color: white;
+  width: 200px;
+  border-radius: 25px;
+  height: 55px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-align: center;
+  align-items: center;
+  padding: 5px;
+  padding-top: 10px;
+}
+
+/* Centered text */
+.centered {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 900;
+}

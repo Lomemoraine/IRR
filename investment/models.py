@@ -57,8 +57,7 @@ class CustomUser(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, null=True, on_delete=models.CASCADE)
-    prof_pic = CloudinaryField('images',
-                               default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
+    prof_pic = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
                                        '/x3mgnqmbi73lten4ewzv.png')
     bio = models.TextField(blank=True, max_length=255, default='please update your bio')
     f_name = models.CharField(blank=True, max_length=255)

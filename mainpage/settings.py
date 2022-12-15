@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,7 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'investment.apps.InvestmentConfig',
     'bootstrap4',
-    'investment'
+    'investment',
+    'crispy_forms',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +90,7 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'irr',
     #     'USER': 'raine',
-    #     'PASSWORD':'',
+    #     'PASSWORD':'gift1234',
     # }
 }
 
@@ -123,12 +127,19 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
+CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap4'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+cloudinary.config(
+    cloud_name = "dcfb3gqzg",
+    api_key ="825938427599163",
+    api_secret ="KFYIt-ZMSDBPjQWaBqNhcNnXVLc"
+)
 
 AUTH_USER_MODEL = "investment.CustomUser"

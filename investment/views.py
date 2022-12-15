@@ -19,23 +19,52 @@ def welcome(request):
         'all_property': all_property
     }
     return render(request, 'home.html', context=context)
-
-
-def login_user(request):
+def signup(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
             login(request, user)
-            return redirect('administrator')
-        else:
-            messages.info(request, "Username or Password is incorrect")
+            return redirect('login')
+    else:
+        form = SignUpForm()   
+    return render(request, 'users/signup.html', {'form': form})
 
-    context = {}
-    return render(request, 'users/login.html', context=context)
+
+def log_in(request):
+    error = False
+   
+    if request.method == "POST":
+        form = LogInForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password"]
+            user = authenticate(email=email, password=password)
+            if user:
+                login(request, user)  
+                return redirect('home')
+            else:
+                error = True
+    else:
+        form = LogInForm()
+
+    return render(request, 'users/login.html', {'form': form, 'error': error})
+# def login_user(request):
+#     if request.method == 'POST':
+#         form = loginForm(request.POST)
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+
+#         user = authenticate(request, username=username, password=password)
+
+#         if user is not None:
+#             login(request, user)
+#             return redirect('administrator')
+#         else:
+#             messages.info(request, "Username or Password is incorrect")
+
+#     context = {}
+#     return render(request, 'users/login.html', context=context)
 
 
 @login_required
