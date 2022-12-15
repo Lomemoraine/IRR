@@ -1,12 +1,10 @@
-from datetime import date
-
-# Create your models here.
 from django.db import models
-
+from datetime import date
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 from cloudinary.models import CloudinaryField
+import numpy_financial as npf
 
 
 class CustomUserManager(BaseUserManager):
@@ -128,9 +126,29 @@ class Property(models.Model):
         today = date.today()
         diff = self.purchase_date - (today)
         period = diff.days
-        value = self.purchase_price - (period * 0.10)
+        value = self.purchase_price - (period * 100.60)
         return value
 
+    @property
+    def irr_year_one(self):
+        initial_investment = -1 * self.purchase_price
+        irr_calc = round(npf.irr([initial_investment, 39, 59, 55, 20]), 4) * 100
+        irr = round(irr_calc, 2)
+        return irr
+
+    @property
+    def irr_year_two(self):
+        initial_investment = -1 * self.purchase_price
+        irr_calc = round(npf.irr([initial_investment, -39, 5900, -2000, 20]), 4) * 100
+        irr = round(irr_calc, 2)
+        return irr
+
+    @property
+    def irr_year_three(self):
+        initial_investment = -1 * self.purchase_price
+        irr_calc = round(npf.irr([initial_investment, -39, 59, -6000, 20000]), 4) * 100
+        irr = round(irr_calc, 2)
+        return irr
 
 class Images(models.Model):
     image = CloudinaryField('images',
