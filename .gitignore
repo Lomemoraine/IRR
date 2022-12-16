@@ -1,2 +1,6 @@
 virtual/
 Migrations/
+/.build
+
+**/*.pyc
+*-env/
