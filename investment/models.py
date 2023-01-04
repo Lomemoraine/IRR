@@ -157,7 +157,6 @@ class Property(models.Model):
         return irr
 
 class Images(models.Model):
-    image = CloudinaryField('images',
-                            default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
+    image = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
                                     '/x3mgnqmbi73lten4ewzv.png')
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
