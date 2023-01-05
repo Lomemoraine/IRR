@@ -10,6 +10,9 @@
             <th scope="col">Purchase Price</th>
             <th scope="col">Deposit Amount</th>
             <th scope="col">Market Value</th>
+            <th scope="col">IRR YR1</th>
+            <th scope="col">IRR YR2</th>
+            <th scope="col">IRR YR3</th>
         </tr>
         </thead>
         <tbody>
@@ -21,11 +24,16 @@
             <td>{{ property.purchase_price }}</td>
             <td>{{ property.deposit }}</td>
             <td>{{ property.market_value }}</td>
+            <td>{{ property.irr_year_one }}%</td>
+            <td>{{ property.irr_year_two }}%</td>
+            <td>{{ property.irr_year_three }}%</td>
             <td>
-                <a href="{% url 'propertyitem' property.pk %}" class="btn btn-dark">View</a>
+                
+                <a href="{% url 'propertyitem' property.id %}" class="btn btn-dark">View</a>
             </td>
         </tr>
         {% endfor %}
+
         </tbody>
     </table>
 </div>

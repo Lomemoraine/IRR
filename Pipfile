@@ -12,6 +12,9 @@ django-phonenumber-field = "*"
 phonenumbers = "*"
 django-forms-bootstrap = "*"
 django-bootstrap4 = "*"
+numpy = "*"
+numpy-financial = "*"
+django-crispy-forms = "*"
 
 [dev-packages]
 

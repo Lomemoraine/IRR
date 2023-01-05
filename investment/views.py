@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from .models import *
 from .forms import *
@@ -12,6 +12,7 @@ from .forms import *
 
 # Create your views here.
 # Homepage
+@login_required(login_url='login')
 def welcome(request):
     all_property = Property.objects.all()
 
@@ -19,6 +20,12 @@ def welcome(request):
         'all_property': all_property
     }
     return render(request, 'home.html', context=context)
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -27,13 +34,13 @@ def signup(request):
             login(request, user)
             return redirect('login')
     else:
-        form = SignUpForm()   
+        form = SignUpForm()
     return render(request, 'users/signup.html', {'form': form})
 
 
 def log_in(request):
     error = False
-   
+
     if request.method == "POST":
         form = LogInForm(request.POST)
         if form.is_valid():
@@ -41,7 +48,7 @@ def log_in(request):
             password = form.cleaned_data["password"]
             user = authenticate(email=email, password=password)
             if user:
-                login(request, user)  
+                login(request, user)
                 return redirect('home')
             else:
                 error = True
@@ -49,6 +56,8 @@ def log_in(request):
         form = LogInForm()
 
     return render(request, 'users/login.html', {'form': form, 'error': error})
+
+
 # def login_user(request):
 #     if request.method == 'POST':
 #         form = loginForm(request.POST)
@@ -67,14 +76,14 @@ def log_in(request):
 #     return render(request, 'users/login.html', context=context)
 
 
-@login_required
+@login_required(login_url='login')
 def log_out(request):
     logout(request)
     return redirect(reverse('login'))
 
 
 # Add property
-@login_required()
+@login_required(login_url='login')
 def add_property(request):
     property_form = PropertyForm()
     if request.method == 'POST':
@@ -98,9 +107,18 @@ def add_property(request):
         'property_form': property_form
     }
     return render(request, 'users/addproperty.html', context=context)
-
-
-@login_required()
+def edit_property(request, pk):
+    property = get_object_or_404(Property, pk=pk)
+    if request.method == 'POST':
+        form = EditpropertyForm(request.POST, instance=property)
+        if form.is_valid():
+            form.save()
+            return redirect('propertyitem',pk=pk)
+        # fix the redirect.
+    else:
+        form = EditpropertyForm(instance=property)
+    return render(request, 'users/editproperty.html', {'form': form})
+@login_required(login_url='login')
 def addimages(request):
     property = Property.objects.all()
 
@@ -123,7 +141,7 @@ def addimages(request):
     return render(request, 'users/addimages.html', context=context)
 
 
-@login_required()
+@login_required(login_url='login')
 def view_one_property(request, id):
     property_obj = Property.objects.get(id=id)
     image = Images.objects.filter(property=property_obj)
@@ -133,3 +151,33 @@ def view_one_property(request, id):
         'image': image
     }
     return render(request, 'users/propertypage.html', context=context)
+#continue Thursday
+def interestview(request):
+    if request.method == 'POST':
+        form = InterestRateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = InterestRateForm()
+    return render(request, 'users/interestrates.html', {'form': form})
+def inflationview(request):
+    if request.method == 'POST':
+        myform = InflationRateForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = InterestRateForm()
+    return render(request, 'users/inflationrates.html', {'myform': myform})
+# def interestview(request):
+#     property = Property.objects.all()
+
+#     if request.method == 'POST':
+#         data = request.POST
+    
+#             return redirect('home')
+
+#     context = {'property': property}
+
+#     return render(request, 'users/interestrates.html', context=context)

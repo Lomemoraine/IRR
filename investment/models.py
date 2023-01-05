@@ -1,12 +1,10 @@
-from datetime import date
-
-# Create your models here.
 from django.db import models
-
+from datetime import date
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 from cloudinary.models import CloudinaryField
+import numpy_financial as npf
 
 
 class CustomUserManager(BaseUserManager):
@@ -86,7 +84,7 @@ class Country(models.Model):
         return self.name
 
 
-class Location(models.Model):
+class City(models.Model):
     country = models.ForeignKey(Country, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=252, null=True)
 
@@ -98,7 +96,7 @@ class OtherCosts(models.Model):
     CHOICES = (
         ('Property Taxes', 'Property Taxes'),
         ('Repairs & Utilities', 'Repairs & Utilities'),
-        ('Mortgage Insurance', 'Mortgage Insurance')
+        ('Mortgage Insurance', 'Mortgage Insurance'),
     )
     other_costs = models.CharField(max_length=255, null=True, choices=CHOICES)
     amount = models.IntegerField(null=True, max_length=255)
@@ -113,11 +111,11 @@ class Property(models.Model):
     purchase_date = models.DateField(auto_now_add=True, null=True)
     purchase_price = models.FloatField(null=True)
     deposit = models.FloatField(null=True)
-    location = models.ForeignKey(Location, null=True, on_delete=models.CASCADE)
+    City = models.ForeignKey(City, null=True, on_delete=models.CASCADE)
     other_cost = models.ForeignKey(OtherCosts, null=True, on_delete=models.CASCADE)
     bond_value = models.IntegerField(max_length=252, null=True)
     notes = models.TextField(max_length=1260, null=True)
-
+    
     def __str__(self):
         return self.name
 
@@ -127,12 +125,65 @@ class Property(models.Model):
         today = date.today()
         diff = self.purchase_date - (today)
         period = diff.days
-        value = self.purchase_price - (period * 0.10)
+        value = self.purchase_price - (period * 100.60)
         return value
 
+    @property
+    def irr_year_one(self):
+        initial_investment = -1 * self.purchase_price
+        irr_calc = round(npf.irr([initial_investment, 39, 59, 55, 20]), 4) * 100
+        irr = round(irr_calc, 2)
+        return irr
+
+    @property
+    def irr_year_two(self):
+        initial_investment = -1 * self.purchase_price
+        irr_calc = round(npf.irr([initial_investment, -39, 5900, -2000, 20]), 4) * 100
+        irr = round(irr_calc, 2)
+        return irr
+
+    @property
+    def irr_year_three(self):
+        initial_investment = -1 * self.purchase_price
+        irr_calc = round(npf.irr([initial_investment, -39, 59, -6000, 20000]), 4) * 100
+        irr = round(irr_calc, 2)
+        return irr
+
+    @property
+    def irr_year_four(self):
+        initial_investment = -1 * self.purchase_price
+        irr_calc = round(npf.irr([initial_investment, -3999, 59, -9000, 20000]), 4) * 100
+        irr = round(irr_calc, 2)
+        return irr
 
 class Images(models.Model):
-    image = CloudinaryField('images',
-                            default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
+    image = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
                                     '/x3mgnqmbi73lten4ewzv.png')
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+#contination models
+class InterestRates(models.Model):
+
+    type = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+        ('Interest & capital', 'Interest & capital'),
+        ('Interest Only', 'Interest Only'),
+       
+    ))
+    rate = models.IntegerField(null=True,max_length=255,default=10)
+    averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
+    term = models.IntegerField(null=True,max_length=255)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.term
+    
+class InflationRates(models.Model):
+
+    rate = models.IntegerField(null=True,max_length=255,default=8)
+    averageinflationrate = models.FloatField(('Average Inflation Rate (%)'),null=True,default=8)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.rate
+    
+

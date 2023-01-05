@@ -1,36 +1,33 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="container_fluid ">
-        <div class="row">
-        <div class="col-md-4 "></div>
-        <div class="col-md-4 container1">
-            {% if error %}
-   <p><strong>Invalid email or password.</strong></p>
-          {% endif %}
-            <div class="card mt-2" style="background-color: #b2dfdb;">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="text-center border-bottom mb-4 " style="font-family: 'K2D', sans-serif;">Welcome! Please login </legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group text-center">
-                <button class="btn btn-outline-info" type="submit">Sign In</button>
+<div class="container_fluid  loginn m-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card" style="width:50rem;">
+                <img src="../static/images/home.jpg" style="width:60%;">
             </div>
-        </form>
-    </div>
-    <div class="card mt-2" >
-        <div class="border-top pt-2 text-center">
-            <small class="text-muted ">
-                Need An Account? <a class="ml-2" href="{% url 'signup' %}">Sign Up Now</a>
-            </small>
         </div>
-    </div>
+        <div class="col-md-6 mt-5" style="">
+            {% if error %}
+            <p><strong>Invalid email or password.</strong></p>
+            {% endif %}
+            <div class="card mt-2 pt-4" style="background-color: #b2dfdb;">
+                <form method="POST" class="p-4">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <legend class="text-center border-bottom mb-4 " style="font-family: 'K2D', sans-serif;">
+                            Welcome! Please login
+                        </legend>
+                        {{ form|crispy }}
+                    </fieldset>
+                    <div class="form-group text-center">
+                        <button class="btn btn-outline-info" type="submit">Sign In</button>
+                    </div>
+                </form>
+            </div>
         </div>
-  
-    <div class="col-md-4 "></div>
     </div>
 </div>
-    
+
 {% endblock content %}
