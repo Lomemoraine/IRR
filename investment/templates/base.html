@@ -1,10 +1,13 @@
-{% load bootstrap4 %}
+<!--{% load bootstrap4 %}-->
+{% load tailwind_tags %}
+{% load crispy_forms_tags %}
 {% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-
+  {% tailwind_css %}
   {% if title %}
   <title>Wealth Creators Nyingi - {{title}}</title>
   {% else %}

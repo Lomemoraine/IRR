@@ -15,6 +15,9 @@ django-bootstrap4 = "*"
 numpy = "*"
 numpy-financial = "*"
 django-crispy-forms = "*"
+django-tailwind = "*"
+npm = "*"
+crispy-tailwind = "*"
 
 [dev-packages]
 

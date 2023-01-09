@@ -1,33 +1,30 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container_fluid  loginn m-4">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card" style="width:50rem;">
-                <img src="../static/images/home.jpg" style="width:60%;">
-            </div>
+<div class="flex items-center justify-center mt-6">
+    <div class="flex flex-col max-w-md p-6 rounded-md sm:p-10 dark:bg-gray-400 dark:text-gray-700">
+        <div class="text-center">
+            <h1 class="my-3 text-4xl font-bold dark:text-gray-700">Sign in</h1>
+            <p class="text-sm dark:text-gray-900">Sign in to access your account</p>
         </div>
-        <div class="col-md-6 mt-5" style="">
-            {% if error %}
-            <p><strong>Invalid email or password.</strong></p>
-            {% endif %}
-            <div class="card mt-2 pt-4" style="background-color: #b2dfdb;">
-                <form method="POST" class="p-4">
-                    {% csrf_token %}
-                    <fieldset class="form-group">
-                        <legend class="text-center border-bottom mb-4 " style="font-family: 'K2D', sans-serif;">
-                            Welcome! Please login
-                        </legend>
-                        {{ form|crispy }}
-                    </fieldset>
-                    <div class="form-group text-center">
-                        <button class="btn btn-outline-info" type="submit">Sign In</button>
-                    </div>
-                </form>
+        <form novalidate="" action="" class="space-y-4 ng-untouched ng-pristine ng-valid">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <div class="space-y-2">
+                <div>
+                    <button type="submit"
+                            class="w-full px-8 py-3 font-semibold rounded-md dark:bg-gray-100 dark:text-gray-900">Sign
+                        in
+                    </button>
+                </div>
+                <p class="px-6 text-sm text-center dark:text-gray-900">Don't have an account yet?
+                    <a rel="noopener noreferrer" href="#" class="hover:underline dark:text-grey-900">Sign up</a>.
+                </p>
             </div>
-        </div>
+        </form>
     </div>
 </div>
+
 
 {% endblock content %}
