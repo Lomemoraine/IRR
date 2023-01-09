@@ -1,67 +1,116 @@
-<nav class="mb-1 navbar navbar-expand-lg navbar-dark bg-secondary">
-    <a class="navbar-brand" href="{% url 'home' %}" style=" ">PROPERTY<i class="fas fa-home"></i>INVEST</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
-      aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
-      <ul class="navbar-nav mr-auto">
-        {% if user.is_authenticated %}
-        <li class="nav-item active">
-        
-          <a class="nav-link" href="{% url 'home' %}"></span><span class="desc-on-sm">Home</span></a>
-        </li>
-       
-        
-        <li class="nav-item active">
-          <a class="nav-link" href="admin/">Admin</a>
-        </li>
-        {% endif %}
-      </ul>
-  
-  
-  
-      <ul class="navbar-nav ml-auto nav-flex-icons">
-        {% if user.is_authenticated %}
-  
-  
-        
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item active ml-3 mt-1">
-                <a class="nav-link" href="{% url 'addproperty' %}"><i class="mr-2 fas fa-plus" style="font-size: 18px"></i></span><span class="desc-on-sm">Add Property</span></a>
+<header class="p-2 dark:bg-gray-900 dark:text-gray-400">
+    <div class="container flex justify-between h-16 mx-auto dark:text-gray-400">
+        <a rel="noopener noreferrer" href="{% url 'home' %}" aria-label="Back to homepage" class="flex items-center p-2
+        dark:text-gray-400 text-3xl hover:no-underline focus:no-underline
+                   hover:text-gray-200 focus:text-gray-200 hover:text-4xl">
+            PROPERTY<i class="fas fa-home"></i>INVEST
+        </a>
+        <ul class="items-stretch hidden space-x-3 lg:flex">
+            {% if user.is_authenticated %}
+            <li class="flex">
+                <a rel="noopener noreferrer" href="{% url 'home' %}"
+                   class="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent
+                   dark:text-gray-400 dark:border-gray-400 hover:no-underline focus:no-underline
+                   hover:text-gray-200 focus:text-gray-200 hover:text-xl ">Home</a>
             </li>
-            <li class="nav-item active ml-3 mt-1">
-                <a class="nav-link" href="{% url 'addimages' %}"><i class="mr-2 fas fa-user" style="font-size: 18px"></i><span class="desc-on-sm">Add Images</span></a>
+            <li class="flex">
+                <a rel="noopener noreferrer" href="{% url 'addproperty' %}"
+                   class="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent dark:text-gray-400
+                    hover:no-underline focus:no-underline
+                   hover:text-gray-200 focus:text-gray-200 hover:text-xl">Add Property</a>
             </li>
-            <li class="nav-item active ml-3 mt-1">
-<!--                <a class="nav-link" href=""><i class="mr-2 fas fa-user" style="font-size: 18px"></i><span class="desc-on-sm">ACCOUNT</span></a>-->
+            <li class="flex">
+                <a rel="noopener noreferrer" href="{% url 'addimages' %}"
+                   class="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent dark:text-gray-400
+                    hover:no-underline focus:no-underline hover:text-gray-200 focus:text-gray-200 hover:text-xl">Add Images</a>
             </li>
-            <li class="nav-item active">
-<!--                <a class="nav-link ml-3 mt-1" href="/accounts/password/change"><i class="mr-2 fas fa-user-lock" style="font-size: 18px"></i><span class="desc-on-sm">Change Password</span></a>-->
-            </li>
-            <li class="nav-item active ml-3 mt-1">
-                <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-2" style="font-size: 18px"></i><span class="desc-on-sm">Logout</span></a>
-            </li>
-         
         </ul>
-  
-  
-  
+        <div class="flex items-center px-2 -mb-1">
+            <p>Hi, {{ user.username}}</p>
+        </div>
+        <div class="items-center flex-shrink-0 hidden lg:flex">
+            <a href="{% url 'logout' %}">
+                <button class="self-center px-8 py-3 font-semibold rounded bg-slate-400 dark:text-gray-900">Sign Out
+                </button>
+            </a>
+        </div>
         {% else %}
-        <ul class="navbar-nav ml-auto nav-flex-icons">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'login' %}">Log In</a>
-          </li>
-
-  
-          {% endif %}
-  
-  
-  
-  
-  
-  
-  
-        </ul>
+        <div class="items-center flex-shrink-0 hidden lg:flex">
+            <a href="{% url 'login' %}">
+                <button class="self-center px-8 py-3 font-semibold rounded bg-slate-400 dark:text-gray-900">Sign In
+                </button>
+            </a>
+        </div>
+        {% endif %}
+        <button class="p-4 lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                 class="w-6 h-6 dark:text-gray-100">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
     </div>
-  </nav>
+</header>
+
+<!--<nav class="mb-1 navbar navbar-expand-lg navbar-dark bg-secondary">-->
+<!--    <a class="navbar-brand" href="{% url 'home' %}" style=" ">PROPERTY<i class="fas fa-home"></i>INVEST</a>-->
+<!--    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"-->
+<!--            aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--        <span class="navbar-toggler-icon"></span>-->
+<!--    </button>-->
+<!--    <div class="collapse navbar-collapse" id="navbarSupportedContent-333">-->
+<!--        <ul class="navbar-nav mr-auto">-->
+<!--            {% if user.is_authenticated %}-->
+<!--            <li class="nav-item active">-->
+
+<!--                <a class="nav-link" href="{% url 'home' %}"></span><span class="desc-on-sm">Home</span></a>-->
+<!--            </li>-->
+<!--            <li class="nav-item active">-->
+<!--                <a class="nav-link" href="admin/">Admin</a>-->
+<!--            </li>-->
+<!--            {% endif %}-->
+<!--        </ul>-->
+
+
+<!--        <ul class="navbar-nav ml-auto nav-flex-icons">-->
+<!--            {% if user.is_authenticated %}-->
+
+<!--            <ul class="navbar-nav ml-auto">-->
+<!--                <li class="nav-item active ml-3 mt-1">-->
+<!--                    <a class="nav-link" href="{% url 'addproperty' %}"><i class="mr-2 fas fa-plus"-->
+<!--                                                                          style="font-size: 18px"></i></span><span-->
+<!--                            class="desc-on-sm">Add Property</span></a>-->
+<!--                </li>-->
+<!--                <li class="nav-item active ml-3 mt-1">-->
+<!--                    <a class="nav-link" href="{% url 'addimages' %}"><i class="mr-2 fas fa-user"-->
+<!--                                                                        style="font-size: 18px"></i><span-->
+<!--                            class="desc-on-sm">Add Images</span></a>-->
+<!--                </li>-->
+<!--                <li class="nav-item active ml-3 mt-1">-->
+<!--                    &lt;!&ndash;                <a class="nav-link" href=""><i class="mr-2 fas fa-user" style="font-size: 18px"></i><span class="desc-on-sm">ACCOUNT</span></a>&ndash;&gt;-->
+<!--                </li>-->
+<!--                <li class="nav-item active">-->
+<!--                    &lt;!&ndash;                <a class="nav-link ml-3 mt-1" href="/accounts/password/change"><i class="mr-2 fas fa-user-lock" style="font-size: 18px"></i><span class="desc-on-sm">Change Password</span></a>&ndash;&gt;-->
+<!--                </li>-->
+<!--                <li class="nav-item active ml-3 mt-1">-->
+<!--                    <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-2"-->
+<!--                                                                     style="font-size: 18px"></i><span-->
+<!--                            class="desc-on-sm">Logout</span></a>-->
+<!--                </li>-->
+
+<!--            </ul>-->
+
+
+<!--            {% else %}-->
+<!--            <ul class="navbar-nav ml-auto nav-flex-icons">-->
+<!--                <li class="nav-item active">-->
+<!--                    <a class="nav-link" href="{% url 'login' %}">Log In</a>-->
+<!--                </li>-->
+
+
+<!--                {% endif %}-->
+
+
+<!--            </ul>-->
+<!--    </div>-->
+<!--</nav>-->

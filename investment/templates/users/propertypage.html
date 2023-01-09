@@ -5,7 +5,7 @@
         <div class="item-page">
             <div class="row">
                 <div class="col-4 mt-4">
-                    <h1 class="item-title">{{property_obj.name}}</h1>
+                    <h1 class="dark:text-gray-700">{{property_obj.name}}</h1>
                     <h5>Property Type - <span class="small">{{ property_obj.property_type }}</span></h5>
                     <h5>Purchase date - <span class="small">{{ property_obj.purchase_date }}</span></h5>
                     <h5>Purchase price - <span class="small">{{ property_obj.purchase_price }}</span></h5>
@@ -19,7 +19,8 @@
 
                     {% for image in image %}
                     <p>
-                        <a class="btn btn-dark btn-lg btn-block" data-toggle="collapse" href="#collapseExample" role="button"
+                        <a class="btn btn-dark btn-lg btn-block" data-toggle="collapse" href="#collapseExample"
+                           role="button"
                            aria-expanded="false" aria-controls="collapseExample">
                             View Image
                         </a>
@@ -46,7 +47,7 @@
                         <tbody>
                         <tr>
                             <td></td>
-                            <td></td>
+                            <td>IRR</td>
                             <td>{{ property_obj.irr_year_one }}%</td>
                             <td>{{ property_obj.irr_year_two }}%</td>
                             <td>{{ property_obj.irr_year_three }}%</td>
@@ -201,13 +202,6 @@
                             <td>R00.00</td>
                             <td>R00.00</td>
                             <td>R00.00</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td>IRR</td>
-                            <td>infinite</td>
-                            <td>infinite</td>
-                            <td>infinte</td>
                         </tr>
                         </tbody>
                     </table>
