@@ -14,7 +14,29 @@
                             class="small">{{ property_obj.location }}, {{ property_obj.location.country }}</span></h5>
                     <h5>Other costs - <span class="small">{{ property_obj.other_cost }}</span></h5>
                     <h5>Notes - <span class="small">{{ property_obj.notes }}</span></h5>
+                    <h5>
+                
+                        <a href="{% url 'editproperty' property_obj.pk %}" class="btn btn-dark">Edit this Property</a>
+                
+                    </h5>
+                    {#continuation thurs#}
+                    <h5>
+                
+                        <a href="" class="btn btn-dark">Delete this Property</a>
+                        <a href="" class="btn btn-dark">See all properties</a>
+                
+                    </h5>
+                    <h5 class="text-center">See  property details</h5>
+                    <ul>
+                
+                      <li>  <a href="" class="btn btn-dark">Results</a></li>
+                      <li> <a href="" class="btn btn-dark">Photograpgh</a></li>
+                      <li> <a href="" class="btn btn-dark">Value</a></li>
+                      <li> <a href="" class="btn btn-dark">Interest Bill</a></li>
+                      <li><a href="" class="btn btn-dark">Cash Flow</a></li>
 
+                
+                    </ul>
                     <br>
 
                     {% for image in image %}

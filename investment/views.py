@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from .models import *
 from .forms import *
@@ -107,8 +107,17 @@ def add_property(request):
         'property_form': property_form
     }
     return render(request, 'users/addproperty.html', context=context)
-
-
+def edit_property(request, pk):
+    property = get_object_or_404(Property, pk=pk)
+    if request.method == 'POST':
+        form = EditpropertyForm(request.POST, instance=property)
+        if form.is_valid():
+            form.save()
+            return redirect('propertyitem',pk=pk)
+        # fix the redirect.
+    else:
+        form = EditpropertyForm(instance=property)
+    return render(request, 'users/editproperty.html', {'form': form})
 @login_required(login_url='login')
 def addimages(request):
     property = Property.objects.all()
@@ -142,3 +151,33 @@ def view_one_property(request, id):
         'image': image
     }
     return render(request, 'users/propertypage.html', context=context)
+#continue Thursday
+def interestview(request):
+    if request.method == 'POST':
+        form = InterestRateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = InterestRateForm()
+    return render(request, 'users/interestrates.html', {'form': form})
+def inflationview(request):
+    if request.method == 'POST':
+        myform = InflationRateForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = InterestRateForm()
+    return render(request, 'users/inflationrates.html', {'myform': myform})
+# def interestview(request):
+#     property = Property.objects.all()
+
+#     if request.method == 'POST':
+#         data = request.POST
+    
+#             return redirect('home')
+
+#     context = {'property': property}
+
+#     return render(request, 'users/interestrates.html', context=context)

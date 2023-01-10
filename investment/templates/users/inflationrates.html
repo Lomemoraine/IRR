@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <h2>Inflation Rates</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ myform.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <div class="col-3"></div>
+</div>
+
+{% endblock%}
+{#form is diplaying incorrectly#}

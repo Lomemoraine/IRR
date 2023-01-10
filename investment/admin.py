@@ -5,8 +5,16 @@ from .models import *
 admin.site.register(CustomUser)
 admin.site.register(Profile)
 admin.site.register(Country)
-admin.site.register(Location)
+admin.site.register(City)
 admin.site.register(Property)
 admin.site.register(PropertyType)
 admin.site.register(OtherCosts)
 admin.site.register(Images)
+admin.site.register(InterestRates)
+admin.site.register(InflationRates)
+admin.site.register(Depreciation)
+admin.site.register(CapitalGrowthRates)
+admin.site.register(MonthlyExpense)
+
+
+

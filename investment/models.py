@@ -84,7 +84,7 @@ class Country(models.Model):
         return self.name
 
 
-class Location(models.Model):
+class City(models.Model):
     country = models.ForeignKey(Country, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=252, null=True)
 
@@ -96,7 +96,7 @@ class OtherCosts(models.Model):
     CHOICES = (
         ('Property Taxes', 'Property Taxes'),
         ('Repairs & Utilities', 'Repairs & Utilities'),
-        ('Mortgage Insurance', 'Mortgage Insurance')
+        ('Mortgage Insurance', 'Mortgage Insurance'),
     )
     other_costs = models.CharField(max_length=255, null=True, choices=CHOICES)
     amount = models.IntegerField(null=True, max_length=255)
@@ -111,11 +111,11 @@ class Property(models.Model):
     purchase_date = models.DateField(auto_now_add=True, null=True)
     purchase_price = models.FloatField(null=True)
     deposit = models.FloatField(null=True)
-    location = models.ForeignKey(Location, null=True, on_delete=models.CASCADE)
+    City = models.ForeignKey(City, null=True, on_delete=models.CASCADE)
     other_cost = models.ForeignKey(OtherCosts, null=True, on_delete=models.CASCADE)
     bond_value = models.IntegerField(max_length=252, null=True)
     notes = models.TextField(max_length=1260, null=True)
-
+    
     def __str__(self):
         return self.name
 
@@ -160,3 +160,178 @@ class Images(models.Model):
     image = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
                                     '/x3mgnqmbi73lten4ewzv.png')
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+#contination models
+class InterestRates(models.Model):
+
+    type = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+        ('Interest & capital', 'Interest & capital'),
+        ('Interest Only', 'Interest Only'),
+       
+    ))
+    rate = models.IntegerField(null=True,max_length=255,default=10)
+    averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
+    term = models.IntegerField(null=True,max_length=255)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.term
+    
+class InflationRates(models.Model):
+
+    rate = models.IntegerField(null=True,max_length=255,default=8)
+    averageinflationrate = models.FloatField(('Average Inflation Rate (%)'),null=True,default=8)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.rate
+    
+
+class Depreciation(models.Model):
+
+    type = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+        ('Straight', 'Straight'),
+        ('Diminishing', 'Diminishing'),
+       
+    ))
+    description = models.CharField(null=True,max_length=255)
+    value = models.FloatField(null=True)
+    rate = models.IntegerField(('Rate (%)'),null=True,max_length=255,default=8)
+    years = models.IntegerField(null=True,max_length=255)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.rate
+class CapitalGrowthRates(models.Model):
+
+    rate = models.IntegerField(null=True,max_length=255,default=8)
+    averagecapitalGrowthrate = models.FloatField(('Average Capital Growth Rate (%)'),null=False,default=8)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.rate
+class MonthlyExpense(models.Model):
+    
+    description = models.CharField(max_length=255, null=True)
+    value = models.IntegerField(null=True, max_length=255)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+
+    def __str__(self):
+        return self.description
+    
+class OwnRenovations(models.Model):
+    
+    incomeperyear = models.FloatField(('Income per year'),max_length=255, null=True,default=0)
+    amount = models.IntegerField(null=True, max_length=255,default=0)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+
+    def __str__(self):
+        return self.amount  
+class LoanRenovations(models.Model):
+    
+    incomeperyear = models.FloatField(('Income per year'),max_length=255, null=True,default=0)
+    amount = models.IntegerField(null=True, max_length=255,default=0)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+
+    def __str__(self):
+        return self.amount  
+class repairs_maintenance(models.Model):
+    amount = models.IntegerField(null=True, max_length=255,default=0)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+
+    def __str__(self):
+        return self.amount  
+class specialexpenses(models.Model):
+    
+    amount = models.IntegerField(null=True, max_length=255,default=0)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+
+    def __str__(self):
+        return self.amount  
+class taxoptions(models.Model):
+
+    taxationcapacity = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+        ('Personal', 'Personal'),
+        ('close corporation', 'close corporation'),
+        ('private company', 'private company'),
+        ('trust', 'trust'),
+       
+    ))
+    method = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+        ('0%', '0%'),
+        ('Marginal', 'Marginal'),
+        ('Use Tax Table', 'Use Tax Table'),
+        ('Custom', 'Custom'),
+       
+    ))
+    
+    taxrate = models.FloatField(('Tax Rate(%)'),null=True)
+    annualtaxableincome = models.FloatField(('Annual Taxableincome(%)'),null=False)
+    maximumtaxrate = models.IntegerField(('Maximum Tax Rate (%)'),null=False,max_length=255)
+    income = models.IntegerField(null=True,max_length=255)
+    rate = models.IntegerField(null=True,max_length=255)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.rate
+class managementexpenses(models.Model):
+    
+    vacancyrate = models.IntegerField(('Vacancy Rate (%)'),null=True, max_length=255,default=0)
+    managementfee = models.IntegerField(('Management Fee (%)'),null=True, max_length=255,default=0)
+    managementfeeperyear = models.IntegerField(('Management Fee per Year '))
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+
+    def __str__(self):
+        return self.vacancyrate
+    
+class Additionalloanpayments(models.Model):
+    
+    amount = models.IntegerField(null=True, max_length=255,default=0)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    
+
+    def __str__(self):
+        return self.amount
+class Capitalincome(models.Model):
+    
+    amount = models.IntegerField(null=True, max_length=255,default=0)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    
+
+    def __str__(self):
+        return self.amount
+
+class RentalIncome(models.Model):
+
+    rentalincreasetype = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+        ('capital', 'capital'),
+        ('inflation', 'inflation'),
+        ('percent', 'percent'),
+       
+    ))
+    increasepercentage = models.IntegerField(('Increase Percentage (%)'),max_length=255)
+    averagerentalincomepermonth = models.FloatField(('Average Rental Income Per Month'),null=True)
+    amount = models.IntegerField(('Amount'),null=True,max_length=255)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.rentalincreasetype
+    
+class comparison(models.Model):
+    description = models.CharField(max_length=255, null=True)
+    rate = models.IntegerField(('Rate (%)'),null=True, max_length=255,default=0)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
+    
+
+    def __str__(self):
+        return self.description
+  

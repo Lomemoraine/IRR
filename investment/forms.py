@@ -36,7 +36,7 @@ class ProfileUpdateForm(forms.ModelForm):
 class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
-        fields = ['name', 'property_type', 'purchase_price', 'deposit', 'location',
+        fields = ['name', 'property_type', 'purchase_price', 'deposit', 'City',
                   'bond_value', 'notes']
         widgets = {
             'name': widgets.Input(attrs={
@@ -59,10 +59,10 @@ class PropertyForm(forms.ModelForm):
                 'placeholder': '300000',
                 'id': 'deposit'
             }),
-            'location': widgets.Select(attrs={
+            'City': widgets.Select(attrs={
                 'class': 'form-control',
                 'placeholder': 'Select Location',
-                'id': 'location'
+                'id': 'City'
             }),
             'bond_value': widgets.Input(attrs={
                 'class': 'form-control',
@@ -75,3 +75,19 @@ class PropertyForm(forms.ModelForm):
                 'id': 'notes'
             }),
         }
+        ##pick up from here on wednesday
+class EditpropertyForm(forms.ModelForm):
+     class Meta:
+        model = Property
+        fields = ['name', 'property_type', 'purchase_price', 'deposit', 'City',
+                  'bond_value', 'notes']
+        
+##thrusday
+class InterestRateForm(forms.ModelForm):
+    class Meta:
+        model = InterestRates
+        fields = ['type', 'rate', 'averageinterestrate','term']
+class InflationRateForm(forms.ModelForm):
+    class Meta:
+        model = InflationRates
+        fields = ['rate','averageinflationrate']
