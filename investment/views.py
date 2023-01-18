@@ -89,17 +89,17 @@ def add_property(request):
     if request.method == 'POST':
         property_form = PropertyForm(request.POST)
         if property_form.is_valid():
-            new_property = property_form.save()
-            Property.objects.create(
-                name=new_property.name,
-                property_type=new_property.property_type,
-                purchase_price=new_property.purchase_price,
-                deposit=new_property.deposit,
-                location=new_property.location,
-                other_cost=new_property.other_cost,
-                bond_value=new_property.bond_value,
-                notes=new_property.notes
-            )
+            property_form.save()
+            # Property.objects.create(
+            #     name=new_property.name,
+            #     property_type=new_property.property_type,
+            #     purchase_price=new_property.purchase_price,
+            #     deposit=new_property.deposit,
+            #     City=new_property.City,
+            #     other_cost=new_property.other_cost,
+            #     bond_value=new_property.bond_value,
+            #     notes=new_property.notes
+            # )
 
             return redirect('addimages')
 

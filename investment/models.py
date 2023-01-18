@@ -118,6 +118,10 @@ class Property(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def save_property(self):
+        """Add property to database"""
+        self.save()
 
     @property
     def market_value(self):

@@ -3,7 +3,8 @@
 {% block content %}
 
 <section class="p-6 dark:bg-gray-800 dark:text-gray-50">
-    <form novalidate="" action="" class="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid">
+    <form novalidate="" action="" method="POST" class="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid">
+        {% csrf_token %}
         <fieldset class="grid grid-cols-4 gap-6 p-6 rounded-md shadow-sm dark:bg-gray-900">
             <div class="space-y-2 col-span-full lg:col-span-1">
                 <h2 class="font-medium dark:text-gray-200">Add Property</h2>
