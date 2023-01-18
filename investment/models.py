@@ -7,6 +7,8 @@ from cloudinary.models import CloudinaryField
 import numpy_financial as npf
 
 
+
+
 class CustomUserManager(BaseUserManager):
 
     def _create_user(self, email, password, **extra_fields):
