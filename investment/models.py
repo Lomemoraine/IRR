@@ -133,12 +133,39 @@ class Property(models.Model):
         for year in range(years):
             value += value * (1+rate)
         return value
+    #property = Property.objects.get(id=1)
+    # property_value = property.determine_property_value(5)
+    # print(property_value)
     #determine loan amount
-    def determine_outstanding_loan(self):
-        interest_rate = self.InterestRates.rate/100
+    def determine_outstanding_loan_per_year(self):
+        interest_rate = self.InterestRates.averageinterestrate/100
         term = self.InterestRates.term
-        outstanding_loan = self.bond_value * (1 + interest_rate)**term
-        return outstanding_loan
+        outstanding_loan_per_year = []
+        for year in range(1, term + 1):
+            outstanding_loan = self.bond_value * (1 + interest_rate)**year
+            outstanding_loan_per_year.append(outstanding_loan)
+        return outstanding_loan_per_year
+    def determine_equity_per_year(self):
+        property_value_per_year = self.determine_property_value()
+        outstanding_loan_per_year = self.determine_outstanding_loan_per_year()
+        equity_per_year = []
+        for i in range(len(property_value_per_year)):
+            equity = property_value_per_year[i] - outstanding_loan_per_year[i]
+            equity_per_year.append(equity)
+            return equity_per_year
+    # def determine_equity(self):
+    #     property_value = self.determine_property_value()
+    #     loan_amount = self.determine_outstanding_loan_per_year()
+    #     equity = []
+    #     return equity
+    # def determine_outstanding_loan(self):
+    #     interest_rate = self.InterestRates.rate/100
+    #     term = self.InterestRates.term
+    #     outstanding_loan = self.bond_value * (1 + interest_rate)**term
+    #     return outstanding_loan
+    #property = Property.objects.get(id=1)
+    # outstanding_loan = property.determine_outstanding_loan()
+    # print(outstanding_loan)
     @property
     def market_value(self):
         # assumption -> market value is based on depreciation
