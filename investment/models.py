@@ -163,6 +163,7 @@ class Property(models.Model):
             interest = outstanding_loan_per_year[year-1] * interest_rate
             loan_interest.append(interest)
         return loan_interest
+    #use total loan payment function instead of ousttanding loan
     def determine_loan_principal(self):
         interest_rate = self.InterestRates.rate/100
         term = self.InterestRates.term
@@ -173,6 +174,20 @@ class Property(models.Model):
             principal = outstanding_loan_per_year[year-1] - loan_interest[year-1]
             loan_principal.append(principal)
         return loan_principal
+    #function to calculate the total loan amount
+    def determine_total_loan_payment(self, interest_change_year=None, new_interest_rate=None):
+        bond_price = self.bond_value
+        interest_rate = self.InterestRates.rate/100
+        term = self.InterestRates.term
+        
+        if interest_change_year is None or new_interest_rate is None:
+            total_loan_payment = bond_price * interest_rate / (1 - (1 + interest_rate)**term)
+        else:
+            if interest_change_year > term:
+                raise ValueError("Interest change year cannot be greater than loan term.")
+            new_interest_rate = new_interest_rate/100
+            total_loan_payment = bond_price * interest_rate / (1 - (1 + interest_rate)**interest_change_year) + bond_price * (1 + interest_rate)**(-interest_change_year) * new_interest_rate / (1 - (1 + new_interest_rate)**(term - interest_change_year))
+        return total_loan_payment
     # def determine_equity(self):
     #     property_value = self.determine_property_value()
     #     loan_amount = self.determine_outstanding_loan_per_year()
