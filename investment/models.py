@@ -153,6 +153,26 @@ class Property(models.Model):
             equity = property_value_per_year[i] - outstanding_loan_per_year[i]
             equity_per_year.append(equity)
             return equity_per_year
+    #determine loan interest
+    def determine_loan_interest(self):
+        interest_rate = self.InterestRates.rate/100
+        term = self.InterestRates.term
+        outstanding_loan_per_year = self.determine_outstanding_loan_per_year()
+        loan_interest = []
+        for year in range(1, term + 1):
+            interest = outstanding_loan_per_year[year-1] * interest_rate
+            loan_interest.append(interest)
+        return loan_interest
+    def determine_loan_principal(self):
+        interest_rate = self.InterestRates.rate/100
+        term = self.InterestRates.term
+        outstanding_loan_per_year = self.determine_outstanding_loan_per_year()
+        loan_interest = self.determine_loan_interest()
+        loan_principal = []
+        for year in range(1, term + 1):
+            principal = outstanding_loan_per_year[year-1] - loan_interest[year-1]
+            loan_principal.append(principal)
+        return loan_principal
     # def determine_equity(self):
     #     property_value = self.determine_property_value()
     #     loan_amount = self.determine_outstanding_loan_per_year()
