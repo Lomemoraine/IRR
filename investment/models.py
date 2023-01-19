@@ -117,6 +117,8 @@ class Property(models.Model):
     other_cost = models.ForeignKey(OtherCosts, null=True, on_delete=models.CASCADE)
     bond_value = models.IntegerField(max_length=252, null=True)
     notes = models.TextField(max_length=1260, null=True)
+    CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=False,on_delete=models.CASCADE)
+    InterestRates = models.ForeignKey(InterestRates,null=False,on_delete=models.CASCADE)
     
     def __str__(self):
         return self.name
@@ -124,7 +126,19 @@ class Property(models.Model):
     def save_property(self):
         """Add property to database"""
         self.save()
-
+    #determine the property value
+    def determine_property_value(self, years):
+        value = self.purchase_price
+        rate = self.CapitalGrowthRates
+        for year in range(years):
+            value += value * (1+rate)
+        return value
+    #determine loan amount
+    def determine_outstanding_loan(self):
+        interest_rate = self.InterestRates.rate/100
+        term = self.InterestRates.term
+        outstanding_loan = self.bond_value * (1 + interest_rate)**term
+        return outstanding_loan
     @property
     def market_value(self):
         # assumption -> market value is based on depreciation
@@ -177,7 +191,7 @@ class InterestRates(models.Model):
     ))
     rate = models.IntegerField(null=True,max_length=255,default=10)
     averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
-    term = models.IntegerField(null=True,max_length=255)
+    term = models.IntegerField(null=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
@@ -210,12 +224,13 @@ class Depreciation(models.Model):
         return self.rate
 class CapitalGrowthRates(models.Model):
 
-    rate = models.IntegerField(null=True,max_length=255,default=8)
+    rate = models.IntegerField(null=True,default=8)
     averagecapitalGrowthrate = models.FloatField(('Average Capital Growth Rate (%)'),null=False,default=8)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
         return self.rate
+    
 class MonthlyExpense(models.Model):
     
     description = models.CharField(max_length=255, null=True)
