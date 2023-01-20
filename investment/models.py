@@ -120,6 +120,11 @@ class Property(models.Model):
     CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=False,on_delete=models.CASCADE)
     InterestRates = models.ForeignKey(InterestRates,null=False,on_delete=models.CASCADE)
     MonthlyExpense = models.ForeignKey(MonthlyExpense,null=True,on_delete=models.CASCADE)
+    OwnRenovations = models.ForeignKey(OwnRenovations,null=True,on_delete=models.CASCADE)
+    LoanRenovations = models.ForeignKey(LoanRenovations,null=True,on_delete=models.CASCADE)
+    specialexpenses= models.ForeignKey(specialexpenses,null=True,on_delete=models.CASCADE)
+    repairs_maintenance= models.ForeignKey(repairs_maintenance,null=True,on_delete=models.CASCADE)
+    
     
     def __str__(self):
         return self.name
@@ -198,7 +203,18 @@ class Property(models.Model):
             expenses = monthly_expense * 12
             property_expenses_per_year.append(expenses)
         return property_expenses_per_year
-    
+    #determine the total property expenses per year
+    def determine_total_property_expenses_per_year(self, years=30):
+        property_expenses_per_year = self.determine_property_expenses_per_year(years)
+        special_expenses = self.specialexpenses.amount
+        ownrenovations = self.OwnRenovations.amount
+        LoanRenovations = self.LoanRenovations.amount
+        repairs_maintenance = self.repairs_maintenance.amount
+        total_property_expenses_per_year = []
+        for year in range(1, years+1):
+            expenses = special_expenses[year-1] + property_expenses_per_year[year-1] + LoanRenovations[year-1]+ ownrenovations[year-1] + repairs_maintenance[year-1]
+            total_property_expenses_per_year.append(expenses)
+        return total_property_expenses_per_year
     # def determine_equity(self):
     #     property_value = self.determine_property_value()
     #     loan_amount = self.determine_outstanding_loan_per_year()
