@@ -119,6 +119,7 @@ class Property(models.Model):
     notes = models.TextField(max_length=1260, null=True)
     CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=False,on_delete=models.CASCADE)
     InterestRates = models.ForeignKey(InterestRates,null=False,on_delete=models.CASCADE)
+    MonthlyExpense = models.ForeignKey(MonthlyExpense,null=True,on_delete=models.CASCADE)
     
     def __str__(self):
         return self.name
@@ -188,6 +189,16 @@ class Property(models.Model):
             new_interest_rate = new_interest_rate/100
             total_loan_payment = bond_price * interest_rate / (1 - (1 + interest_rate)**interest_change_year) + bond_price * (1 + interest_rate)**(-interest_change_year) * new_interest_rate / (1 - (1 + new_interest_rate)**(term - interest_change_year))
         return total_loan_payment
+    #code to determine property expenses.
+    #call this on an instance property_expenses = property_object.determine_property_expenses()
+    def determine_property_expenses_per_year(self, years=30):
+        monthly_expense = self.MonthlyExpense.value
+        property_expenses_per_year = []
+        for year in range(1, years+1):
+            expenses = monthly_expense * 12
+            property_expenses_per_year.append(expenses)
+        return property_expenses_per_year
+    
     # def determine_equity(self):
     #     property_value = self.determine_property_value()
     #     loan_amount = self.determine_outstanding_loan_per_year()
@@ -382,6 +393,11 @@ class Additionalloanpayments(models.Model):
 
     def __str__(self):
         return self.amount
+    def save_additionalloanpaymens(self):
+        """Add loans to database"""
+        self.save()
+
+    
 class Capitalincome(models.Model):
     
     amount = models.IntegerField(null=True, max_length=255,default=0)
