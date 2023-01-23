@@ -317,12 +317,14 @@ class Property(models.Model):
         """Add property to database"""
         self.save()
     #determine the property value
-    def determine_property_value(self, years):
-        value = self.purchase_price
-        rate = self.CapitalGrowthRates.rate
-        for year in range(years):
-            value += value * (1+rate)
-        return value
+    def determine_property_value(self, years=30):
+        purchase_price = self.purchase_price
+        capital_growth_rate = self.CapitalGrowthRates.rate
+        property_value_list = []
+        for year in range(1, years+1):
+            property_value = purchase_price * (1 + capital_growth_rate/100)**year
+            property_value_list.append(property_value)
+        return property_value_list
     #property = Property.objects.get(id=1)
     # property_value = property.determine_property_value(5)
     # print(property_value)
