@@ -18,6 +18,7 @@ django-crispy-forms = "*"
 django-tailwind = "*"
 npm = "*"
 crispy-tailwind = "*"
+scipy = "*"
 
 [dev-packages]
 

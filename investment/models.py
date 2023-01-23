@@ -4,7 +4,10 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 from cloudinary.models import CloudinaryField
+# from scipy.optimize import root
 import numpy_financial as npf
+
+
 
 
 
@@ -152,7 +155,7 @@ class CapitalGrowthRates(models.Model):
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
-        return self.rate
+        return str(self.rate)
     
 class MonthlyExpense(models.Model):
     
@@ -295,16 +298,16 @@ class Property(models.Model):
     other_cost = models.ForeignKey(OtherCosts, null=True, on_delete=models.CASCADE)
     bond_value = models.IntegerField(max_length=252, null=True)
     notes = models.TextField(max_length=1260, null=True)
-    CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=False,on_delete=models.CASCADE,default=0.0)
-    InterestRates = models.ForeignKey(InterestRates,null=False,on_delete=models.CASCADE,default=0.0)
-    MonthlyExpense = models.ForeignKey(MonthlyExpense,null=True,on_delete=models.CASCADE,default=0.0)
-    OwnRenovations = models.ForeignKey(OwnRenovations,null=True,on_delete=models.CASCADE,default=0.0)
-    LoanRenovations = models.ForeignKey(LoanRenovations,null=True,on_delete=models.CASCADE,default=0.0)
-    specialexpenses= models.ForeignKey(specialexpenses,null=True,on_delete=models.CASCADE,default=0.0)
-    repairs_maintenance= models.ForeignKey(repairs_maintenance,null=True,on_delete=models.CASCADE,default=0.0)
-    Capitalincome = models.ForeignKey(Capitalincome,null=True,on_delete=models.CASCADE,default=0.0)
-    RentalIncome = models.ForeignKey(RentalIncome,null=True,on_delete=models.CASCADE,default=0.0)
-    managementexpenses = models.ForeignKey(managementexpenses,null=True,on_delete=models.CASCADE,default=0.0)
+    CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=True,on_delete=models.CASCADE, blank=True)
+    InterestRates = models.ForeignKey(InterestRates,null=True,on_delete=models.CASCADE)
+    MonthlyExpense = models.ForeignKey(MonthlyExpense,null=True,on_delete=models.CASCADE)
+    OwnRenovations = models.ForeignKey(OwnRenovations,null=True,on_delete=models.CASCADE)
+    LoanRenovations = models.ForeignKey(LoanRenovations,null=True,on_delete=models.CASCADE)
+    specialexpenses= models.ForeignKey(specialexpenses,null=True,on_delete=models.CASCADE)
+    repairs_maintenance= models.ForeignKey(repairs_maintenance,null=True,on_delete=models.CASCADE)
+    Capitalincome = models.ForeignKey(Capitalincome,null=True,on_delete=models.CASCADE)
+    RentalIncome = models.ForeignKey(RentalIncome,null=True,on_delete=models.CASCADE)
+    managementexpenses = models.ForeignKey(managementexpenses,null=True,on_delete=models.CASCADE)
     
     
     def __str__(self):
@@ -508,8 +511,30 @@ class Property(models.Model):
             cash_on_cash = (after_tax_cashflow[year-1] / initial_cash_outflow[year-1]) * 100
             after_tax_cash_on_cash.append(cash_on_cash)
         return after_tax_cash_on_cash
+    
+# def determine_irr(self, years=30):
+#     after_tax_cashflow = self.determine_after_tax_cashflow(years)
+#     initial_capital_outflow_per_year = self.determine_initial_capital_outflow_per_year(years)
+#     irr_list = []
+#     for year in range(1, years+1):
+#         cashflows = after_tax_cashflow[:year] + [-initial_capital_outflow_per_year[year-1]]
+#         irr = root(lambda r: sum([cf/(1+r)**(year-i) for i, cf in enumerate(cashflows)]), 0.1).x[0]
+#         irr_list.append(irr)
+#     return irr_list
 
+    #from scipy.optimize import root_scalar
 
+# def determine_irr(self, years=30):
+#     after_tax_cashflow = self.determine_after_tax_cashflow(years)
+#     initial_outflow = self.determine_initial_capital_outflow_per_year(years)[0]
+#     def net_present_value(rate):
+#         npv = 0
+#         for i in range(years):
+#             npv += after_tax_cashflow[i] / (1 + rate)**(i+1)
+#         npv -= initial_outflow
+#         return npv
+#     irr = root_scalar(net_present_value, bracket=[-1, 1]).root
+#     return irr
     # def determine_equity(self):
     #     property_value = self.determine_property_value()
     #     loan_amount = self.determine_outstanding_loan_per_year()
