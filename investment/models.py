@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import date
+from datetime import date,timedelta
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
@@ -295,16 +295,16 @@ class Property(models.Model):
     other_cost = models.ForeignKey(OtherCosts, null=True, on_delete=models.CASCADE)
     bond_value = models.IntegerField(max_length=252, null=True)
     notes = models.TextField(max_length=1260, null=True)
-    CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=False,on_delete=models.CASCADE)
-    InterestRates = models.ForeignKey(InterestRates,null=False,on_delete=models.CASCADE)
-    MonthlyExpense = models.ForeignKey(MonthlyExpense,null=True,on_delete=models.CASCADE)
-    OwnRenovations = models.ForeignKey(OwnRenovations,null=True,on_delete=models.CASCADE)
-    LoanRenovations = models.ForeignKey(LoanRenovations,null=True,on_delete=models.CASCADE)
-    specialexpenses= models.ForeignKey(specialexpenses,null=True,on_delete=models.CASCADE)
-    repairs_maintenance= models.ForeignKey(repairs_maintenance,null=True,on_delete=models.CASCADE)
-    Capitalincome = models.ForeignKey(Capitalincome,null=True,on_delete=models.CASCADE)
-    RentalIncome = models.ForeignKey(RentalIncome,null=True,on_delete=models.CASCADE)
-    managementexpenses = models.ForeignKey(managementexpenses,null=True,on_delete=models.CASCADE)
+    CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=False,on_delete=models.CASCADE,default=0.0)
+    InterestRates = models.ForeignKey(InterestRates,null=False,on_delete=models.CASCADE,default=0.0)
+    MonthlyExpense = models.ForeignKey(MonthlyExpense,null=True,on_delete=models.CASCADE,default=0.0)
+    OwnRenovations = models.ForeignKey(OwnRenovations,null=True,on_delete=models.CASCADE,default=0.0)
+    LoanRenovations = models.ForeignKey(LoanRenovations,null=True,on_delete=models.CASCADE,default=0.0)
+    specialexpenses= models.ForeignKey(specialexpenses,null=True,on_delete=models.CASCADE,default=0.0)
+    repairs_maintenance= models.ForeignKey(repairs_maintenance,null=True,on_delete=models.CASCADE,default=0.0)
+    Capitalincome = models.ForeignKey(Capitalincome,null=True,on_delete=models.CASCADE,default=0.0)
+    RentalIncome = models.ForeignKey(RentalIncome,null=True,on_delete=models.CASCADE,default=0.0)
+    managementexpenses = models.ForeignKey(managementexpenses,null=True,on_delete=models.CASCADE,default=0.0)
     
     
     def __str__(self):
@@ -441,7 +441,75 @@ class Property(models.Model):
             income = rental_income - management_expenses
             gross_rental_income.append(income)
         return gross_rental_income
-    
+    #depreciation
+    def calculate_depreciation(self, depreciation_type='straight'):
+        if depreciation_type == 'straight':
+            rate = self.Depreciation.rate/100
+            years = self.Depreciation.years
+            purchase_date = self.purchase_date
+            purchase_price = self.purchase_price
+            
+            annual_depreciation = purchase_price * rate
+            # diminishing annual_depreciation = purchase_price*(rate*(years-year+1))/years
+            total_depreciation = annual_depreciation * years
+            remaining_value = purchase_price - total_depreciation
+            
+            depreciation_schedule = []
+            for year in range(1, years+1):
+                current_date = purchase_date + timedelta(days=365*year)
+                current_depreciation = annual_depreciation*year
+                depreciation_schedule.append({
+                    'year': year,
+                    'date': current_date,
+                    'depreciation': current_depreciation,
+                    'remaining_value': remaining_value
+                })
+            return depreciation_schedule
+        #taxable amount
+    def calculate_taxable_amount(self, years=30):
+        gross_rental_income = self.determine_gross_rental_income(years)
+        taxable_deductions = self.determine_taxable_deductions(years)
+        taxable_amount = []
+        for year in range(1, years+1):
+            amount = gross_rental_income[year-1] - taxable_deductions[year-1]
+            taxable_amount.append(amount)
+        return taxable_amount
+    #sample tax-credt formula
+    def determine_tax_credits(self, years=30):
+        taxable_deductions = self.determine_taxable_deductions(years)
+        tax_credits = []
+        for year in range(1, years+1):
+            credit = taxable_deductions[year-1] * 0.3
+            tax_credits.append(credit)
+        return tax_credits
+    #after tax cash flow
+    def determine_after_tax_cashflow(self, years=30):
+        pre_tax_cashflow = self.determine_pre_tax_cashflow(years)
+        tax_credits = self.determine_tax_credits(years)
+        after_tax_cashflow = []
+        for year in range(1, years+1):
+            cashflow = pre_tax_cashflow[year-1] - tax_credits[year-1]
+            after_tax_cashflow.append(cashflow)
+        return after_tax_cashflow
+    #income per month
+    def determine_income_per_month(self, years=30):
+        after_tax_cashflow = self.determine_after_tax_cashflow(years)
+        income_per_month = []
+        for year in range(1, years+1):
+            income = after_tax_cashflow[year-1] / 12
+            income_per_month.append(income)
+        return income_per_month
+    #after cash on cash
+    def determine_after_tax_cash_on_cash(self, years=30):
+        after_tax_cashflow = self.determine_after_tax_cashflow(years)
+        initial_cash_outflow = self.determine_initial_capital_outflow_per_year(years)
+        after_tax_cash_on_cash = []
+        for year in range(1, years+1):
+            cash_on_cash = (after_tax_cashflow[year-1] / initial_cash_outflow[year-1]) * 100
+            after_tax_cash_on_cash.append(cash_on_cash)
+        return after_tax_cash_on_cash
+
+
     # def determine_equity(self):
     #     property_value = self.determine_property_value()
     #     loan_amount = self.determine_outstanding_loan_per_year()
@@ -495,6 +563,7 @@ class Images(models.Model):
     image = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
                                     '/x3mgnqmbi73lten4ewzv.png')
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    
     
 #contination models
 # class InterestRates(models.Model):

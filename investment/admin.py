@@ -14,7 +14,17 @@ admin.site.register(InterestRates)
 admin.site.register(InflationRates)
 admin.site.register(Depreciation)
 admin.site.register(CapitalGrowthRates)
+admin.site.register(specialexpenses)
 admin.site.register(MonthlyExpense)
+admin.site.register(OwnRenovations)
+admin.site.register(LoanRenovations)
+admin.site.register(repairs_maintenance)
+admin.site.register(managementexpenses)
+admin.site.register(taxoptions)
+admin.site.register(Additionalloanpayments)
+admin.site.register(Capitalincome)
+admin.site.register(RentalIncome)
+admin.site.register(comparison)
 
 
 
