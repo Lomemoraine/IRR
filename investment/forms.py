@@ -86,8 +86,18 @@ class EditpropertyForm(forms.ModelForm):
 class InterestRateForm(forms.ModelForm):
     class Meta:
         model = InterestRates
-        fields = ['type', 'rate', 'averageinterestrate','term']
+        fields = ['type', 'rate', 'averageinterestrate','term','years']
 class InflationRateForm(forms.ModelForm):
     class Meta:
         model = InflationRates
-        fields = ['rate','averageinflationrate']
+        fields = ['rate','averageinflationrate','years']
+class DepreciationForm(forms.ModelForm):
+    class Meta:
+        model = Depreciation
+        fields = ['description','type','value','rate','years']
+class CapitalGrowthRatesForm(forms.ModelForm):
+    class Meta:
+        model =  CapitalGrowthRates
+        fields = ['averagecapitalGrowthrate','rate','years']
+        
+       
