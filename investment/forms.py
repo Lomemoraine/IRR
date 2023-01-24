@@ -86,11 +86,11 @@ class EditpropertyForm(forms.ModelForm):
 class InterestRateForm(forms.ModelForm):
     class Meta:
         model = InterestRates
-        fields = ['type', 'rate', 'averageinterestrate','term','years']
+        fields = ['type', 'rate', 'averageinterestrate','term']
 class InflationRateForm(forms.ModelForm):
     class Meta:
         model = InflationRates
-        fields = ['rate','averageinflationrate','years']
+        fields = ['rate','averageinflationrate']
 class DepreciationForm(forms.ModelForm):
     class Meta:
         model = Depreciation
@@ -98,6 +98,52 @@ class DepreciationForm(forms.ModelForm):
 class CapitalGrowthRatesForm(forms.ModelForm):
     class Meta:
         model =  CapitalGrowthRates
-        fields = ['averagecapitalGrowthrate','rate','years']
+        fields = ['averagecapitalGrowthrate','rate']
+class MonthlyExpenseForm(forms.ModelForm):
+    class Meta:
+        model =   MonthlyExpense
+        fields = ['description','value']
+class OwnRenovationsForm(forms.ModelForm):
+    class Meta:
+        model =   OwnRenovations
+        fields = ['incomeperyear','amount']
+class LoanRenovationsForm(forms.ModelForm):
+    class Meta:
+        model =   LoanRenovations
+        fields = ['incomeperyear','amount']
+class repairs_maintenanceForm(forms.ModelForm):
+    class Meta:
+        model =   repairs_maintenance
+        fields = ['amount']
+
+class specialexpensesForm(forms.ModelForm):
+    class Meta:
+        model =  specialexpenses
+        fields = ['amount']
         
-       
+class taxoptionsForm(forms.ModelForm):
+    class Meta:
+        model =  taxoptions
+        fields = ['taxationcapacity','method ','taxrate','annualtaxableincome','maximumtaxrate ','income','rate']
+        
+class managementexpensesForm(forms.ModelForm):
+    class Meta:
+        model =  managementexpenses
+        fields = ['vacancyrate','managementfee','managementfeeperyear']        
+class AdditionalloanpaymentsForm(forms.ModelForm):
+    class Meta:
+        model =  Additionalloanpayments
+        fields = ['amount']
+class CapitalincomeForm(forms.ModelForm):
+    class Meta:
+        model =  Capitalincome
+        fields = ['amount']        
+
+class RentalIncomeForm(forms.ModelForm):
+    class Meta:
+        model =  RentalIncome
+        fields = ['rentalincreasetype','increasepercentage','averagerentalincomepermonth','amount','']        
+class comparisonForm(forms.ModelForm):
+    class Meta:
+        model =  comparison
+        fields = ['description','rate']        

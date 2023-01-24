@@ -118,7 +118,7 @@ class InterestRates(models.Model):
     rate = models.IntegerField(null=True,max_length=255,default=10)
     averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
     term = models.IntegerField(null=True)
-    years = models.IntegerField(null=True,editable=False)
+    # years = models.IntegerField(null=True,editable=False)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
@@ -128,7 +128,7 @@ class InflationRates(models.Model):
 
     rate = models.IntegerField(null=True,max_length=255,default=8)
     averageinflationrate = models.FloatField(('Average Inflation Rate (%)'),null=True,default=8)
-    years = models.IntegerField(null=True,editable=False)
+    # years = models.IntegerField(null=True,editable=False)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
@@ -265,7 +265,7 @@ class Capitalincome(models.Model):
 
 class RentalIncome(models.Model):
 
-    rentalincreasetype = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+    rentalincreasetype = models.CharField(('Type'),null=True,max_length=50,default='Interest & capital', choices=(
         ('capital', 'capital'),
         ('inflation', 'inflation'),
         ('percent', 'percent'),
@@ -298,7 +298,7 @@ class Property(models.Model):
     deposit = models.FloatField(null=True)
     City = models.ForeignKey(City, null=True, on_delete=models.CASCADE)
     other_cost = models.ForeignKey(OtherCosts, null=True, on_delete=models.CASCADE)
-    bond_value = models.IntegerField(editable=False)
+    bond_value = models.IntegerField(null=True)
     notes = models.TextField(max_length=1260, null=True)
     CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=True,on_delete=models.CASCADE, blank=True)
     InterestRates = models.ForeignKey(InterestRates,null=True,on_delete=models.CASCADE)
@@ -315,13 +315,6 @@ class Property(models.Model):
     def __str__(self):
         return self.name
     
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.bond_value= self.bond_value()
-    def bond_value(self):
-        bond_value = self.purchase_price -self.deposit
-        return bond_value
-        
     
     def save_property(self):
         """Add property to database"""
