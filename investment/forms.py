@@ -84,10 +84,20 @@ class EditpropertyForm(forms.ModelForm):
         
 ##thrusday
 class InterestRateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_rate'
+            self.fields[year] = forms.FloatField()
     class Meta:
         model = InterestRates
         fields = ['type', 'rate', 'averageinterestrate','term']
 class InflationRateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_rate'
+            self.fields[year] = forms.FloatField()
     class Meta:
         model = InflationRates
         fields = ['rate','averageinflationrate']
@@ -96,10 +106,16 @@ class DepreciationForm(forms.ModelForm):
         model = Depreciation
         fields = ['description','type','value','rate','years']
 class CapitalGrowthRatesForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_rate'
+            self.fields[year] = forms.FloatField()
     class Meta:
         model =  CapitalGrowthRates
         fields = ['averagecapitalGrowthrate','rate']
 class MonthlyExpenseForm(forms.ModelForm):
+    # should give a user freedom to add rows as they wish using javascript or django formset
     class Meta:
         model =   MonthlyExpense
         fields = ['description','value']

@@ -116,13 +116,19 @@ class InterestRates(models.Model):
        
     ))
     rate = models.IntegerField(null=True,max_length=255,default=10)
+    
     averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
     term = models.IntegerField(null=True)
     # years = models.IntegerField(null=True,editable=False)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
-        return self.term
+        return str(self.term)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_rate'
+            setattr(self, year, models.FloatField())
     
 class InflationRates(models.Model):
 
@@ -133,10 +139,15 @@ class InflationRates(models.Model):
     
     def __str__(self):
         return self.rate
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_rate'
+            setattr(self, year, models.FloatField())
     
 
 class Depreciation(models.Model):
-
+#should allow the users to add as many fields as they want can either use js document.createElement() or django formset.
     type = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
         ('Straight', 'Straight'),
         ('Diminishing', 'Diminishing'),
@@ -158,6 +169,11 @@ class CapitalGrowthRates(models.Model):
     
     def __str__(self):
         return str(self.rate)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_rate'
+            setattr(self, year, models.FloatField())
     
 class MonthlyExpense(models.Model):
     
