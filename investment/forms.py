@@ -124,7 +124,7 @@ class specialexpensesForm(forms.ModelForm):
 class taxoptionsForm(forms.ModelForm):
     class Meta:
         model =  taxoptions
-        fields = ['taxationcapacity','method ','taxrate','annualtaxableincome','maximumtaxrate ','income','rate']
+        fields = ['taxationcapacity','method','taxrate','annualtaxableincome','maximumtaxrate','income','rate']
         
 class managementexpensesForm(forms.ModelForm):
     class Meta:
@@ -142,7 +142,7 @@ class CapitalincomeForm(forms.ModelForm):
 class RentalIncomeForm(forms.ModelForm):
     class Meta:
         model =  RentalIncome
-        fields = ['rentalincreasetype','increasepercentage','averagerentalincomepermonth','amount','']        
+        fields = ['rentalincreasetype','increasepercentage','averagerentalincomepermonth','amount']        
 class comparisonForm(forms.ModelForm):
     class Meta:
         model =  comparison
