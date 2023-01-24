@@ -4,6 +4,7 @@
 
 <section class="p-6 dark:bg-gray-800 dark:text-gray-50">
     <form novalidate="" action="" class="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid">
+        {% csrf_token %}
         <fieldset class="grid grid-cols-4 gap-6 p-6 rounded-md shadow-sm dark:bg-gray-900">
             <div class="space-y-2 col-span-full lg:col-span-1">
                 <h2 class="font-medium dark:text-gray-200">Add Property</h2>
@@ -43,27 +44,4 @@
         </fieldset>
     </form>
 </section>
-<!--<div class="container-fluid property-list">-->
-<!--    <div class="row">-->
-<!--        <div class="col-6"-->
-<!--             style="background-image: url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvcGVydHl8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60); background-repeat: no-repeat; background-size:cover;">-->
-<!--        </div>-->
-<!--        <div class="col-6">-->
-<!--            <form method="POST" class="m-1">-->
-<!--                {% csrf_token %}-->
-<!--                {{ property_form|crispy }}-->
-<!--                {% if form.errors %}-->
-<!--                <ul>-->
-<!--                    {% for field in form %}-->
-<!--                    {% for error in field.errors %}-->
-<!--                    <li>{{ error }}</li>-->
-<!--                    {% endfor %}-->
-<!--                    {% endfor %}-->
-<!--                </ul>-->
-<!--                {% endif %}-->
-<!--                <button type='submit' class="btn btn-primary m-3">Submit</button>-->
-<!--            </form>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 {% endblock %}

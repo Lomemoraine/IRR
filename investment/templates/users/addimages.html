@@ -1,27 +1,78 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
 
-<div class="row">
-    <div class="col-3"></div>
-    <div class="col-6">
-        <h2>Images</h2>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <select name="property" class="form-control">
-                <option value='none'>Select a Property...</option>
+<section class="p-6 dark:bg-gray-800 h-screen dark:text-gray-50">
+    <form method="POST" enctype="multipart/form-data" novalidate="" action=""
+          class="container mx-auto space-y-10 ng-untouched ng-pristine ng-valid">
+        <fieldset class="p-6 rounded-md shadow-sm dark:bg-gray-900">
+            <div class="col-span-3 mb-20">
+                <div class="space-y-2 col-span-full lg:col-span-1">
+                    <h2 class="font-medium dark:text-gray-200 text-center">Add Images</h2>
+                </div>
+                <div class="flex justify-center">
+                    <div class="mb-2 xl:w-96">
+                        <select class="form-select appearance-none
+                          block
+                          w-full
+                          px-3
+                          py-1.5
+                          text-base
+                          font-normal
+                          text-black
+                          bg-white bg-clip-padding bg-no-repeat
+                          border border-solid border-gray-300
+                          rounded
+                          transition
+                          ease-in-out
+                          m-0
+                          focus:text-black focus:bg-white focus:border-blue-600 focus:outline-none"
+                                aria-label="Default select example">
+                            <option selected class="text-black">Select Property</option>
+                            {% for property in property %}
+                            <option value='{{property.id}}'>{{property.name}}</option>
+                            {% endfor %}
+                        </select>
 
-                {% for property in property %}
-                <option value='{{property.id}}'>{{property.name}}</option>
-                {% endfor %}
-            </select>
-            <div class="form-group col-3">
-                <label>Upload images</label>
-                <input required name="images" type="file" multiple class="form-control-file">
+                        <div class="my-3">
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                   for="file_input">Upload
+                                file</label>
+                            <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                   id="file_input" type="file">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button type='submit' class="btn btn-primary m-3">Submit</button>
-        </form>
-    </div>
-    <div class="col-3"></div>
-</div>
+        </fieldset>
+        <button type="submit"
+                class="w-full px-8 py-3 font-semibold rounded-md dark:bg-gray-100 dark:text-gray-900">
+            Submit
+        </button>
+    </form>
+</section>
+
+<!--<div class="row">-->
+<!--    <div class="col-3"></div>-->
+<!--    <div class="col-6">-->
+<!--        <h2>Images</h2>-->
+<!--        <form method="POST" enctype="multipart/form-data">-->
+<!--            {% csrf_token %}-->
+<!--            <select name="property" class="form-control">-->
+<!--                <option value='none'>Select a Property...</option>-->
+
+<!--                {% for property in property %}-->
+<!--                <option value='{{property.id}}'>{{property.name}}</option>-->
+<!--                {% endfor %}-->
+<!--            </select>-->
+<!--            <div class="form-group col-3">-->
+<!--                <label>Upload images</label>-->
+<!--                <input required name="images" type="file" multiple class="form-control-file">-->
+<!--            </div>-->
+<!--            <button type='submit' class="btn btn-primary m-3">Submit</button>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--    <div class="col-3"></div>-->
+<!--</div>-->
 
 {% endblock%}
