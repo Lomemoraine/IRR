@@ -134,7 +134,7 @@ def addimages(request):
                 property=property,
                 image=image
             )
-            return redirect('home')
+            return redirect('interestrates')
 
     context = {'property': property}
 
@@ -157,7 +157,7 @@ def interestview(request):
         form = InterestRateForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('inflationrates')
     else:
         form = InterestRateForm()
     return render(request, 'users/interestrates.html', {'form': form})
@@ -168,8 +168,127 @@ def inflationview(request):
             myform.save()
             return redirect('home')
     else:
-        myform = InterestRateForm()
+        myform = InflationRateForm()
     return render(request, 'users/inflationrates.html', {'myform': myform})
+def depreciationview(request):
+    if request.method == 'POST':
+        myform = DepreciationForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = DepreciationForm()
+    return render(request, 'users/depreciation.html', {'myform': myform})
+def CapitalGrowthview(request):
+    if request.method == 'POST':
+        myform = CapitalGrowthRatesForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = CapitalGrowthRatesForm()
+    return render(request, 'users/capitalgrowth.html', {'myform': myform})
+def MonthlyExpenseview(request):
+    if request.method == 'POST':
+        myform = MonthlyExpenseForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = MonthlyExpenseForm()
+    return render(request, 'users/MonthlyExpense.html', {'myform': myform})
+def OwnRenovationsview(request):
+    if request.method == 'POST':
+        myform = OwnRenovationsForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = OwnRenovationsForm()
+    return render(request, 'users/ownrenovations.html', {'myform': myform})
+def LoanRenovationsview(request):
+    if request.method == 'POST':
+        myform = LoanRenovationsForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = LoanRenovationsForm()
+    return render(request, 'users/loanrenovations.html', {'myform': myform})
+def repairs_maintenanceview(request):
+    if request.method == 'POST':
+        myform = repairs_maintenanceForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = repairs_maintenanceForm()
+    return render(request, 'users/repairs_maintenance.html', {'myform': myform})
+def specialexpensesview(request):
+    if request.method == 'POST':
+        myform = specialexpensesForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = specialexpensesForm()
+    return render(request, 'users/specialexpenses.html', {'myform': myform})
+def taxoptionsview(request):
+    if request.method == 'POST':
+        myform = taxoptionsForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = taxoptionsForm()
+    return render(request, 'users/taxoptions.html', {'myform': myform})
+def managementexpensesview(request):
+    if request.method == 'POST':
+        myform = managementexpensesForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = managementexpensesForm()
+    return render(request, 'users/managementexpenses.html', {'myform': myform})
+
+def Additionalloanpaymentsview(request):
+    if request.method == 'POST':
+        myform = AdditionalloanpaymentsForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = AdditionalloanpaymentsForm()
+    return render(request, 'users/Additionalloanpayments.html', {'myform': myform})
+def Capitalincomeview(request):
+    if request.method == 'POST':
+        myform = CapitalincomeForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = CapitalincomeForm()
+    return render(request, 'users/Capitalincome.html', {'myform': myform})
+def RentalIncomeview(request):
+    if request.method == 'POST':
+        myform = RentalIncomeForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = RentalIncomeForm()
+    return render(request, 'users/RentalIncome.html', {'myform': myform})
+def comparisonview(request):
+    if request.method == 'POST':
+        myform = comparisonForm(request.POST)
+        if myform.is_valid():
+            myform.save()
+            return redirect('home')
+    else:
+        myform = comparisonForm()
+    return render(request, 'users/comparison.html', {'myform': myform})
+
 # def interestview(request):
 #     property = Property.objects.all()
 
