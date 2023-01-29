@@ -101,7 +101,7 @@ def add_property(request):
             #     notes=new_property.notes
             # )
 
-            return redirect('addimages')
+        return redirect('addimages' )
 
     context = {
         'property_form': property_form

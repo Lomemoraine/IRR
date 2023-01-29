@@ -162,4 +162,4 @@ class RentalIncomeForm(forms.ModelForm):
 class comparisonForm(forms.ModelForm):
     class Meta:
         model =  comparison
-        fields = ['description','rate']        
+        fields = ['description','rate']    

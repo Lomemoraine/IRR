@@ -19,11 +19,11 @@
                     hover:no-underline focus:no-underline
                    hover:text-gray-200 focus:text-gray-200 hover:text-xl">Add Property</a>
             </li>
-            <li class="flex">
+            {% comment %} <li class="flex">
                 <a rel="noopener noreferrer" href="{% url 'addimages' %}"
                    class="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent dark:text-gray-400
                     hover:no-underline focus:no-underline hover:text-gray-200 focus:text-gray-200 hover:text-xl">Add Images</a>
-            </li>
+            </li> {% endcomment %}
         </ul>
         <div class="flex items-center px-2 -mb-1">
             <p>Hi, {{ user.username}}</p>
@@ -82,10 +82,10 @@
 <!--                            class="desc-on-sm">Add Property</span></a>-->
 <!--                </li>-->
 <!--                <li class="nav-item active ml-3 mt-1">-->
-<!--                    <a class="nav-link" href="{% url 'addimages' %}"><i class="mr-2 fas fa-user"-->
+{% comment %} <!--                    <a class="nav-link" href="{% url 'addimages' %}"><i class="mr-2 fas fa-user"-->
 <!--                                                                        style="font-size: 18px"></i><span-->
 <!--                            class="desc-on-sm">Add Images</span></a>-->
-<!--                </li>-->
+<!--                </li>--> {% endcomment %}
 <!--                <li class="nav-item active ml-3 mt-1">-->
 <!--                    &lt;!&ndash;                <a class="nav-link" href=""><i class="mr-2 fas fa-user" style="font-size: 18px"></i><span class="desc-on-sm">ACCOUNT</span></a>&ndash;&gt;-->
 <!--                </li>-->

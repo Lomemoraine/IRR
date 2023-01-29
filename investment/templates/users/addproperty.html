@@ -44,6 +44,18 @@
         </fieldset>
     </form>
 </section>
+<script>
+    var purchase_price = document.getElementById("purchase_price");
+    var deposit = document.getElementById("deposit");
+    function calculate() {
+        var purchase_price = parseFloat(document.getElementById("purchase_price").value);
+        var deposit = parseFloat(document.getElementById("deposit").value);
+        var bond_value = purchase_price - deposit;
+        document.getElementById("bond_value").value = bond_value;
+    }
+    purchase_price.addEventListener("change", calculate);
+    deposit.addEventListener("change", calculate);
+</script>
 <!--<div class="container-fluid property-list">-->
 <!--    <div class="row">-->
 <!--        <div class="col-6"-->

@@ -7,13 +7,13 @@
         <h2>Images</h2>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <select name="property" class="form-control">
+             <select name="property" class="form-control">
                 <option value='none'>Select a Property...</option>
 
                 {% for property in property %}
                 <option value='{{property.id}}'>{{property.name}}</option>
                 {% endfor %}
-            </select>
+            </select> 
             <div class="form-group col-3">
                 <label>Upload images</label>
                 <input required name="images" type="file" multiple class="form-control-file">

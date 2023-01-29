@@ -27,4 +27,3 @@ admin.site.register(RentalIncome)
 admin.site.register(comparison)
 
 
-

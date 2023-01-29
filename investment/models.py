@@ -104,7 +104,7 @@ class OtherCosts(models.Model):
         ('Mortgage Insurance', 'Mortgage Insurance'),
     )
     other_costs = models.CharField(max_length=255, null=True, choices=CHOICES)
-    amount = models.IntegerField(null=True, max_length=255)
+    amount = models.IntegerField(null=True)
 
     def __str__(self):
         return self.other_costs
@@ -115,7 +115,7 @@ class InterestRates(models.Model):
         ('Interest Only', 'Interest Only'),
        
     ))
-    rate = models.IntegerField(null=True,max_length=255,default=10)
+    rate = models.IntegerField(null=True,default=10)
     
     averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
     term = models.IntegerField(null=True)
@@ -132,7 +132,7 @@ class InterestRates(models.Model):
     
 class InflationRates(models.Model):
 
-    rate = models.IntegerField(null=True,max_length=255,default=8)
+    rate = models.IntegerField(null=True,default=8)
     averageinflationrate = models.FloatField(('Average Inflation Rate (%)'),null=True,default=8)
     # years = models.IntegerField(null=True,editable=False)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
@@ -155,8 +155,8 @@ class Depreciation(models.Model):
     ))
     description = models.CharField(null=True,max_length=255)
     value = models.FloatField(null=True)
-    rate = models.IntegerField(('Rate (%)'),null=True,max_length=255,default=8)
-    years = models.IntegerField(null=True,max_length=255)
+    rate = models.IntegerField(('Rate (%)'),null=True,default=8)
+    years = models.IntegerField(null=True)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
@@ -178,7 +178,7 @@ class CapitalGrowthRates(models.Model):
 class MonthlyExpense(models.Model):
     
     description = models.CharField(max_length=255, null=True)
-    value = models.IntegerField(null=True, max_length=255)
+    value = models.IntegerField(null=True)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
 
@@ -187,8 +187,8 @@ class MonthlyExpense(models.Model):
     
 class OwnRenovations(models.Model):
     
-    incomeperyear = models.FloatField(('Income per year'),max_length=255, null=True,default=0)
-    amount = models.IntegerField(null=True, max_length=255,default=0)
+    incomeperyear = models.FloatField(('Income per year'), null=True,default=0)
+    amount = models.IntegerField(null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
 
@@ -196,15 +196,15 @@ class OwnRenovations(models.Model):
         return self.amount  
 class LoanRenovations(models.Model):
     
-    incomeperyear = models.FloatField(('Income per year'),max_length=255, null=True,default=0)
-    amount = models.IntegerField(null=True, max_length=255,default=0)
+    incomeperyear = models.FloatField(('Income per year'), null=True,default=0)
+    amount = models.IntegerField(null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
 
     def __str__(self):
         return self.amount  
 class repairs_maintenance(models.Model):
-    amount = models.IntegerField(null=True, max_length=255,default=0)
+    amount = models.IntegerField(null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
 
@@ -212,7 +212,7 @@ class repairs_maintenance(models.Model):
         return self.amount  
 class specialexpenses(models.Model):
     
-    amount = models.IntegerField(null=True, max_length=255,default=0)
+    amount = models.IntegerField(null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
 
@@ -237,17 +237,17 @@ class taxoptions(models.Model):
     
     taxrate = models.FloatField(('Tax Rate(%)'),null=True)
     annualtaxableincome = models.FloatField(('Annual Taxableincome(%)'),null=False)
-    maximumtaxrate = models.IntegerField(('Maximum Tax Rate (%)'),null=False,max_length=255)
-    income = models.IntegerField(null=True,max_length=255)
-    rate = models.IntegerField(null=True,max_length=255)
+    maximumtaxrate = models.IntegerField(('Maximum Tax Rate (%)'),null=False)
+    income = models.IntegerField(null=True)
+    rate = models.IntegerField(null=True)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
         return self.rate
 class managementexpenses(models.Model):
     
-    vacancyrate = models.IntegerField(('Vacancy Rate (%)'),null=True, max_length=255,default=0)
-    managementfee = models.IntegerField(('Management Fee (%)'),null=True, max_length=255,default=0)
+    vacancyrate = models.IntegerField(('Vacancy Rate (%)'),null=True,default=0)
+    managementfee = models.IntegerField(('Management Fee (%)'),null=True,default=0)
     managementfeeperyear = models.IntegerField(('Management Fee per Year '))
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
@@ -257,7 +257,7 @@ class managementexpenses(models.Model):
     
 class Additionalloanpayments(models.Model):
     
-    amount = models.IntegerField(null=True, max_length=255,default=0)
+    amount = models.IntegerField(null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     
@@ -271,7 +271,7 @@ class Additionalloanpayments(models.Model):
     
 class Capitalincome(models.Model):
     
-    amount = models.IntegerField(null=True, max_length=255,default=0)
+    amount = models.IntegerField(null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     
@@ -287,9 +287,9 @@ class RentalIncome(models.Model):
         ('percent', 'percent'),
        
     ))
-    increasepercentage = models.IntegerField(('Increase Percentage (%)'),max_length=255)
+    increasepercentage = models.IntegerField(('Increase Percentage (%)'))
     averagerentalincomepermonth = models.FloatField(('Average Rental Income Per Month'),null=True)
-    amount = models.IntegerField(('Amount'),null=True,max_length=255)
+    amount = models.IntegerField(('Amount'),null=True)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
@@ -297,7 +297,7 @@ class RentalIncome(models.Model):
     
 class comparison(models.Model):
     description = models.CharField(max_length=255, null=True)
-    rate = models.IntegerField(('Rate (%)'),null=True, max_length=255,default=0)
+    rate = models.IntegerField(('Rate (%)'),null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     
@@ -611,183 +611,3 @@ class Images(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     
-#contination models
-# class InterestRates(models.Model):
-
-#     type = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
-#         ('Interest & capital', 'Interest & capital'),
-#         ('Interest Only', 'Interest Only'),
-       
-#     ))
-#     rate = models.IntegerField(null=True,max_length=255,default=10)
-#     averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
-#     term = models.IntegerField(null=True)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-#     def __str__(self):
-#         return self.term
-    
-# class InflationRates(models.Model):
-
-#     rate = models.IntegerField(null=True,max_length=255,default=8)
-#     averageinflationrate = models.FloatField(('Average Inflation Rate (%)'),null=True,default=8)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-#     def __str__(self):
-#         return self.rate
-    
-
-# class Depreciation(models.Model):
-
-#     type = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
-#         ('Straight', 'Straight'),
-#         ('Diminishing', 'Diminishing'),
-       
-#     ))
-#     description = models.CharField(null=True,max_length=255)
-#     value = models.FloatField(null=True)
-#     rate = models.IntegerField(('Rate (%)'),null=True,max_length=255,default=8)
-#     years = models.IntegerField(null=True,max_length=255)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-#     def __str__(self):
-#         return self.rate
-# class CapitalGrowthRates(models.Model):
-
-#     rate = models.IntegerField(null=True,default=8)
-#     averagecapitalGrowthrate = models.FloatField(('Average Capital Growth Rate (%)'),null=False,default=8)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-#     def __str__(self):
-#         return self.rate
-    
-# class MonthlyExpense(models.Model):
-    
-#     description = models.CharField(max_length=255, null=True)
-#     value = models.IntegerField(null=True, max_length=255)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-
-#     def __str__(self):
-#         return self.description
-    
-# class OwnRenovations(models.Model):
-    
-#     incomeperyear = models.FloatField(('Income per year'),max_length=255, null=True,default=0)
-#     amount = models.IntegerField(null=True, max_length=255,default=0)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-
-#     def __str__(self):
-#         return self.amount  
-# class LoanRenovations(models.Model):
-    
-#     incomeperyear = models.FloatField(('Income per year'),max_length=255, null=True,default=0)
-#     amount = models.IntegerField(null=True, max_length=255,default=0)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-
-#     def __str__(self):
-#         return self.amount  
-# class repairs_maintenance(models.Model):
-#     amount = models.IntegerField(null=True, max_length=255,default=0)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-
-#     def __str__(self):
-#         return self.amount  
-# class specialexpenses(models.Model):
-    
-#     amount = models.IntegerField(null=True, max_length=255,default=0)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-
-#     def __str__(self):
-#         return self.amount  
-# class taxoptions(models.Model):
-
-#     taxationcapacity = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
-#         ('Personal', 'Personal'),
-#         ('close corporation', 'close corporation'),
-#         ('private company', 'private company'),
-#         ('trust', 'trust'),
-       
-#     ))
-#     method = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
-#         ('0%', '0%'),
-#         ('Marginal', 'Marginal'),
-#         ('Use Tax Table', 'Use Tax Table'),
-#         ('Custom', 'Custom'),
-       
-#     ))
-    
-#     taxrate = models.FloatField(('Tax Rate(%)'),null=True)
-#     annualtaxableincome = models.FloatField(('Annual Taxableincome(%)'),null=False)
-#     maximumtaxrate = models.IntegerField(('Maximum Tax Rate (%)'),null=False,max_length=255)
-#     income = models.IntegerField(null=True,max_length=255)
-#     rate = models.IntegerField(null=True,max_length=255)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-#     def __str__(self):
-#         return self.rate
-# class managementexpenses(models.Model):
-    
-#     vacancyrate = models.IntegerField(('Vacancy Rate (%)'),null=True, max_length=255,default=0)
-#     managementfee = models.IntegerField(('Management Fee (%)'),null=True, max_length=255,default=0)
-#     managementfeeperyear = models.IntegerField(('Management Fee per Year '))
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-
-#     def __str__(self):
-#         return self.vacancyrate
-    
-# class Additionalloanpayments(models.Model):
-    
-#     amount = models.IntegerField(null=True, max_length=255,default=0)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-    
-
-#     def __str__(self):
-#         return self.amount
-#     def save_additionalloanpaymens(self):
-#         """Add loans to database"""
-#         self.save()
-
-    
-# class Capitalincome(models.Model):
-    
-#     amount = models.IntegerField(null=True, max_length=255,default=0)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-    
-
-#     def __str__(self):
-#         return self.amount
-
-# class RentalIncome(models.Model):
-
-#     rentalincreasetype = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
-#         ('capital', 'capital'),
-#         ('inflation', 'inflation'),
-#         ('percent', 'percent'),
-       
-#     ))
-#     increasepercentage = models.IntegerField(('Increase Percentage (%)'),max_length=255)
-#     averagerentalincomepermonth = models.FloatField(('Average Rental Income Per Month'),null=True)
-#     amount = models.IntegerField(('Amount'),null=True,max_length=255)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-#     def __str__(self):
-#         return self.rentalincreasetype
-    
-# class comparison(models.Model):
-#     description = models.CharField(max_length=255, null=True)
-#     rate = models.IntegerField(('Rate (%)'),null=True, max_length=255,default=0)
-#     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-    
-
-#     def __str__(self):
-#         return self.description
-  
