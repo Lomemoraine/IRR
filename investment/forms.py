@@ -109,11 +109,15 @@ class CapitalGrowthRatesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for i in range(1, 31):
-            year = f'year_{i}_rate'
-            self.fields[year] = forms.FloatField()
+            year_rate = f'year_{i}_rate'
+            year_amount = f'year_{i}_amount'
+            self.fields[year_rate] = forms.FloatField()
+            self.fields[year_amount] = forms.FloatField
+        
     class Meta:
-        model =  CapitalGrowthRates
-        fields = ['averagecapitalGrowthrate','rate']
+        model = CapitalGrowthRates
+        fields = '__all__'
+    
 class MonthlyExpenseForm(forms.ModelForm):
     # should give a user freedom to add rows as they wish using javascript or django formset
     class Meta:
@@ -151,9 +155,16 @@ class AdditionalloanpaymentsForm(forms.ModelForm):
         model =  Additionalloanpayments
         fields = ['amount']
 class CapitalincomeForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_amount'
+            setattr(self, year, models.FloatField())
     class Meta:
         model =  Capitalincome
-        fields = ['amount']        
+        fields = '__all__'
+    
+              
 
 class RentalIncomeForm(forms.ModelForm):
     class Meta:

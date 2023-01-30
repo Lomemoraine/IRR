@@ -119,6 +119,7 @@ class InterestRates(models.Model):
     
     averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
     term = models.IntegerField(null=True)
+    
     # years = models.IntegerField(null=True,editable=False)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
@@ -138,7 +139,7 @@ class InflationRates(models.Model):
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
-        return self.rate
+        return str(self.rate)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for i in range(1, 31):
@@ -172,9 +173,10 @@ class CapitalGrowthRates(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for i in range(1, 31):
-            year = f'year_{i}_rate'
-            setattr(self, year, models.FloatField())
-    
+            year_rate = f'year_{i}_rate'
+            year_amount = f'year_{i}_amount'
+            setattr(self, year_rate, models.FloatField())
+            setattr(self, year_amount, models.FloatField())
 class MonthlyExpense(models.Model):
     
     description = models.CharField(max_length=255, null=True)
@@ -274,10 +276,13 @@ class Capitalincome(models.Model):
     amount = models.IntegerField(null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
-    
-
     def __str__(self):
-        return self.amount
+        return str(self.amount)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_amount'
+            setattr(self, year, models.FloatField())
 
 class RentalIncome(models.Model):
 
@@ -304,6 +309,12 @@ class comparison(models.Model):
 
     def __str__(self):
         return self.description
+class Images(models.Model):
+    image = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
+                                    '/x3mgnqmbi73lten4ewzv.png')
+    
+    
+    
   
 
 class Property(models.Model):
@@ -318,13 +329,19 @@ class Property(models.Model):
     notes = models.TextField(max_length=1260, null=True)
     CapitalGrowthRates = models.ForeignKey(CapitalGrowthRates,null=True,on_delete=models.CASCADE, blank=True)
     InterestRates = models.ForeignKey(InterestRates,null=True,on_delete=models.CASCADE)
+    InflationRates = models.ForeignKey(InflationRates,null=True,on_delete=models.CASCADE)
+    depreciation = models.ForeignKey(Depreciation,null=True,on_delete=models.CASCADE)
     MonthlyExpense = models.ForeignKey(MonthlyExpense,null=True,on_delete=models.CASCADE)
     OwnRenovations = models.ForeignKey(OwnRenovations,null=True,on_delete=models.CASCADE)
+    Additionalloanpayments = models.ForeignKey(Additionalloanpayments,null=True,on_delete=models.CASCADE)
     LoanRenovations = models.ForeignKey(LoanRenovations,null=True,on_delete=models.CASCADE)
     specialexpenses= models.ForeignKey(specialexpenses,null=True,on_delete=models.CASCADE)
     repairs_maintenance= models.ForeignKey(repairs_maintenance,null=True,on_delete=models.CASCADE)
     Capitalincome = models.ForeignKey(Capitalincome,null=True,on_delete=models.CASCADE)
     RentalIncome = models.ForeignKey(RentalIncome,null=True,on_delete=models.CASCADE)
+    taxoptions = models.ForeignKey(taxoptions,null=True,on_delete=models.CASCADE)
+    comparison = models.ForeignKey(comparison,null=True,on_delete=models.CASCADE)
+    image = models.ForeignKey(Images,null=True,on_delete=models.CASCADE)
     managementexpenses = models.ForeignKey(managementexpenses,null=True,on_delete=models.CASCADE)
     
     
@@ -338,7 +355,7 @@ class Property(models.Model):
     #determine the property value
     def determine_property_value(self, years=30):
         purchase_price = self.purchase_price
-        capital_growth_rate = self.CapitalGrowthRates.rate
+        capital_growth_rate = capital_growth_rate = self.CapitalGrowthRates.rate if self.CapitalGrowthRates else 0
         property_value_list = []
         for year in range(1, years+1):
             property_value = purchase_price * (1 + capital_growth_rate/100)**year
@@ -385,22 +402,34 @@ class Property(models.Model):
             principal = outstanding_loan_per_year[year-1] - loan_interest[year-1]
             loan_principal.append(principal)
         return loan_principal
-    #function to calculate the total loan amount
-    def determine_total_loan_payment(self, interest_change_year=None, new_interest_rate=None):
+    #function to calculate the total loan amount....revisit this formula
+    def determine_total_loan_payment_per_year(self, interest_change_year=None, new_interest_rate=None):
         bond_price = self.bond_value
         interest_rate = self.InterestRates.rate/100
         term = self.InterestRates.term
         
-        if interest_change_year is None or new_interest_rate is None:
-            total_loan_payment = bond_price * interest_rate / (1 - (1 + interest_rate)**term)
-        else:
-            if interest_change_year > term:
-                raise ValueError("Interest change year cannot be greater than loan term.")
-            new_interest_rate = new_interest_rate/100
-            total_loan_payment = bond_price * interest_rate / (1 - (1 + interest_rate)**interest_change_year) + bond_price * (1 + interest_rate)**(-interest_change_year) * new_interest_rate / (1 - (1 + new_interest_rate)**(term - interest_change_year))
-        return total_loan_payment
+        payments_per_year = []
+        for i in range(term):
+            if interest_change_year is None or new_interest_rate is None:
+                payment = bond_price * interest_rate (1 - (1 + interest_rate)**(term - i))
+            else:
+                if interest_change_year > term:
+                    raise ValueError("Interest change year cannot be greater than loan term.")
+                if i == interest_change_year - 1:
+                    interest_rate = new_interest_rate / 100
+                payment = bond_price * interest_rate  (1 - (1 + interest_rate)**(term - i))
+            payments_per_year.append(payment)
+        return payments_per_year
     #code to determine property expenses.
     #call this on an instance property_expenses = property_object.determine_property_expenses()
+    def determine_gross_rental_income(self, years=30):
+        rental_income = self.RentalIncome.amount * 12
+        management_expenses = self.managementexpenses.expenses * 12
+        gross_rental_income = []
+        for year in range(1, years+1):
+            income = rental_income - management_expenses
+            gross_rental_income.append(income)
+        return gross_rental_income
     def determine_property_expenses_per_year(self, years=30):
         monthly_expense = self.MonthlyExpense.value
         property_expenses_per_year = []
@@ -422,7 +451,7 @@ class Property(models.Model):
         return total_property_expenses_per_year
     #determine pre-tax cash flow
     def determine_pre_tax_cash_flow_per_year(self, years=30):
-        gross_rental_income = self.RentalIncome.amount * 12
+        gross_rental_income = self.determine_gross_rental_income(years)
         total_property_expenses = self.determine_total_property_expenses_per_year(years)
         pre_tax_cash_flow_per_year = []
         for year in range(1, years+1):
@@ -456,7 +485,14 @@ class Property(models.Model):
             deductions = loan_interest[year-1] + total_property_expenses[year-1]
             taxable_deductions.append(deductions)
         return taxable_deductions
-    # taxable amount
+    # rental income per month
+    def determine_income_per_month(self, years=30):
+        after_tax_cashflow = self.determine_after_tax_cashflow(years)
+        income_per_month = []
+        for year in range(1, years+1):
+            income = after_tax_cashflow[year-1] / 12
+            income_per_month.append(income)
+        return income_per_month
     def determine_gross_rental_income(self, years=30):
         rental_income = self.RentalIncome.amount * 12
         management_expenses = self.managementexpenses.expenses * 12
@@ -605,9 +641,4 @@ class Property(models.Model):
         irr = round(irr_calc, 2)
         return irr
 
-class Images(models.Model):
-    image = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
-                                    '/x3mgnqmbi73lten4ewzv.png')
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-    
+

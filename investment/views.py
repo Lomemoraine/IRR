@@ -113,7 +113,7 @@ def edit_property(request, pk):
         form = EditpropertyForm(request.POST, instance=property)
         if form.is_valid():
             form.save()
-            return redirect('propertyitem',pk=pk)
+            return redirect('propertyitem',id=pk)
         # fix the redirect.
     else:
         form = EditpropertyForm(instance=property)
@@ -145,10 +145,63 @@ def addimages(request):
 def view_one_property(request, id):
     property_obj = Property.objects.get(id=id)
     image = Images.objects.filter(property=property_obj)
-
+    property_value_list = property_obj.determine_property_value()
+    outstanding_loan_per_year = property_obj.determine_outstanding_loan_per_year()
+    equity_per_year = property_obj.determine_equity_per_year()
+    gross_rental_income = property_obj.determine_gross_rental_income()
+    loan_interest = property_obj.determine_loan_interest()
+    loan_principal = property_obj.determine_loan_principal()
+    total_loan_payment = property_obj.determine_total_loan_payment_per_year()
+    additionalloans = property_obj.Additionalloanpayments
+    ownrenovations = property_obj.OwnRenovations
+    loanrenovations = property_obj.LoanRenovations
+    repairs_maintenance = property_obj.repairs_maintenance
+    special_expenses = property_obj.specialexpenses
+    property_expenses = property_obj.determine_property_expenses_per_year()
+    total_property_expenses = property_obj.determine_total_property_expenses_per_year()
+    capital_received = property_obj.Capitalincome
+    pre_tax_cash_flow = property_obj.determine_pre_tax_cash_flow_per_year()
+    initial_outflows = property_obj.determine_initial_capital_outflow_per_year()
+    pre_tax_cash_on_cash = property_obj.determine_pre_tax_cash_on_cash()
+    total_taxable_deductions = property_obj.determine_taxable_deductions()
+    depreciationlist = property_obj.calculate_depreciation()
+    taxable_amounts = property_obj.calculate_taxable_amount()
+    tax_credits = property_obj.determine_tax_credits()
+    after_tax_cashflows = property_obj.determine_after_tax_cashflow()
+    after_tax_cash_on_cash = property_obj.determine_after_tax_cash_on_cash()
+    income_per_month = property_obj.determine_income_per_month()
+    
+    
     context = {
         'property_obj': property_obj,
-        'image': image
+        'image': image,
+        'property_value_list': property_value_list,
+        'outstanding_loan_per_year': outstanding_loan_per_year,
+        'equity_per_year': equity_per_year,
+        'loan_interest': loan_interest,
+        'loan_principal': loan_principal,
+        'gross_rental_income': gross_rental_income,
+        'total_loan_payment': total_loan_payment,
+        'additionalloans': additionalloans,
+        'ownrenovations': ownrenovations,
+        'loanrenovations': loanrenovations,
+        'repairs_maintenance': repairs_maintenance,
+        'special_expenses': special_expenses,
+        'property_expenses': property_expenses,
+        'total_property_expenses': total_property_expenses,
+        'capital_received': capital_received,
+        'pre_tax_cash_flow': pre_tax_cash_flow,
+        'initial_outflows': initial_outflows,
+        'pre_tax_cash_on_cash': pre_tax_cash_on_cash,
+        'total_taxable_deductions': total_taxable_deductions,
+        'depreciationlist': depreciationlist,
+        'taxable_amounts': taxable_amounts,
+        'tax_credits': tax_credits,
+        'after_tax_cashflows': after_tax_cashflows,
+        'after_tax_cash_on_cash': after_tax_cash_on_cash,
+        'income_per_month': income_per_month
+        
+        
     }
     return render(request, 'users/propertypage.html', context=context)
 #continue Thursday
@@ -166,7 +219,7 @@ def inflationview(request):
         myform = InflationRateForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('depreciation')
     else:
         myform = InflationRateForm()
     return render(request, 'users/inflationrates.html', {'myform': myform})
@@ -175,7 +228,7 @@ def depreciationview(request):
         myform = DepreciationForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('capitalgrowth')
     else:
         myform = DepreciationForm()
     return render(request, 'users/depreciation.html', {'myform': myform})
@@ -184,7 +237,7 @@ def CapitalGrowthview(request):
         myform = CapitalGrowthRatesForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('monthlyexpense')
     else:
         myform = CapitalGrowthRatesForm()
     return render(request, 'users/capitalgrowth.html', {'myform': myform})
@@ -193,7 +246,7 @@ def MonthlyExpenseview(request):
         myform = MonthlyExpenseForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('ownrenovations')
     else:
         myform = MonthlyExpenseForm()
     return render(request, 'users/MonthlyExpense.html', {'myform': myform})
@@ -202,7 +255,7 @@ def OwnRenovationsview(request):
         myform = OwnRenovationsForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('loanrenovations')
     else:
         myform = OwnRenovationsForm()
     return render(request, 'users/ownrenovations.html', {'myform': myform})
@@ -211,7 +264,7 @@ def LoanRenovationsview(request):
         myform = LoanRenovationsForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('repairs_maintenance')
     else:
         myform = LoanRenovationsForm()
     return render(request, 'users/loanrenovations.html', {'myform': myform})
@@ -220,7 +273,7 @@ def repairs_maintenanceview(request):
         myform = repairs_maintenanceForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('specialexpenses')
     else:
         myform = repairs_maintenanceForm()
     return render(request, 'users/repairs_maintenance.html', {'myform': myform})
@@ -229,7 +282,7 @@ def specialexpensesview(request):
         myform = specialexpensesForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('taxoptions')
     else:
         myform = specialexpensesForm()
     return render(request, 'users/specialexpenses.html', {'myform': myform})
@@ -238,7 +291,7 @@ def taxoptionsview(request):
         myform = taxoptionsForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('managementexpenses')
     else:
         myform = taxoptionsForm()
     return render(request, 'users/taxoptions.html', {'myform': myform})
@@ -247,7 +300,7 @@ def managementexpensesview(request):
         myform = managementexpensesForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('Additionalloanpayments')
     else:
         myform = managementexpensesForm()
     return render(request, 'users/managementexpenses.html', {'myform': myform})
@@ -257,7 +310,7 @@ def Additionalloanpaymentsview(request):
         myform = AdditionalloanpaymentsForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('Capitalincome')
     else:
         myform = AdditionalloanpaymentsForm()
     return render(request, 'users/Additionalloanpayments.html', {'myform': myform})
@@ -266,7 +319,7 @@ def Capitalincomeview(request):
         myform = CapitalincomeForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('RentalIncome')
     else:
         myform = CapitalincomeForm()
     return render(request, 'users/Capitalincome.html', {'myform': myform})
@@ -275,16 +328,16 @@ def RentalIncomeview(request):
         myform = RentalIncomeForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('comparison')
     else:
         myform = RentalIncomeForm()
     return render(request, 'users/RentalIncome.html', {'myform': myform})
-def comparisonview(request):
+def comparisonview(request,pk):
     if request.method == 'POST':
         myform = comparisonForm(request.POST)
         if myform.is_valid():
             myform.save()
-            return redirect('home')
+            return redirect('propertyitem',id=pk)
     else:
         myform = comparisonForm()
     return render(request, 'users/comparison.html', {'myform': myform})

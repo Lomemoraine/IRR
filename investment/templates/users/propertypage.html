@@ -77,9 +77,10 @@
                         <tr>
                             <th scope="row"></th>
                             <td>Property Value</td>
-                            <td></td>
-                            <td>R648,690.00</td>
-                            <td>R674,918.40</td>
+                            
+                            {% for value in property_obj.property_value_list|slice:":3" %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
                         </tr>
                         <tr>
                             <th scope="row"></th>
@@ -145,6 +146,15 @@
                         <tr>
                             <th scope="row"></th>
 
+                            <td>Renovations (Loan)</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+
                             <td>Repairs & Maintenance</td>
                             <td>R00.00</td>
                             <td>R00.00</td>
@@ -170,7 +180,6 @@
 
                         </tr>
                         <tr>
-                        <tr>
                             <th scope="row"></th>
 
                             <td>Total Property Expenses</td>
@@ -179,7 +188,6 @@
                             <td>R00.00</td>
 
                         </tr>
-                        <tr>
                         <tr>
                             <th scope="row"></th>
 
@@ -190,41 +198,100 @@
 
                         </tr>
                         <tr>
-                        <tr>
                             <th scope="row"></th>
 
-                            <td>Pre Tax Cashflow</td>
-                            <td>R-387,106.97</td>
-                            <td>R-371,212.90</td>
-                            <td>R-354,126.77</td>
-
-                        </tr>
-                        <tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Intitial Capital Outflow</td>
+                            <td>Pre Tax Cashfow</td>
                             <td>R00.00</td>
                             <td>R00.00</td>
                             <td>R00.00</td>
 
                         </tr>
                         <tr>
-                        <tr>
                             <th scope="row"></th>
-                            <td>Pre Tax Cash On Cash</td>
+
+                            <td>Initial Capital Outflow</td>
                             <td>R00.00</td>
                             <td>R00.00</td>
                             <td>R00.00</td>
+
                         </tr>
                         <tr>
+                            <th scope="row"></th>
+
+                            <td>Pre Tax Cash on Cash</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+
+                        </tr>
                         <tr>
                             <th scope="row"></th>
+
                             <td>Total Taxable Deductions</td>
                             <td>R00.00</td>
                             <td>R00.00</td>
                             <td>R00.00</td>
+
                         </tr>
+                        <tr>
+                            <th scope="row"></th>
+
+                            <td>Depreciation</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+
+                            <td>Taxable Amount</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+
+                            <td>Tax Credit</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+
+                            <td>After Tax Cashflow</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+
+                            <td>After Tax Cash on Cash</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row"></th>
+
+                            <td>Income Per Month</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+                            <td>R00.00</td>
+
+                        </tr>
+                        
+                        
+                        
+                       
+                      
                         </tbody>
                     </table>
                 </div>
