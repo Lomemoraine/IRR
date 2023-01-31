@@ -163,7 +163,7 @@ def view_one_property(request, id):
     pre_tax_cash_flow = property_obj.determine_pre_tax_cash_flow_per_year()
     initial_outflows = property_obj.determine_initial_capital_outflow_per_year()
     pre_tax_cash_on_cash = property_obj.determine_pre_tax_cash_on_cash()
-    total_taxable_deductions = property_obj.determine_taxable_deductions()
+    total_taxable_deductions = property_obj.determine_taxable_deductions(years=30)
     depreciationlist = property_obj.calculate_depreciation()
     taxable_amounts = property_obj.calculate_taxable_amount()
     tax_credits = property_obj.determine_tax_credits()

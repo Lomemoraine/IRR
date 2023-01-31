@@ -116,7 +116,7 @@ class CapitalGrowthRatesForm(forms.ModelForm):
         
     class Meta:
         model = CapitalGrowthRates
-        fields = '__all__'
+        fields = []
     
 class MonthlyExpenseForm(forms.ModelForm):
     # should give a user freedom to add rows as they wish using javascript or django formset
@@ -126,20 +126,46 @@ class MonthlyExpenseForm(forms.ModelForm):
 class OwnRenovationsForm(forms.ModelForm):
     class Meta:
         model =   OwnRenovations
-        fields = ['incomeperyear','amount']
+        fields = []
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year_rate = f'year_{i}_incomeperyear'
+            year_amount = f'year_{i}_amount'
+            self.fields[year_rate] = forms.FloatField()
+            self.fields[year_amount] = forms.FloatField()
 class LoanRenovationsForm(forms.ModelForm):
     class Meta:
         model =   LoanRenovations
-        fields = ['incomeperyear','amount']
+        fields = []
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year_rate = f'year_{i}_incomeperyear'
+            year_amount = f'year_{i}_amount'
+            self.fields[year_rate] = forms.FloatField()
+            self.fields[year_amount] = forms.FloatField
 class repairs_maintenanceForm(forms.ModelForm):
     class Meta:
         model =   repairs_maintenance
-        fields = ['amount']
+        fields = []
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_amount'
+            self.fields[year] = forms.FloatField()
 
 class specialexpensesForm(forms.ModelForm):
     class Meta:
-        model =  specialexpenses
-        fields = ['amount']
+        model = specialexpenses
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_amount'
+            self.fields[year] = forms.FloatField()
         
 class taxoptionsForm(forms.ModelForm):
     class Meta:
@@ -162,14 +188,22 @@ class CapitalincomeForm(forms.ModelForm):
             setattr(self, year, models.FloatField())
     class Meta:
         model =  Capitalincome
-        fields = '__all__'
+        fields = []
     
               
 
 class RentalIncomeForm(forms.ModelForm):
+    
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_amount'
+            self.fields[year] = forms.FloatField()
     class Meta:
-        model =  RentalIncome
-        fields = ['rentalincreasetype','increasepercentage','averagerentalincomepermonth','amount']        
+        model = RentalIncome
+        fields = ['rentalincreasetype','increasepercentage','averagerentalincomepermonth']
+             
 class comparisonForm(forms.ModelForm):
     class Meta:
         model =  comparison

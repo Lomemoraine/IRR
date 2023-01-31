@@ -115,7 +115,7 @@ class InterestRates(models.Model):
         ('Interest Only', 'Interest Only'),
        
     ))
-    rate = models.IntegerField(null=True,default=10)
+    rate = models.FloatField(null=True,default=10)
     
     averageinterestrate = models.FloatField(('Average Interest Rate (%)'),null=True,default=10)
     term = models.IntegerField(null=True)
@@ -133,7 +133,7 @@ class InterestRates(models.Model):
     
 class InflationRates(models.Model):
 
-    rate = models.IntegerField(null=True,default=8)
+    rate = models.FloatField(null=True,default=8)
     averageinflationrate = models.FloatField(('Average Inflation Rate (%)'),null=True,default=8)
     # years = models.IntegerField(null=True,editable=False)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
@@ -164,12 +164,12 @@ class Depreciation(models.Model):
         return self.rate
 class CapitalGrowthRates(models.Model):
 
-    rate = models.IntegerField(null=True,default=8)
+    # rate = models.IntegerField(null=True,default=8)
     averagecapitalGrowthrate = models.FloatField(('Average Capital Growth Rate (%)'),null=False,default=8)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
-        return str(self.rate)
+        return str(self.averagecapitalGrowthrate)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for i in range(1, 31):
@@ -189,37 +189,58 @@ class MonthlyExpense(models.Model):
     
 class OwnRenovations(models.Model):
     
-    incomeperyear = models.FloatField(('Income per year'), null=True,default=0)
-    amount = models.IntegerField(null=True,default=0)
-    # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    # incomeperyear = models.FloatField(('Income per year'), null=True,default=0)
+    # # amount = models.IntegerField(null=True,default=0)
+    # # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
 
-    def __str__(self):
-        return self.amount  
+    # def __str__(self):
+    #     return str(self.incomeperyear)
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     for i in range(1, 31):
+    #         year = f'year_{i}_amount'
+    #         setattr(self, year, models.FloatField())
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year_rate = f'year_{i}_incomeperyear'
+            year_amount = f'year_{i}_amount'
+            setattr(self, year_rate, models.FloatField())
+            setattr(self, year_amount, models.FloatField())
+      
 class LoanRenovations(models.Model):
     
     incomeperyear = models.FloatField(('Income per year'), null=True,default=0)
-    amount = models.IntegerField(null=True,default=0)
+    # amount = models.IntegerField(null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
 
-    def __str__(self):
-        return self.amount  
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year_rate = f'year_{i}_incomeperyear'
+            year_amount = f'year_{i}_amount'
+            setattr(self, year_rate, models.FloatField())
+            setattr(self, year_amount, models.FloatField())
 class repairs_maintenance(models.Model):
-    amount = models.IntegerField(null=True,default=0)
-    # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    # amount = models.IntegerField(null=True,default=0)
+    # # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
 
-    def __str__(self):
-        return self.amount  
+    # def __str__(self):
+    #     return self.amount 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_amount'
+            setattr(self, year, models.FloatField()) 
 class specialexpenses(models.Model):
-    
-    amount = models.IntegerField(null=True,default=0)
-    # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-
-    def __str__(self):
-        return self.amount  
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_amount'
+            setattr(self, year, models.FloatField())
 class taxoptions(models.Model):
 
     taxationcapacity = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
@@ -294,11 +315,16 @@ class RentalIncome(models.Model):
     ))
     increasepercentage = models.IntegerField(('Increase Percentage (%)'))
     averagerentalincomepermonth = models.FloatField(('Average Rental Income Per Month'),null=True)
-    amount = models.IntegerField(('Amount'),null=True)
+    # amount = models.IntegerField(('Amount'),null=True)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
         return self.rentalincreasetype
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for i in range(1, 31):
+            year = f'year_{i}_amount'
+            setattr(self, year, models.FloatField())
     
 class comparison(models.Model):
     description = models.CharField(max_length=255, null=True)
@@ -355,7 +381,7 @@ class Property(models.Model):
     #determine the property value
     def determine_property_value(self, years=30):
         purchase_price = self.purchase_price
-        capital_growth_rate = capital_growth_rate = self.CapitalGrowthRates.rate if self.CapitalGrowthRates else 0
+        capital_growth_rate = self.CapitalGrowthRates.rate if self.CapitalGrowthRates else 0
         property_value_list = []
         for year in range(1, years+1):
             property_value = purchase_price * (1 + capital_growth_rate/100)**year
@@ -366,8 +392,14 @@ class Property(models.Model):
     # print(property_value)
     #determine loan amount
     def determine_outstanding_loan_per_year(self):
-        interest_rate = self.InterestRates.averageinterestrate/100
-        term = self.InterestRates.term
+        if self.InterestRates:
+            interest_rate = self.InterestRates.averageinterestrate/100 if self.InterestRates.averageinterestrate else 0
+            term = self.InterestRates.term if self.InterestRates.term else 0
+        else:
+            interest_rate = 0
+            term = 30
+        # interest_rate = self.InterestRates.averageinterestrate/100 if self.InterestRates.averageinterestrate else 0
+        
         outstanding_loan_per_year = []
         for year in range(1, term + 1):
             outstanding_loan = self.bond_value * (1 + interest_rate)**year
@@ -383,8 +415,12 @@ class Property(models.Model):
             return equity_per_year
     #determine loan interest
     def determine_loan_interest(self):
-        interest_rate = self.InterestRates.rate/100
-        term = self.InterestRates.term
+        if self.InterestRates:
+            interest_rate = self.InterestRates.averageinterestrate/100 if self.InterestRates.averageinterestrate else 0
+            term = self.InterestRates.term if self.InterestRates.term else 0
+        else:
+            interest_rate = 0
+            term = 30
         outstanding_loan_per_year = self.determine_outstanding_loan_per_year()
         loan_interest = []
         for year in range(1, term + 1):
@@ -393,8 +429,12 @@ class Property(models.Model):
         return loan_interest
     #use total loan payment function instead of ousttanding loan
     def determine_loan_principal(self):
-        interest_rate = self.InterestRates.rate/100
-        term = self.InterestRates.term
+        if self.InterestRates:
+            interest_rate = self.InterestRates.averageinterestrate/100 if self.InterestRates.averageinterestrate else 0
+            term = self.InterestRates.term if self.InterestRates.term else 0
+        else:
+            interest_rate = 0
+            term = 30
         outstanding_loan_per_year = self.determine_outstanding_loan_per_year()
         loan_interest = self.determine_loan_interest()
         loan_principal = []
@@ -405,33 +445,43 @@ class Property(models.Model):
     #function to calculate the total loan amount....revisit this formula
     def determine_total_loan_payment_per_year(self, interest_change_year=None, new_interest_rate=None):
         bond_price = self.bond_value
-        interest_rate = self.InterestRates.rate/100
-        term = self.InterestRates.term
+        if self.InterestRates:
+            interest_rate = self.InterestRates.averageinterestrate/100 if self.InterestRates.averageinterestrate else 0
+            term = self.InterestRates.term if self.InterestRates.term else 0
+        else:
+            interest_rate = 0
+            term = 30
         
         payments_per_year = []
         for i in range(term):
             if interest_change_year is None or new_interest_rate is None:
-                payment = bond_price * interest_rate (1 - (1 + interest_rate)**(term - i))
+                payment = bond_price * interest_rate *(1 - (1 + interest_rate)**(term - i))
             else:
                 if interest_change_year > term:
                     raise ValueError("Interest change year cannot be greater than loan term.")
                 if i == interest_change_year - 1:
                     interest_rate = new_interest_rate / 100
-                payment = bond_price * interest_rate  (1 - (1 + interest_rate)**(term - i))
+                payment = bond_price * interest_rate * (1 - (1 + interest_rate)**(term - i))
             payments_per_year.append(payment)
         return payments_per_year
     #code to determine property expenses.
     #call this on an instance property_expenses = property_object.determine_property_expenses()
-    def determine_gross_rental_income(self, years=30):
-        rental_income = self.RentalIncome.amount * 12
-        management_expenses = self.managementexpenses.expenses * 12
-        gross_rental_income = []
-        for year in range(1, years+1):
-            income = rental_income - management_expenses
-            gross_rental_income.append(income)
-        return gross_rental_income
+    # def determine_gross_rental_income(self, years=30):
+    #     rental_income = self.RentalIncome.amount * 12
+    #     management_expenses = self.managementexpenses.expenses * 12
+    #     gross_rental_income = []
+    #     for year in range(1, years+1):
+    #         income = rental_income - management_expenses
+    #         gross_rental_income.append(income)
+    #     return gross_rental_income
     def determine_property_expenses_per_year(self, years=30):
-        monthly_expense = self.MonthlyExpense.value
+        if self.MonthlyExpense:
+            monthly_expense = list(self.MonthlyExpense.value if self.MonthlyExpense.value else 0)
+           
+        else:
+            monthly_expense = 0
+            
+        
         property_expenses_per_year = []
         for year in range(1, years+1):
             expenses = monthly_expense * 12
@@ -440,28 +490,55 @@ class Property(models.Model):
     #determine the total property expenses per year
     def determine_total_property_expenses_per_year(self, years=30):
         property_expenses_per_year = self.determine_property_expenses_per_year(years)
-        special_expenses = self.specialexpenses.amount
-        ownrenovations = self.OwnRenovations.amount
-        LoanRenovations = self.LoanRenovations.amount
-        repairs_maintenance = self.repairs_maintenance.amount
+        if self.MonthlyExpense:
+            special_expenses = list(self.specialexpenses.amount if self.specialexpenses.amount else 0)
+           
+        else:
+            special_expenses = [0] * years
+
+            
+        if self.OwnRenovations:
+            ownrenovations = list(self.OwnRenovations.amount if self.OwnRenovations.amount else 0)
+           
+        else:
+            ownrenovations = [0] * years
+        if self.LoanRenovations:
+            ownrenovations = list(self.LoanRenovations.amount if self.LoanRenovations.amount else 0)
+           
+        else:
+            loanrenovations = [0] * years
+        if self.repairs_maintenance:
+            
+            repairsmaintenance = list(self.repairs_maintenance.amount if self.repairs_maintenance.amount else 0)
+           
+        else:
+            repairsmaintenance = [0] * years
+        
+       
         total_property_expenses_per_year = []
         for year in range(1, years+1):
-            expenses = special_expenses[year-1] + property_expenses_per_year[year-1] + LoanRenovations[year-1]+ ownrenovations[year-1] + repairs_maintenance[year-1]
+            expenses = special_expenses[year-1] + property_expenses_per_year[year-1] + loanrenovations[year-1]+ ownrenovations[year-1] + repairsmaintenance[year-1]
             total_property_expenses_per_year.append(expenses)
         return total_property_expenses_per_year
     #determine pre-tax cash flow
     def determine_pre_tax_cash_flow_per_year(self, years=30):
         gross_rental_income = self.determine_gross_rental_income(years)
         total_property_expenses = self.determine_total_property_expenses_per_year(years)
-        pre_tax_cash_flow_per_year = []
-        for year in range(1, years+1):
-            cash_flow = gross_rental_income - total_property_expenses[year-1]
-            pre_tax_cash_flow_per_year.append(cash_flow)
-        return pre_tax_cash_flow_per_year
+
+        pre_tax_cash_flow = []
+        for year in range(1, years + 1):
+            cash_flow = gross_rental_income[year - 1] - total_property_expenses[year - 1]
+            pre_tax_cash_flow.append(cash_flow)
+
+        return pre_tax_cash_flow
     #determine cash outflow initial
     def determine_initial_capital_outflow_per_year(self, years=30):
         deposit = self.deposit
-        other_costs = self.other_cost.other_costs
+        if self.other_cost:
+            other_costs = self.other_cost.other_costs
+        else:
+            other_costs = 0
+        # other_costs = self.other_cost.other_costs
         initial_capital_outflow_per_year = []
         for year in range(1, years+1):
             outflow = deposit + other_costs
@@ -478,7 +555,7 @@ class Property(models.Model):
         return pre_tax_cash_on_cash
     #total taxable deductions
     def determine_taxable_deductions(self, years=30):
-        loan_interest = self.determine_loan_interest(years)
+        loan_interest = self.determine_loan_interest()
         total_property_expenses = self.determine_total_property_expenses_per_year(years)
         taxable_deductions = []
         for year in range(1, years+1):
@@ -494,8 +571,15 @@ class Property(models.Model):
             income_per_month.append(income)
         return income_per_month
     def determine_gross_rental_income(self, years=30):
-        rental_income = self.RentalIncome.amount * 12
-        management_expenses = self.managementexpenses.expenses * 12
+        if self.RentalIncome:
+            rental_income =list(self.RentalIncome.amount * 12 if self.RentalIncome.amount * 12 else 0)
+            management_expenses = list(self.managementexpenses.managementfeeperyear * 12 if self.managementexpenses.managementfeeperyear * 12 else 0)
+        else:
+            rental_income = 0
+            management_expenses = 0
+        # rental_income = self.RentalIncome.get(property=self).amount * 12
+
+        
         gross_rental_income = []
         for year in range(1, years+1):
             income = rental_income - management_expenses
@@ -504,8 +588,19 @@ class Property(models.Model):
     #depreciation
     def calculate_depreciation(self, depreciation_type='straight'):
         if depreciation_type == 'straight':
-            rate = self.Depreciation.rate/100
-            years = self.Depreciation.years
+            
+            try:
+                
+                rate = self.Depreciation.rate/100
+                
+            except AttributeError:
+                rate = 0
+            try:
+                
+                rate = self.Depreciation.years
+                
+            except AttributeError:
+                years = 30
             purchase_date = self.purchase_date
             purchase_price = self.purchase_price
             
@@ -544,7 +639,7 @@ class Property(models.Model):
         return tax_credits
     #after tax cash flow
     def determine_after_tax_cashflow(self, years=30):
-        pre_tax_cashflow = self.determine_pre_tax_cashflow(years)
+        pre_tax_cashflow = self.determine_pre_tax_cash_flow_per_year(years)
         tax_credits = self.determine_tax_credits(years)
         after_tax_cashflow = []
         for year in range(1, years+1):
