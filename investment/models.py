@@ -456,13 +456,13 @@ class Property(models.Model):
         payments_per_year = []
         for i in range(term):
             if interest_change_year is None or new_interest_rate is None:
-                payment = (bond_price * ( interest_rate/12 * (1 + interest_rate/12)**term * 12)/ ( (1 + interest_rate/12)**term * 12) - 1)* 12(bond_price * ( interest_rate/12 * (1 + interest_rate/12)**term - i * 12)/ ( (1 + interest_rate/12)**term - i * 12) - 1)* 12
+                payment = bond_price * (interest_rate/12 * ((1 + interest_rate/12)**(term -i * 12)) / (((1 + interest_rate/12)**(term - i * 12)) - 1)) * 12
             else:
                 if interest_change_year > term:
                     raise ValueError("Interest change year cannot be greater than loan term.")
                 if i == interest_change_year - 1:
                     interest_rate = new_interest_rate / 100
-                payment = (self.bond_value * ( interest_rate/12(1 + interest_rate/12)**term * 12)/ ( (1 + interest_rate/12)**term * 12) - 1)* 12
+                payment = bond_price * (interest_rate/12 * ((1 + interest_rate/12)**(term -i * 12)) / (((1 + interest_rate/12)**(term - i * 12)) - 1)) * 12
             payments_per_year.append(payment)
         return payments_per_year
     #code to determine property expenses.
