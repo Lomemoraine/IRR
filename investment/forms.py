@@ -91,7 +91,7 @@ class InterestRateForm(forms.ModelForm):
             self.fields[year] = forms.FloatField()
     class Meta:
         model = InterestRates
-        fields = ['type', 'rate', 'averageinterestrate','term']
+        fields = ['type', 'averageinterestrate','term']
 class InflationRateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
