@@ -175,9 +175,9 @@ class CapitalGrowthRates(models.Model):
         super().__init__(*args, **kwargs)
         for i in range(1, 31):
             year_rate = f'year_{i}_rate'
-            year_amount = f'year_{i}_amount'
+           
             setattr(self, year_rate, models.FloatField())
-            setattr(self, year_amount, models.FloatField())
+           
 class MonthlyExpense(models.Model):
     
     description = models.CharField(max_length=255, null=True)
@@ -382,7 +382,7 @@ class Property(models.Model):
     #determine the property value
     def determine_property_value(self, years=30):
         purchase_price = self.purchase_price
-        capital_growth_rate = self.CapitalGrowthRates.rate if self.CapitalGrowthRates else 0
+        capital_growth_rate = getattr(self.CapitalGrowthRates,f'year_{year}_rate',0) / 100 if getattr(self.CapitalGrowthRates,f'year_{year}_rate',0) else 0
         property_value_list = []
         for year in range(1, years+1):
             property_value = purchase_price * (1 + capital_growth_rate/100)**year
@@ -394,7 +394,7 @@ class Property(models.Model):
     #determine total loan amount
     def determine_outstanding_loan_per_year(self):
         if self.InterestRates:
-            interest_rate = self.InterestRates.year if self.InterestRates.year else 0
+            interest_rate = getattr(self.InterestRates,f'year_{t}_rate'/100) if getattr(self.InterestRates,f'year_{t}_rate'/100) else 0
             term = self.InterestRates.term if self.InterestRates.term else 0
         else:
             interest_rate = 0
@@ -402,9 +402,13 @@ class Property(models.Model):
         # interest_rate = self.InterestRates.averageinterestrate/100 if self.InterestRates.averageinterestrate else 0
         total_loan =self.determine_total_loan_payment_per_year()/12
         outstanding_loan_per_year = []
-        for year in range(1, term + 1):
-            outstanding_loan = (total_loan * (1-(1 + interest_rate/12)**(-(term - year) * 12))/(interest_rate/12))
-            outstanding_loan_per_year.append(outstanding_loan)
+        for t in range(1, term + 1):
+            if t > term:
+                outstanding_loan_per_year.append(0)
+            else:
+                
+                outstanding_loan = (total_loan * (1-(1 + interest_rate/12)**(-(term - t) * 12))/(interest_rate/12))
+                outstanding_loan_per_year.append(outstanding_loan)
         return outstanding_loan_per_year
     def determine_equity_per_year(self):
         property_value_per_year = self.determine_property_value()
@@ -417,53 +421,63 @@ class Property(models.Model):
     #determine loan interest
     def determine_loan_interest(self):
         if self.InterestRates:
-            interest_rate = self.InterestRates.averageinterestrate/100 if self.InterestRates.averageinterestrate else 0
+           
             term = self.InterestRates.term if self.InterestRates.term else 0
         else:
-            interest_rate = 0
+            
             term = 30
-        outstanding_loan_per_year = self.determine_outstanding_loan_per_year()
+        total_loan = self.determine_total_loan_payment_per_year()
+        loan_principal = self.determine_loan_interest()
         loan_interest = []
         for year in range(1, term + 1):
-            interest = outstanding_loan_per_year[year-1] * interest_rate
+            interest = total_loan[year-1] * loan_principal[year-1]
             loan_interest.append(interest)
         return loan_interest
     #use total loan payment function instead of ousttanding loan
     def determine_loan_principal(self):
         if self.InterestRates:
-            interest_rate = self.InterestRates.averageinterestrate/100 if self.InterestRates.averageinterestrate else 0
+           
             term = self.InterestRates.term if self.InterestRates.term else 0
         else:
-            interest_rate = 0
+            
             term = 30
         outstanding_loan_per_year = self.determine_outstanding_loan_per_year()
-        loan_interest = self.determine_loan_interest()
+        
         loan_principal = []
         for year in range(1, term + 1):
-            principal = outstanding_loan_per_year[year-1] - loan_interest[year-1]
+            principal = outstanding_loan_per_year[year-1] - outstanding_loan_per_year[year]
+            # total_loan_per_year[t-1] - total_loan_per_year[t]
             loan_principal.append(principal)
         return loan_principal
     #function to calculate the total loan amount....revisit this formula
     def determine_total_loan_payment_per_year(self, interest_change_year=None, new_interest_rate=None):
         bond_price = self.bond_value
         if self.InterestRates:
-            interest_rate = self.InterestRates.year/100 if self.InterestRates.year else 0
+            # current_year = 2 # let's say this is the current year you are calculating for
+            # year_amount_field = f'year_{current_year}_amount
+            interest_rate = getattr(self.InterestRates,f'year_{i}_rate'/100) if getattr(self.InterestRates,f'year_{i}_rate'/100) else 0
+            
+            # interest_rate = getattr(self.InterestRates, year_amount_field) / 100 if getattr(self.InterestRates, year_amount_field) else 0
             term = self.InterestRates.term if self.InterestRates.term else 0
         else:
             interest_rate = 0
             term = 30
-        
+
         payments_per_year = []
         for i in range(term):
-            if interest_change_year is None or new_interest_rate is None:
-                payment = bond_price * (interest_rate/12 * ((1 + interest_rate/12)**(term -i * 12)) / (((1 + interest_rate/12)**(term - i * 12)) - 1)) * 12
+            if i > term:
+                payments_per_year.append(0)
             else:
-                if interest_change_year > term:
-                    raise ValueError("Interest change year cannot be greater than loan term.")
-                if i == interest_change_year - 1:
-                    interest_rate = new_interest_rate / 100
-                payment = bond_price * (interest_rate/12 * ((1 + interest_rate/12)**(term -i * 12)) / (((1 + interest_rate/12)**(term - i * 12)) - 1)) * 12
-            payments_per_year.append(payment)
+                if interest_change_year is None or new_interest_rate is None:
+                    payment = bond_price * (interest_rate/12 * ((1 + interest_rate/12)**(term -i * 12)) / (((1 + interest_rate/12)**(term - i * 12)) - 1)) * 12
+                else:
+                    if interest_change_year > term:
+                        raise ValueError("Interest change year cannot be greater than loan term.")
+                    if i == interest_change_year - 1:
+                        interest_rate = new_interest_rate / 100
+                    payment = bond_price * (interest_rate/12 * ((1 + interest_rate/12)**(term -i * 12)) / (((1 + interest_rate/12)**(term - i * 12)) - 1)) * 12
+                payments_per_year.append(payment)
+                bond_price -= payment#to get the remaining loan to be used for the next iteration
         return payments_per_year
     #code to determine property expenses.
     #call this on an instance property_expenses = property_object.determine_property_expenses()
@@ -492,25 +506,25 @@ class Property(models.Model):
     def determine_total_property_expenses_per_year(self, years=30):
         property_expenses_per_year = self.determine_property_expenses_per_year(years)
         if self.MonthlyExpense:
-            special_expenses = list(self.specialexpenses.amount if self.specialexpenses.amount else 0)
+            special_expenses = list(getattr(self.specialexpenses, f'year_{year}_amount') if getattr(self.specialexpenses, f'year_{year}_amount') else 0)
            
         else:
             special_expenses = [0] * years
 
             
         if self.OwnRenovations:
-            ownrenovations = list(self.OwnRenovations.amount if self.OwnRenovations.amount else 0)
+            ownrenovations = list(getattr(self.OwnRenovations, f'year_{year}_amount') if getattr(self.OwnRenovations, f'year_{year}_amount') else 0)
            
         else:
             ownrenovations = [0] * years
         if self.LoanRenovations:
-            ownrenovations = list(self.LoanRenovations.amount if self.LoanRenovations.amount else 0)
+            ownrenovations = list(getattr(self.LoanRenovations, f'year_{year}_amount') if getattr(self.LoanRenovations, f'year_{year}_amount') else 0)
            
         else:
             loanrenovations = [0] * years
         if self.repairs_maintenance:
             
-            repairsmaintenance = list(self.repairs_maintenance.amount if self.repairs_maintenance.amount else 0)
+            repairsmaintenance = list(getattr(self.repairs_maintenance, f'year_{year}_amount') if getattr(self.repairs_maintenance, f'year_{year}_amount') else 0)
            
         else:
             repairsmaintenance = [0] * years

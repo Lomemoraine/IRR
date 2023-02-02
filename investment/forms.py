@@ -110,9 +110,9 @@ class CapitalGrowthRatesForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for i in range(1, 31):
             year_rate = f'year_{i}_rate'
-            year_amount = f'year_{i}_amount'
+           
             self.fields[year_rate] = forms.FloatField()
-            self.fields[year_amount] = forms.FloatField
+            
         
     class Meta:
         model = CapitalGrowthRates

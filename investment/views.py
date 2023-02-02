@@ -341,15 +341,3 @@ def comparisonview(request,pk):
     else:
         myform = comparisonForm()
     return render(request, 'users/comparison.html', {'myform': myform})
-
-# def interestview(request):
-#     property = Property.objects.all()
-
-#     if request.method == 'POST':
-#         data = request.POST
-    
-#             return redirect('home')
-
-#     context = {'property': property}
-
-#     return render(request, 'users/interestrates.html', context=context)
