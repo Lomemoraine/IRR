@@ -19,6 +19,8 @@ django-tailwind = "*"
 npm = "*"
 crispy-tailwind = "*"
 scipy = "*"
+tzdata = "*"
+pytz = "*"
 
 [dev-packages]
 

@@ -91,16 +91,16 @@ WSGI_APPLICATION = 'mainpage.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'irr',
-        'USER': 'raine',
-        'PASSWORD':'gift1234',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'irr',
+    #     'USER': 'raine',
+    #     'PASSWORD':'gift1234',
+    # }
 }
 
 # Password validation
@@ -130,7 +130,8 @@ INTERNAL_IPS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Africa/Nairobi'
+# TIME_ZONE = 'Africa/Nairobi'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
