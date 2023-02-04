@@ -7,11 +7,6 @@ from cloudinary.models import CloudinaryField
 # from scipy.optimize import root
 import numpy_financial as npf
 
-
-
-
-
-
 class CustomUserManager(BaseUserManager):
 
     def _create_user(self, email, password, **extra_fields):
@@ -121,7 +116,6 @@ class InterestRates(models.Model):
     term = models.IntegerField(null=True)
     # years = models.IntegerField(null=True,editable=False)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
     def __str__(self):
         return str(self.term)
     def __init__(self, *args, **kwargs):
@@ -299,9 +293,6 @@ class comparison(models.Model):
     description = models.CharField(max_length=255, null=True)
     rate = models.IntegerField(('Rate (%)'),null=True,default=0)
     # property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-    
-    
-
     def __str__(self):
         return self.description
   

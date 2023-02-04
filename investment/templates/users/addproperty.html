@@ -3,7 +3,8 @@
 {% block content %}
 
 <section class="p-6 dark:bg-gray-800 dark:text-gray-50">
-    <form novalidate="" action="" method="POST" class="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid">
+    <form action="" class="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" method="POST"
+          novalidate="">
         {% csrf_token %}
         <fieldset class="grid grid-cols-4 gap-6 p-6 rounded-md shadow-sm dark:bg-gray-900">
             <div class="space-y-2 col-span-full lg:col-span-1">
@@ -23,23 +24,24 @@
                     {{ property_form.purchase_price|as_crispy_field }}
                 </div>
                 <div class="col-span-full sm:col-span-3">
-                    {{ property_form.deposit|as_crispy_field }}
-                </div>
-                <div class="col-span-full sm:col-span-3">
                     {{ property_form.City|as_crispy_field }}
                 </div>
                 <div class="col-span-full sm:col-span-3">
                     {{ property_form.bond_value|as_crispy_field }}
                 </div>
+                <div class="col-span-full sm:col-span-3">
+                    {{ property_form.deposit|as_crispy_field }}
+                </div>
+
                 <div class="col-span-full">
                     <div class="col-span-full sm:col-span-3">
                         {{ property_form.notes|as_crispy_field }}
                     </div>
                 </div>
-                <button type="submit"
-                    class="w-full px-8 py-3 font-semibold rounded-md dark:bg-gray-100 dark:text-gray-900">
-                Submit
-            </button>
+                <button class="w-screen px-8 py-3 font-semibold rounded-md dark:bg-gray-100 dark:text-gray-900"
+                        type="submit">
+                    Submit
+                </button>
             </div>
         </fieldset>
     </form>
@@ -55,6 +57,7 @@
     }
     purchase_price.addEventListener("change", calculate);
     deposit.addEventListener("change", calculate);
+
 </script>
 <!--<div class="container-fluid property-list">-->
 <!--    <div class="row">-->

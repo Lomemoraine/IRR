@@ -137,7 +137,6 @@ def addimages(request):
             return redirect('interestrates')
 
     context = {'property': property}
-
     return render(request, 'users/addimages.html', context=context)
 
 
