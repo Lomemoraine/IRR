@@ -4,16 +4,10 @@
 
 <section class="p-2 h-screen dark:bg-gray-800 dark:text-gray-50">
     <form action="" class="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" method="POST"
-          novalidate="">
+          novalidate="" enctype="multipart/form-data">
         {% csrf_token %}
         <h2 class="font-medium mb-2 text-center dark:text-gray-200">Add Images</h2>
         <fieldset class="p-6 m-auto place-content-center lg:w-half sm:w-full rounded-md shadow-sm dark:bg-gray-900">
-            <select class="form-control mt-4" name="property">
-                <option value='none'>Select a Property...</option>
-                {% for property in property %}
-                <option value='{{property.id}}'>{{property.name}}</option>
-                {% endfor %}
-            </select>
             <div class="form-group mt-4">
                 <label>Upload images</label>
                 <input class="form-control-file" multiple name="images" required type="file">

@@ -6,51 +6,74 @@
             <div class="row">
                 <div class="col-4 mt-4">
                     <h1 class="dark:text-gray-700">{{property_obj.name}}</h1>
-                    <h5>Property Type - <span class="small">{{ property_obj.property_type }}</span></h5>
-                    <h5>Purchase date - <span class="small">{{ property_obj.purchase_date }}</span></h5>
-                    <h5>Purchase price - <span class="small">{{ property_obj.purchase_price }}</span></h5>
-                    <h5>Deposit - <span class="small">{{ property_obj.deposit }}</span></h5>
-                    <h5>Location - <span
-                            class="small">{{ property_obj.City }}, {{ property_obj.City.country }}</span></h5>
-                    <h5>Other costs - <span class="small">{{ property_obj.other_cost }}</span></h5>
-                    <h5>Notes - <span class="small">{{ property_obj.notes }}</span></h5>
-                    <h5>
-                
-                        <a href="{% url 'editproperty' property_obj.pk %}" class="btn btn-dark">Edit this Property</a>
-                
-                    </h5>
-                    {#continuation thurs#}
-                    <h5>
-                
-                        <a href="" class="btn btn-dark">Delete this Property</a>
-                        <a href="" class="btn btn-dark">See all properties</a>
-                
-                    </h5>
-                    <h5 class="text-center">See  property details</h5>
-                    <ul>
-                
-                      <li>  <a href="" class="btn btn-dark">Results</a></li>
-                      <li> <a href="" class="btn btn-dark">Photograpgh</a></li>
-                      <li> <a href="" class="btn btn-dark">Value</a></li>
-                      <li> <a href="" class="btn btn-dark">Interest Bill</a></li>
-                      <li><a href="" class="btn btn-dark">Cash Flow</a></li>
+                    <div>
+                        <p class="text-lg font-medium m-0">Property Type - <span class="">{{ property_obj.property_type }}</span>
+                        </p>
+                        <details>
+                            <summary class="py-2 outline-none cursor-pointer">Purchase Info</summary>
+                            <div class="px-4 pb-1">
+                                <p class="text-sm m-0">Purchase date - <span
+                                        class="">{{ property_obj.purchase_date }}</span></p>
+                                <p class="text-sm m-0">Purchase price - <span
+                                        class="">{{ property_obj.purchase_price }}</span></p>
+                                <p class="text-sm m-0">Deposit - <span class="">{{ property_obj.deposit }}</span></p>
+                                <p class="text-sm m-0">Location - <span
+                                        class="">{{ property_obj.City }}, {{ property_obj.City.country }}</span></p>
+                                <p class="text-sm m-0">Other costs - <span class="">{{ property_obj.other_cost }}</span>
+                                </p>
+                            </div>
+                        </details>
+                        <details>
+                            <summary class="py-2 outline-none cursor-pointer">Notes</summary>
+                            <div class="px-4 pb-4">{{ property_obj.notes }}</div>
+                        </details>
+                    </div>
 
-                
-                    </ul>
+                    <p class="my-3">
+                        <a class="btn btn-dark" href="{% url 'editproperty' property_obj.pk %}">Edit</a>
+                        <a class="btn btn-dark" href="">Delete</a>
+                        <a class="btn btn-dark" href="">View All</a>
+                    </p>
+                    <hr class="h-2">
+                    <h5 class="py-2 px-1">See property details</h5>
+                    <div class="flex justify-content">
+                        <ul>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'interestrates' property_obj.id %}">
+                                Interest Rate Options</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'addimages' property_obj.id %}">
+                                Add Images</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'inflationrates' property_obj.id %}">
+                                Inflation Rates</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'depreciation' property_obj.id %}">
+                                Depreciation</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Capital Growth Rate</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Monthly Expenses</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Renovations (Own)</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Renovations (Loan)</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Repairs & Maintenance</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Special Expenses</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Tax Options</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Management Expenses</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Additional Loan Payments</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Capital Income</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Rental Income</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="">Comparison</a></li>
+                        </ul>
+                    </div>
                     <br>
 
                     {% for image in image %}
                     <p>
-                        <a class="btn btn-dark btn-lg btn-block" data-toggle="collapse" href="#collapseExample"
-                           role="button"
-                           aria-expanded="false" aria-controls="collapseExample">
+                        <a aria-controls="collapseExample" aria-expanded="false" class="btn btn-dark btn-lg btn-block"
+                           data-toggle="collapse"
+                           href="#collapseExample" role="button">
                             View Image
                         </a>
                     </p>
                     <div class="collapse" id="collapseExample">
                         <div class="card card-body">
-                            <img class="d-block w-100 property-img-page" src="{{image.image.url}}"
-                                 alt="Third slide">
+                            <img alt="Third slide" class="d-block w-100 property-img-page"
+                                 src="{{image.image.url}}">
                         </div>
                     </div>
                     {% endfor %}
@@ -77,9 +100,9 @@
                         <tr>
                             <th scope="row"></th>
                             <td>Property Value</td>
-                            
+
                             {% for value in property_obj.property_value_list|slice:":3" %}
-                                <td>{{ value }}</td>
+                            <td>{{ value }}</td>
                             {% endfor %}
                         </tr>
                         <tr>
@@ -287,11 +310,8 @@
                             <td>R00.00</td>
 
                         </tr>
-                        
-                        
-                        
-                       
-                      
+
+
                         </tbody>
                     </table>
                 </div>
