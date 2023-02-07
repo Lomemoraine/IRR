@@ -46,18 +46,30 @@
                                 Inflation Rates</a></li>
                             <li><a class="btn btn-dark m-1 w-full" href="{% url 'depreciation' property_obj.id %}">
                                 Depreciation</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Capital Growth Rate</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Monthly Expenses</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Renovations (Own)</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Renovations (Loan)</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Repairs & Maintenance</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Special Expenses</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Tax Options</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Management Expenses</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Additional Loan Payments</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Capital Income</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Rental Income</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="">Comparison</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'capitalgrowth' property_obj.id %}">
+                                Capital Growth Rate</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'monthlyexpense' property_obj.id %}">
+                                Monthly Expenses</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'ownrenovations' property_obj.id %}">
+                                Renovations (Own)</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'loanrenovations' property_obj.id %}">
+                                Renovations (Loan)</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'repairs_maintenance' property_obj.id %}">
+                                Repairs & Maintenance</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'specialexpenses' property_obj.id %}">
+                                Special Expenses</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'taxoptions' property_obj.id %}">
+                                Tax Options</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'managementexpenses' property_obj.id %}">
+                                Management Expenses</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'Additionalloanpayments' property_obj.id %}">
+                                Additional Loan Payments</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'Capitalincome' property_obj.id %}">
+                                Capital Income</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'RentalIncome' property_obj.id %}">
+                                Rental Income</a></li>
+                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'comparison' property_obj.id %}">
+                                Comparison</a></li>
                         </ul>
                     </div>
                     <br>

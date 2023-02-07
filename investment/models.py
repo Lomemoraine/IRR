@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import date,timedelta
+from datetime import date, timedelta
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
@@ -56,8 +56,8 @@ class CustomUser(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, null=True, on_delete=models.CASCADE)
-    prof_pic = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
-                                       '/x3mgnqmbi73lten4ewzv.png')
+    prof_pic = CloudinaryField('images', default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
+                                                 '/x3mgnqmbi73lten4ewzv.png')
     bio = models.TextField(blank=True, max_length=255, default='please update your bio')
     f_name = models.CharField(blank=True, max_length=255)
     l_name = models.CharField(blank=True, max_length=50)
@@ -126,9 +126,9 @@ class Property(models.Model):
 
 
 class Images(models.Model):
-    image = CloudinaryField('images',default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
-                                    '/x3mgnqmbi73lten4ewzv.png')
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)\
+    image = CloudinaryField('images', default='http://res.cloudinary.com/dim8pysls/image/upload/v1639001486'
+                                              '/x3mgnqmbi73lten4ewzv.png')
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
 
 
 class InterestRates(models.Model):
@@ -189,34 +189,36 @@ class OwnRenovations(models.Model):
     year = models.PositiveSmallIntegerField()
     amount = models.FloatField()
     income_per_year = models.FloatField()
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
 class LoanRenovations(models.Model):
     year = models.PositiveSmallIntegerField()
     amount = models.FloatField()
     income_per_year = models.FloatField()
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
 class RepairsMaintenance(models.Model):
-    year = models.PositiveSmallIntegerField
-    amount = models.IntegerField(null=True,default=0)
+    year = models.PositiveSmallIntegerField(null=True, default=0)
+    amount = models.IntegerField(null=True, default=0)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
 class SpecialExpenses(models.Model):
-    year = models.PositiveSmallIntegerField
+    year = models.PositiveSmallIntegerField(null=True, default=0)
     amount = models.IntegerField(null=True, default=0)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
 class TaxOptions(models.Model):
-    taxation_capacity = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+    taxation_capacity = models.CharField(null=True, max_length=50, default='Interest & capital', choices=(
         ('Personal', 'Personal'),
         ('close corporation', 'close corporation'),
         ('private company', 'private company'),
         ('trust', 'trust'),
     ))
-    method = models.CharField(null=True,max_length=50,default='Interest & capital', choices=(
+    method = models.CharField(null=True, max_length=50, default='Interest & capital', choices=(
         ('0%', '0%'),
         ('Marginal', 'Marginal'),
         ('Use Tax Table', 'Use Tax Table'),
@@ -231,38 +233,37 @@ class TaxOptions(models.Model):
 
 
 class ManagementExpenses(models.Model):
-    vacancy_rate = models.IntegerField(null=True,default=0)
-    management_fee = models.IntegerField(null=True,default=0)
+    vacancy_rate = models.IntegerField(null=True, default=0)
+    management_fee = models.IntegerField(null=True, default=0)
     management_fee_per_year = models.IntegerField()
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
 class AdditionalLoanPayments(models.Model):
-    year = models.PositiveSmallIntegerField()
+    year = models.PositiveSmallIntegerField(null=True, default=0)
     amount = models.IntegerField(null=True, default=0)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
 class CapitalIncome(models.Model):
-    year = models.PositiveSmallIntegerField()
-    amount = models.IntegerField(null=True,default=0)
+    year = models.PositiveSmallIntegerField(null=True, default=0)
+    amount = models.IntegerField(null=True, default=0)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
 class RentalIncome(models.Model):
-    rental_increase_type = models.CharField(('Type'),null=True,max_length=50,default='Interest & capital', choices=(
+    rental_increase_type = models.CharField(null=True, max_length=50, default='Interest & capital', choices=(
         ('capital', 'capital'),
         ('inflation', 'inflation'),
         ('percent', 'percent'),
     ))
-    increase_percentage = models.IntegerField(('Increase Percentage (%)'))
-    average_rental_income_per_month = models.FloatField(('Average Rental Income Per Month'),null=True)
-    amount = models.IntegerField(('Amount'),null=True)
+    increase_percentage = models.IntegerField(null=True, default=0)
+    average_rental_income_per_month = models.FloatField(null=True, default=True)
+    amount = models.IntegerField(default=True, null=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
-class comparison(models.Model):
+class Comparison(models.Model):
     description = models.CharField(max_length=255, null=True)
-    rate = models.IntegerField(('Rate (%)'),null=True,default=0)
+    rate = models.IntegerField(null=True, default=0)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
-

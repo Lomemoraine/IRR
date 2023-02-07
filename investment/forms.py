@@ -80,10 +80,12 @@ class InterestRateForm(forms.ModelForm):
 
 
 class EditpropertyForm(forms.ModelForm):
-     class Meta:
+    class Meta:
         model = Property
         fields = ['name', 'property_type', 'purchase_price', 'deposit', 'city',
                   'bond_value', 'notes']
+
+
 #
 
 class InflationRateForm(forms.ModelForm):
@@ -91,112 +93,82 @@ class InflationRateForm(forms.ModelForm):
         model = InflationRates
         fields = ['average_interest_rate']
 
+
 class DepreciationForm(forms.ModelForm):
     class Meta:
         model = Depreciation
         fields = ['description', 'type', 'value', 'rate', 'years']
 
 
-# class CapitalGrowthRatesForm(forms.ModelForm):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for i in range(1, 31):
-#             year_rate = f'year_{i}_rate'
-#
-#             self.fields[year_rate] = forms.FloatField()
-#
-#
-#     class Meta:
-#         model = CapitalGrowthRates
-#         fields = []
-#
-# class MonthlyExpenseForm(forms.ModelForm):
-#     # should give a user freedom to add rows as they wish using javascript or django formset
-#     class Meta:
-#         model =   MonthlyExpense
-#         fields = ['description','value']
-# class OwnRenovationsForm(forms.ModelForm):
-#     class Meta:
-#         model =   OwnRenovations
-#         fields = []
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for i in range(1, 31):
-#             year_rate = f'year_{i}_incomeperyear'
-#             year_amount = f'year_{i}_amount'
-#             self.fields[year_rate] = forms.FloatField()
-#             self.fields[year_amount] = forms.FloatField()
-# class LoanRenovationsForm(forms.ModelForm):
-#     class Meta:
-#         model =   LoanRenovations
-#         fields = []
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for i in range(1, 31):
-#             year_rate = f'year_{i}_incomeperyear'
-#             year_amount = f'year_{i}_amount'
-#             self.fields[year_rate] = forms.FloatField()
-#             self.fields[year_amount] = forms.FloatField
-# class repairs_maintenanceForm(forms.ModelForm):
-#     class Meta:
-#         model =   repairs_maintenance
-#         fields = []
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for i in range(1, 31):
-#             year = f'year_{i}_amount'
-#             self.fields[year] = forms.FloatField()
-#
-# class specialexpensesForm(forms.ModelForm):
-#     class Meta:
-#         model = specialexpenses
-#         fields = []
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for i in range(1, 31):
-#             year = f'year_{i}_amount'
-#             self.fields[year] = forms.FloatField()
-#
-# class taxoptionsForm(forms.ModelForm):
-#     class Meta:
-#         model =  taxoptions
-#         fields = ['taxationcapacity','method','taxrate','annualtaxableincome','maximumtaxrate','income','rate']
-#
-# class managementexpensesForm(forms.ModelForm):
-#     class Meta:
-#         model =  managementexpenses
-#         fields = ['vacancyrate','managementfee','managementfeeperyear']
-# class AdditionalloanpaymentsForm(forms.ModelForm):
-#     class Meta:
-#         model =  Additionalloanpayments
-#         fields = ['amount']
-# class CapitalincomeForm(forms.ModelForm):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for i in range(1, 31):
-#             year = f'year_{i}_amount'
-#             setattr(self, year, models.FloatField())
-#     class Meta:
-#         model =  Capitalincome
-#         fields = []
-#
-#
-#
-# class RentalIncomeForm(forms.ModelForm):
-#
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for i in range(1, 31):
-#             year = f'year_{i}_amount'
-#             self.fields[year] = forms.FloatField()
-#     class Meta:
-#         model = RentalIncome
-#         fields = ['rentalincreasetype','increasepercentage','averagerentalincomepermonth']
-#
-# class comparisonForm(forms.ModelForm):
-#     class Meta:
-#         model =  comparison
-#         fields = ['description','rate']
+class CapitalGrowthRatesForm(forms.ModelForm):
+    class Meta:
+        model = CapitalGrowthRates
+        fields = ['average_capital_growth_rate']
+
+
+class MonthlyExpenseForm(forms.ModelForm):
+    # should give a user freedom to add rows as they wish using javascript or django formset
+    class Meta:
+        model = MonthlyExpense
+        fields = ['description', 'value']
+
+
+class OwnRenovationsForm(forms.ModelForm):
+    class Meta:
+        model = OwnRenovations
+        fields = ['year', 'amount', 'income_per_year']
+
+
+class LoanRenovationsForm(forms.ModelForm):
+    class Meta:
+        model = LoanRenovations
+        fields = ['year', 'amount', 'income_per_year']
+
+
+class repairs_maintenanceForm(forms.ModelForm):
+    class Meta:
+        model = RepairsMaintenance
+        fields = ['year', 'amount']
+
+
+class specialexpensesForm(forms.ModelForm):
+    class Meta:
+        model = SpecialExpenses
+        fields = ['year', 'amount']
+
+
+class taxoptionsForm(forms.ModelForm):
+    class Meta:
+        model = TaxOptions
+        fields = ['taxation_capacity', 'method', 'tax_rate',
+                  'annual_taxable_income', 'maximum_tax_rate', 'income', 'rate']
+
+
+class managementexpensesForm(forms.ModelForm):
+    class Meta:
+        model = ManagementExpenses
+        fields = ['vacancy_rate', 'management_fee', 'management_fee_per_year']
+
+
+class AdditionalloanpaymentsForm(forms.ModelForm):
+    class Meta:
+        model = AdditionalLoanPayments
+        fields = ['amount']
+
+
+class CapitalincomeForm(forms.ModelForm):
+    class Meta:
+        model = CapitalIncome
+        fields = ['year', 'amount']
+
+
+class RentalIncomeForm(forms.ModelForm):
+    class Meta:
+        model = RentalIncome
+        fields = ['rental_increase_type', 'increase_percentage', 'average_rental_income_per_month']
+
+
+class comparisonForm(forms.ModelForm):
+    class Meta:
+        model = Comparison
+        fields = ['description', 'rate']
