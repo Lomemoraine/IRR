@@ -78,6 +78,13 @@ class InterestRateForm(forms.ModelForm):
         model = InterestRates
         fields = ['type', 'average_interest_rate']
 
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
+
 
 class EditpropertyForm(forms.ModelForm):
     class Meta:
@@ -86,12 +93,17 @@ class EditpropertyForm(forms.ModelForm):
                   'bond_value', 'notes']
 
 
-#
-
 class InflationRateForm(forms.ModelForm):
     class Meta:
         model = InflationRates
         fields = ['average_interest_rate']
+
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
 
 
 class DepreciationForm(forms.ModelForm):
@@ -99,11 +111,25 @@ class DepreciationForm(forms.ModelForm):
         model = Depreciation
         fields = ['description', 'type', 'value', 'rate', 'years']
 
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
+
 
 class CapitalGrowthRatesForm(forms.ModelForm):
     class Meta:
         model = CapitalGrowthRates
         fields = ['average_capital_growth_rate']
+
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
 
 
 class MonthlyExpenseForm(forms.ModelForm):
@@ -112,11 +138,25 @@ class MonthlyExpenseForm(forms.ModelForm):
         model = MonthlyExpense
         fields = ['description', 'value']
 
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
+
 
 class OwnRenovationsForm(forms.ModelForm):
     class Meta:
         model = OwnRenovations
         fields = ['year', 'amount', 'income_per_year']
+
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
 
 
 class LoanRenovationsForm(forms.ModelForm):
@@ -124,17 +164,38 @@ class LoanRenovationsForm(forms.ModelForm):
         model = LoanRenovations
         fields = ['year', 'amount', 'income_per_year']
 
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
+
 
 class repairs_maintenanceForm(forms.ModelForm):
     class Meta:
         model = RepairsMaintenance
         fields = ['year', 'amount']
 
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
+
 
 class specialexpensesForm(forms.ModelForm):
     class Meta:
         model = SpecialExpenses
         fields = ['year', 'amount']
+
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
 
 
 class taxoptionsForm(forms.ModelForm):
@@ -143,11 +204,25 @@ class taxoptionsForm(forms.ModelForm):
         fields = ['taxation_capacity', 'method', 'tax_rate',
                   'annual_taxable_income', 'maximum_tax_rate', 'income', 'rate']
 
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
+
 
 class managementexpensesForm(forms.ModelForm):
     class Meta:
         model = ManagementExpenses
         fields = ['vacancy_rate', 'management_fee', 'management_fee_per_year']
+
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
 
 
 class AdditionalloanpaymentsForm(forms.ModelForm):
@@ -155,11 +230,25 @@ class AdditionalloanpaymentsForm(forms.ModelForm):
         model = AdditionalLoanPayments
         fields = ['amount']
 
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
+
 
 class CapitalincomeForm(forms.ModelForm):
     class Meta:
         model = CapitalIncome
         fields = ['year', 'amount']
+
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
 
 
 class RentalIncomeForm(forms.ModelForm):
@@ -167,8 +256,22 @@ class RentalIncomeForm(forms.ModelForm):
         model = RentalIncome
         fields = ['rental_increase_type', 'increase_percentage', 'average_rental_income_per_month']
 
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance
+
 
 class comparisonForm(forms.ModelForm):
     class Meta:
         model = Comparison
         fields = ['description', 'rate']
+
+    def save(self, commit=True, pk=None):
+        instance = super().save(commit=False)
+        instance.property_id = pk
+        if commit:
+            instance.save()
+        return instance

@@ -90,7 +90,7 @@ def add_property(request):
         property_form = PropertyForm(request.POST)
         if property_form.is_valid():
             property_form.save()
-        return redirect('addimages' )
+        return redirect('addimages')
 
     context = {
         'property_form': property_form
@@ -113,10 +113,12 @@ def edit_property(request, pk):
 
 @login_required(login_url='login')
 def interestview(request, pk):
+    exist_check = Property.objects.get(id=pk)
+    messages.error(request, 'Interest rate already exists') if exist_check else messages.success(request, 'Successful')
     if request.method == 'POST':
         form = InterestRateForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         form = InterestRateForm()
@@ -128,9 +130,7 @@ def addimages(request, pk):
     if request.method == 'POST':
         data = request.POST
         images = request.FILES.getlist('images')
-        # if data['property'] != 'none':
         property = Property.objects.get(id=pk)
-        print('property - ', property)
         for image in images:
             images = Images.objects.create(
                 property=property,
@@ -153,10 +153,12 @@ def view_one_property(request, id):
 
 
 def inflationview(request, pk):
+    exist_check = Property.objects.get(id=pk)
+    messages.error(request, 'Inflation rate already exists') if exist_check else messages.success(request, 'Successful')
     if request.method == 'POST':
         myform = InflationRateForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = InflationRateForm()
@@ -166,9 +168,8 @@ def inflationview(request, pk):
 def depreciationview(request, pk):
     if request.method == 'POST':
         myform = DepreciationForm(request.POST)
-        print(myform)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = DepreciationForm()
@@ -176,10 +177,12 @@ def depreciationview(request, pk):
 
 
 def CapitalGrowthview(request, pk):
+    exist_check = Property.objects.get(id=pk)
+    messages.error(request, 'Average Capital Growth Rate already exists') if exist_check else messages.success(request, 'Successful')
     if request.method == 'POST':
         myform = CapitalGrowthRatesForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = CapitalGrowthRatesForm()
@@ -190,7 +193,7 @@ def MonthlyExpenseview(request, pk):
     if request.method == 'POST':
         myform = MonthlyExpenseForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = MonthlyExpenseForm()
@@ -201,7 +204,7 @@ def OwnRenovationsview(request, pk):
     if request.method == 'POST':
         myform = OwnRenovationsForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = OwnRenovationsForm()
@@ -212,7 +215,7 @@ def LoanRenovationsview(request, pk):
     if request.method == 'POST':
         myform = LoanRenovationsForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = LoanRenovationsForm()
@@ -223,7 +226,7 @@ def repairs_maintenanceview(request, pk):
     if request.method == 'POST':
         myform = repairs_maintenanceForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = repairs_maintenanceForm()
@@ -233,7 +236,7 @@ def specialexpensesview(request, pk):
     if request.method == 'POST':
         myform = specialexpensesForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = specialexpensesForm()
@@ -244,7 +247,7 @@ def taxoptionsview(request, pk):
     if request.method == 'POST':
         myform = taxoptionsForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = taxoptionsForm()
@@ -255,7 +258,7 @@ def managementexpensesview(request, pk):
     if request.method == 'POST':
         myform = managementexpensesForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = managementexpensesForm()
@@ -266,7 +269,7 @@ def Additionalloanpaymentsview(request, pk):
     if request.method == 'POST':
         myform = AdditionalloanpaymentsForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = AdditionalloanpaymentsForm()
@@ -277,7 +280,7 @@ def Capitalincomeview(request, pk):
     if request.method == 'POST':
         myform = CapitalincomeForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = CapitalincomeForm()
@@ -285,10 +288,12 @@ def Capitalincomeview(request, pk):
 
 
 def RentalIncomeview(request, pk):
+    exist_check = Property.objects.get(id=pk)
+    messages.error(request, 'Inflation rate already exists') if exist_check else messages.success(request, 'Successful')
     if request.method == 'POST':
         myform = RentalIncomeForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem', id=pk)
     else:
         myform = RentalIncomeForm()
@@ -299,7 +304,7 @@ def comparisonview(request, pk):
     if request.method == 'POST':
         myform = comparisonForm(request.POST)
         if myform.is_valid():
-            myform.save()
+            myform.save(pk=pk)
             return redirect('propertyitem',id=pk)
     else:
         myform = comparisonForm()
