@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import *
 from .forms import *
@@ -104,7 +104,7 @@ def edit_property(request, pk):
         form = EditpropertyForm(request.POST, instance=property)
         if form.is_valid():
             form.save()
-            return redirect('propertyitem',id=pk)
+            return redirect('propertyitem', id=pk)
         # fix the redirect.
     else:
         form = EditpropertyForm(instance=property)
@@ -146,10 +146,296 @@ def addimages(request, pk):
 @login_required(login_url='login')
 def view_one_property(request, id):
     property_obj = Property.objects.get(id=id)
+    # Loop to create column headers-> Very bad code
+    column_name = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                   28, 29, 30]
+
+    additional_loan_payments = AdditionalLoanPayments.objects.all()
+    renovations_own = OwnRenovations.objects.all()
+    renovations_loan = LoanRenovations.objects.all()
+    repair_maintenance = RepairsMaintenance.objects.all()
+    special_expense = SpecialExpenses.objects.all()
+    property_value = calc_property_value(property_id=id)
+    outstanding_loan = calc_outstanding_loan(property_id=id)
+    equity = calc_equity(property_id=id)
+    gross_rental_income = calc_gross_rental_income(property_id=id)
+    loan_interest = calc_loan_interest(property_id=id)
+    loan_principal = calc_loan_principal(property_id=id)
+    total_loan_payment = calc_total_loan_payment(property_id=id)
+    property_expense_per_year = calc_property_expenses_per_year(property_id=id)
+    total_property_expenses_per_year = calc_total_property_expenses_per_year(property_id=id)
+    pre_tax_before_cash_flow = calc_pre_tax_cash_flow(property_id=id)
+    initial_capital_outflow = calc_initial_capital_outflow(property_id=id)
+    taxable_deduction = calc_taxable_deductions(property_id=id)
+    tax_cash_on_cash = calc_pre_tax_cash_on_cash(property_id=id)
+    depreciation = calc_depreciation(property_id=id)
+    taxable_amount = calc_taxable_amount(property_id=id)
+    tax_credit = calc_tax_credits(property_id=id)
+    after_tax_cashflow = calc_after_tax_cashflow(property_id=id)
+    after_tax_cash_on_cash = calc_after_tax_cash_on_cash(property_id=id)
+    income_per_month = calc_income_per_month(property_id=id)
+
     context = {
-        'property_obj': property_obj,
+        'property_obj': property_obj, 'column_name': column_name,
+        'additional_loan_payments': additional_loan_payments,
+        'renovations_own': renovations_own, 'renovations_loan': renovations_loan,
+        'repair_maintenance': repair_maintenance, 'special_expense': special_expense,
+        'property_value': property_value, 'outstanding_loan': outstanding_loan,
+        'equity': equity, 'gross_rental_income': gross_rental_income, 'loan_interest': loan_interest,
+        'loan_principal': loan_principal, 'total_loan_payment': total_loan_payment,
+        'property_expense_per_year': property_expense_per_year,
+        'total_property_expenses_per_year': total_property_expenses_per_year,
+        'pre_tax_before_cash_flow': pre_tax_before_cash_flow,
+        'initial_capital_outflow': initial_capital_outflow,
+        'taxable_deduction': taxable_deduction, 'tax_cash_on_cash': tax_cash_on_cash,
+        'depreciation': depreciation, 'taxable_amount': taxable_amount, 'tax_credit': tax_credit,
+        'after_tax_cashflow': after_tax_cashflow, 'after_tax_cash_on_cash': after_tax_cash_on_cash,
+        'income_per_month': income_per_month
     }
     return render(request, 'users/propertypage.html', context=context)
+
+
+# Calculations for properties
+
+
+def calc_property_value(property_id, years=30):
+    cgr = CapitalGrowthRates.objects.get(property=property_id).average_capital_growth_rate
+    prop = Property.objects.get(id=property_id)
+    property_value_list = []
+    for year in range(1, years + 1):
+        property_value = prop.purchase_price * ((float(1) + cgr) / 100) ** year
+        property_value_list.append(round(property_value, 2))
+    return property_value_list
+
+
+def calc_outstanding_loan(property_id):
+    interest_rate = InterestRates.objects.get(property=property_id).average_interest_rate
+    term = InterestRates.objects.get(property=property_id).term
+    prop = Property.objects.get(id=property_id)
+    outstanding_loan_per_year = []
+    for year in range(1, term + 1):
+        loan = prop.bond_value * (1 + interest_rate) ** year
+        outstanding_loan_per_year.append(round(loan, 2))
+    return outstanding_loan_per_year
+
+
+def calc_equity(property_id):
+    prop_value_year = calc_property_value(property_id=property_id)
+    outstanding_loan = calc_property_value(property_id=property_id)
+    equity_per_year = []
+    for i in range(len(prop_value_year)):
+        equity = prop_value_year[i] - outstanding_loan[i]
+        equity_per_year.append(round(equity))
+    return equity_per_year
+
+
+def calc_gross_rental_income(property_id, years=30):
+    rental_income = RentalIncome.objects.get(property=property_id).amount * 30
+    mgmnt_expenses = ManagementExpenses.objects.get(property=property_id).management_fee * 30
+    list_income = []
+    for year in range(1, years + 1):
+        income = rental_income - mgmnt_expenses
+        list_income.append(round(income))
+    return list_income
+
+
+def calc_loan_interest(property_id):
+    rate = InterestRates.objects.get(property_id=property_id).average_interest_rate
+    term = InterestRates.objects.get(property_id=property_id).term
+    outstanding_loan = calc_outstanding_loan(property_id=property_id)
+    loan_interest_amt = []
+    for year in range(1, term + 1):
+        interest = outstanding_loan[year - 1] * rate
+        loan_interest_amt.append(round(interest, 2))
+    return loan_interest_amt
+
+
+def calc_loan_principal(property_id):
+    term = InterestRates.objects.get(property_id=property_id).term
+    outstanding_loan = calc_outstanding_loan(property_id=property_id)
+    loan_interest = calc_loan_interest(property_id=property_id)
+    loan_principal = []
+    for year in range(1, term + 1):
+        principal = outstanding_loan[year - 1] - loan_interest[year - 1]
+        loan_principal.append(round(principal, 2))
+    return loan_principal
+
+
+def calc_total_loan_payment(property_id, interest_change_year=None, new_interest_rate=None):
+    bond_price = Property.objects.get(id=property_id).bond_value
+    interest_rate = InterestRates.objects.get(property_id=property_id).average_interest_rate
+    term = InterestRates.objects.get(property_id=property_id).term
+    if interest_change_year is None or new_interest_rate is None:
+        total_loan_payment = bond_price * interest_rate / (1 - (1 + interest_rate) ** term)
+    else:
+        if interest_change_year > term:
+            raise ValueError("Interest change year cannot be greater than loan term.")
+        new_interest_rate = new_interest_rate / 100
+        total_loan_payment = bond_price * interest_rate / (
+                1 - (1 + interest_rate) ** interest_change_year) + bond_price * (1 + interest_rate) ** (
+                                 -interest_change_year) * new_interest_rate / (
+                                     1 - (1 + new_interest_rate) ** (term - interest_change_year))
+    return total_loan_payment
+
+
+def calc_property_expenses_per_year(property_id, years=30):
+    monthly_expense = MonthlyExpense.objects.get(property_id=property_id).value
+    property_expenses_per_year = []
+    for year in range(1, years + 1):
+        expenses = monthly_expense * 12
+        property_expenses_per_year.append(round(expenses, 2))
+    return property_expenses_per_year
+
+
+def calc_total_property_expenses_per_year(property_id, years=30):
+    property_expenses_per_year = calc_property_expenses_per_year(property_id=property_id, years=years)
+    special_expenses = list(SpecialExpenses.objects.filter(property_id=property_id))
+    own_renovations = list(OwnRenovations.objects.filter(property_id=property_id))
+    loan_renovations = list(LoanRenovations.objects.filter(property_id=property_id))
+    repairs_maintenance = list(RepairsMaintenance.objects.filter(property_id=property_id))
+    max_len = max(len(special_expenses), len(own_renovations), len(loan_renovations), len(repairs_maintenance))
+    if max_len < years:
+        years = max_len
+    total_property_expenses_per_year = []
+    for year in range(1, years + 1):
+        expenses = 0
+        expenses += special_expenses[year - 1].amount if year <= len(special_expenses) else 0
+        expenses += property_expenses_per_year[year - 1]
+        expenses += loan_renovations[year - 1].amount if year <= len(loan_renovations) else 0
+        expenses += own_renovations[year - 1].amount if year <= len(own_renovations) else 0
+        expenses += repairs_maintenance[year - 1].amount if year <= len(repairs_maintenance) else 0
+        total_property_expenses_per_year.append(round(expenses, 2))
+    return total_property_expenses_per_year
+
+
+def calc_pre_tax_cash_flow(property_id, years=30):
+    gross_rental_income = RentalIncome.objects.get(property_id=property_id).amount * 12
+    total_expenses = calc_total_property_expenses_per_year(property_id=property_id, years=years)
+    pre_tax_cash_flow_per_year = []
+    for year in range(1, years + 1):
+        cash_flow = 0
+        cash_flow += gross_rental_income
+        cash_flow += total_expenses[year - 1] if year <= len(total_expenses) else 0
+        pre_tax_cash_flow_per_year.append(round(cash_flow, 2))
+    return pre_tax_cash_flow_per_year
+
+
+def calc_initial_capital_outflow(property_id, years=30):
+    deposit = Property.objects.get(id=property_id).deposit
+    other_costs = Property.objects.get(id=property_id).other_cost.amount
+    initial_capital_outflow_per_year = []
+    for year in range(1, years + 1):
+        outflow = deposit + other_costs
+        initial_capital_outflow_per_year.append(round(outflow, 2))
+    return initial_capital_outflow_per_year
+
+
+def calc_pre_tax_cash_on_cash(property_id, years=30):
+    pre_tax_cash_flow_per_year = calc_pre_tax_cash_flow(property_id=property_id)
+    initial_capital_outflow_per_year = calc_initial_capital_outflow(property_id=property_id)
+    pre_tax_cashoncash = []
+    for year in range(1, years + 1):
+        cash_on_cash = (pre_tax_cash_flow_per_year[year - 1] / initial_capital_outflow_per_year[year - 1]) * 100
+        pre_tax_cashoncash.append(round(cash_on_cash, 2))
+    return pre_tax_cashoncash
+
+
+def calc_taxable_deductions(property_id, years=30):
+    loan_interest = calc_loan_interest(property_id=property_id)
+    total_property_expenses = calc_total_property_expenses_per_year(property_id=property_id)
+    taxable_deductions = []
+    for year in range(1, years + 1):
+        deductions = 0
+        deductions += loan_interest[year - 1] if year <= len(loan_interest) else 0
+        deductions += total_property_expenses[year - 1] if year <= len(total_property_expenses) else 0
+        taxable_deductions.append(round(deductions, 2))
+    return taxable_deductions
+
+
+def calc_depreciation(property_id):
+    rate = Depreciation.objects.get(property_id=property_id).rate
+    years = Depreciation.objects.get(property_id=property_id).years
+    purchase_date = Property.objects.get(id=property_id).purchase_date
+    purchase_price = Property.objects.get(id=property_id).purchase_price
+    depreciation_type = Depreciation.objects.get(property_id=property_id).type
+
+    if depreciation_type == 'straight':
+        annual_depreciation = purchase_price * (rate/100)
+        total_depreciation = annual_depreciation * years
+        remaining_value = purchase_price - total_depreciation
+
+        depreciation_schedule = []
+        for year in range(1, years + 1):
+            depreciation = (purchase_price-remaining_value)/years
+            depreciation_schedule.append(depreciation)
+        return depreciation_schedule
+    else:
+        depreciation_schedule = []
+        book_value = purchase_price
+        for year in range(1, years + 1):
+            depreciation = (book_value * rate) / 100
+            book_value = book_value-depreciation
+            depreciation_schedule.append(depreciation)
+        return depreciation_schedule
+
+
+def calc_taxable_amount(property_id, years=30):
+    gross_rental_income = calc_gross_rental_income(property_id)
+    taxable_deductions = calc_taxable_deductions(property_id)
+    taxable_amount = []
+    for year in range(1, years + 1):
+        amount = gross_rental_income[year - 1] - taxable_deductions[year - 1]
+        taxable_amount.append(round(amount, 2))
+    return taxable_amount
+
+
+def calc_tax_credits(property_id, years=30):
+    taxable_deductions = calc_taxable_deductions(property_id=property_id)
+    tax_credits = []
+    for year in range(1, years + 1):
+        credit = taxable_deductions[year - 1] * 0.3
+        tax_credits.append(round(credit, 2))
+    return tax_credits
+
+
+def calc_after_tax_cashflow(property_id, years=30):
+    pre_tax_cashflow = calc_pre_tax_cash_flow(property_id=property_id)
+    tax_credits = calc_tax_credits(property_id=property_id)
+    after_tax_cashflow = []
+    for year in range(1, years + 1):
+        cashflow = pre_tax_cashflow[year - 1] - tax_credits[year - 1]
+        after_tax_cashflow.append(round(cashflow, 2))
+    return after_tax_cashflow
+
+
+def calc_income_per_month(property_id, years=30):
+    after_tax_cashflow = calc_after_tax_cashflow(property_id=property_id)
+    income_per_month = []
+    for year in range(1, years + 1):
+        income = after_tax_cashflow[year - 1] / 12
+        income_per_month.append(round(income, 2))
+    return income_per_month
+
+
+def calc_after_tax_cash_on_cash(property_id, years=30):
+    after_tax_cashflow = calc_after_tax_cashflow(property_id=property_id)
+    initial_cash_outflow = calc_initial_capital_outflow(property_id=property_id)
+    after_tax_cash_on_cash = []
+    for year in range(1, years + 1):
+        cash_on_cash = (after_tax_cashflow[year - 1] / initial_cash_outflow[year - 1]) * 100
+        after_tax_cash_on_cash.append(round(cash_on_cash, 2))
+    return after_tax_cash_on_cash
+
+
+import pandas as pd
+import numpy as np
+def calc_irr(property_id, years=30):
+    after_tax_cashflow = calc_after_tax_cashflow(property_id=property_id)
+    irr_list = []
+    for year in range(1, years + 1):
+        irr = 0
+        irr_list.append(irr)
+    return irr_list
 
 
 def inflationview(request, pk):
@@ -178,7 +464,8 @@ def depreciationview(request, pk):
 
 def CapitalGrowthview(request, pk):
     exist_check = Property.objects.get(id=pk)
-    messages.error(request, 'Average Capital Growth Rate already exists') if exist_check else messages.success(request, 'Successful')
+    messages.error(request, 'Average Capital Growth Rate already exists') if exist_check else messages.success(request,
+                                                                                                               'Successful')
     if request.method == 'POST':
         myform = CapitalGrowthRatesForm(request.POST)
         if myform.is_valid():
@@ -231,6 +518,7 @@ def repairs_maintenanceview(request, pk):
     else:
         myform = repairs_maintenanceForm()
     return render(request, 'users/repairs_maintenance.html', {'myform': myform})
+
 
 def specialexpensesview(request, pk):
     if request.method == 'POST':
@@ -305,7 +593,7 @@ def comparisonview(request, pk):
         myform = comparisonForm(request.POST)
         if myform.is_valid():
             myform.save(pk=pk)
-            return redirect('propertyitem',id=pk)
+            return redirect('propertyitem', id=pk)
     else:
         myform = comparisonForm()
     return render(request, 'users/comparison.html', {'myform': myform})

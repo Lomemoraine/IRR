@@ -1,13 +1,13 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="container-fluid property-item-page">
-    <div class="jumbotron m-4 pt-2">
+    <div class="jumbotron m-1 pt-1">
         <div class="item-page">
             <div class="row">
-                <div class="col-4 mt-4">
+                <div class="col-2 mt-4">
                     <h1 class="dark:text-gray-700">{{property_obj.name}}</h1>
                     <div>
-                        <p class="text-lg font-medium m-0">Property Type - <span class="">{{ property_obj.property_type }}</span>
+                        <p class="text-lg font-medium m-0">Type - <span class="">{{ property_obj.property_type }}</span>
                         </p>
                         <details>
                             <summary class="py-2 outline-none cursor-pointer">Purchase Info</summary>
@@ -18,7 +18,7 @@
                                         class="">{{ property_obj.purchase_price }}</span></p>
                                 <p class="text-sm m-0">Deposit - <span class="">{{ property_obj.deposit }}</span></p>
                                 <p class="text-sm m-0">Location - <span
-                                        class="">{{ property_obj.City }}, {{ property_obj.City.country }}</span></p>
+                                        class="">{{ property_obj.city.name }}, {{ property_obj.city.country }}</span></p>
                                 <p class="text-sm m-0">Other costs - <span class="">{{ property_obj.other_cost }}</span>
                                 </p>
                             </div>
@@ -30,12 +30,12 @@
                     </div>
 
                     <p class="my-3">
-                        <a class="btn btn-dark" href="{% url 'editproperty' property_obj.pk %}">Edit</a>
-                        <a class="btn btn-dark" href="">Delete</a>
-                        <a class="btn btn-dark" href="">View All</a>
+                        <a class="btn btn-dark m-1 w-full" href="{% url 'editproperty' property_obj.pk %}">Edit</a>
+                        <a class="btn btn-dark m-1 w-full" href="">Delete</a>
+                        <a class="btn btn-dark m-1 w-full" href="">View All</a>
                     </p>
                     <hr class="h-2">
-                    <h5 class="py-2 px-1">See property details</h5>
+                    <h5 class="py-2 px-1">Property details</h5>
                     <div class="flex justify-content">
                         <ul>
                             <li><a class="btn btn-dark m-1 w-full" href="{% url 'interestrates' property_obj.id %}">
@@ -54,15 +54,18 @@
                                 Renovations (Own)</a></li>
                             <li><a class="btn btn-dark m-1 w-full" href="{% url 'loanrenovations' property_obj.id %}">
                                 Renovations (Loan)</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'repairs_maintenance' property_obj.id %}">
+                            <li><a class="btn btn-dark m-1 w-full"
+                                   href="{% url 'repairs_maintenance' property_obj.id %}">
                                 Repairs & Maintenance</a></li>
                             <li><a class="btn btn-dark m-1 w-full" href="{% url 'specialexpenses' property_obj.id %}">
                                 Special Expenses</a></li>
                             <li><a class="btn btn-dark m-1 w-full" href="{% url 'taxoptions' property_obj.id %}">
                                 Tax Options</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'managementexpenses' property_obj.id %}">
+                            <li><a class="btn btn-dark m-1 w-full"
+                                   href="{% url 'managementexpenses' property_obj.id %}">
                                 Management Expenses</a></li>
-                            <li><a class="btn btn-dark m-1 w-full" href="{% url 'Additionalloanpayments' property_obj.id %}">
+                            <li><a class="btn btn-dark m-1 w-full"
+                                   href="{% url 'Additionalloanpayments' property_obj.id %}">
                                 Additional Loan Payments</a></li>
                             <li><a class="btn btn-dark m-1 w-full" href="{% url 'Capitalincome' property_obj.id %}">
                                 Capital Income</a></li>
@@ -90,242 +93,196 @@
                     </div>
                     {% endfor %}
                 </div>
-                <div class="col-8 mt-4">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                            <th scope="col">YEAR 1</th>
-                            <th scope="col">YEAR 2</th>
-                            <th scope="col">YEAR 3</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td></td>
-                            <td>IRR</td>
-                            <td>{{ property_obj.irr_year_one }}%</td>
-                            <td>{{ property_obj.irr_year_two }}%</td>
-                            <td>{{ property_obj.irr_year_three }}%</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td>Property Value</td>
-
-                            {% for value in property_obj.property_value_list|slice:":3" %}
-                            <td>{{ value }}</td>
-                            {% endfor %}
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td>Loan Amount</td>
-                            <td>R4,922,303.49</td>
-                            <td>R4,836,044.56</td>
-                            <td>R4,740,279.59</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td>Equity</td>
-                            <td>R-4,544,303.49</td>
-                            <td>R-4,427,804.56</td>
-                            <td>R-4,299,380.39</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td>Gross Rental Income</td>
-                            <td>R225,480.96</td>
-                            <td>R242,392.03</td>
-                            <td>R260,571.43</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td>Loan Principle</td>
-                            <td>R77,696.51</td>
-                            <td>R86,258.93</td>
-                            <td>R95,764.97</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td>Loan Interest</td>
-                            <td>R624,000.00</td>
-                            <td>R648,690.00</td>
-                            <td>R674,918.40</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-                            <td>Total Loan Payment</td>
-                            <td>R624,000.00</td>
-                            <td>R648,690.00</td>
-                            <td>R674,918.40</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Additional Loan Payments</td>
-                            <td>R624,000.00</td>
-                            <td>R648,690.00</td>
-                            <td>R674,918.40</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Renovations (Own Pocket)</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Renovations (Loan)</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Repairs & Maintenance</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Special Expenses</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Property Expenses</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Total Property Expenses</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Capital Received</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Pre Tax Cashfow</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Initial Capital Outflow</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Pre Tax Cash on Cash</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Total Taxable Deductions</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Depreciation</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Taxable Amount</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Tax Credit</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>After Tax Cashflow</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>After Tax Cash on Cash</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row"></th>
-
-                            <td>Income Per Month</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-                            <td>R00.00</td>
-
-                        </tr>
-
-
-                        </tbody>
-                    </table>
+                <div class="col-10 mt-2" style="overflow-x:auto; overflow-y:auto;">
+                    <div class="container p-2 mx-auto sm:p-4 dark:text-gray-900">
+                        <h2 class="mb-4 text-2xl font-semibold leading-tight">Invoices</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-xs">
+                                <colgroup>
+                                    <col>
+                                    <col>
+                                    <col>
+                                    <col>
+                                    <col>
+                                    <col class="w-24">
+                                </colgroup>
+                                <thead class="dark:bg-gray-200">
+                                <tr class="text-left">
+                                    <th class="p-1"></th>
+                                    {% for column in column_name %}
+                                    <th class="p-1" scope="col">Year {{ column }}</th>
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="border-b border-opacity-20">
+                                    <td class="p-1">Property Value</td>
+                                    {% for item in property_value %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class="border-b border-opacity-20">
+                                    <td class="p-1">Loan Amount</td>
+                                    {% for item in outstanding_loan %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class="border-b border-opacity-20">
+                                    <td class="p-1">Equity</td>
+                                    {% for item in outstanding_loan %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Gross Rental Income</td>
+                                    {% for item in gross_rental_income %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Loan Principle</td>
+                                    {% for item in loan_principal %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Loan Interest</td>
+                                    {% for item in loan_interest %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Total Loan Payment</td>
+                                    <td class="p-1"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Additional Loan Payments</td>
+                                    {% for item in additional_loan_payments %}
+                                    <td class="p-1">{{ item.amount }}</td>
+                                    {% empty %}
+                                    <td class="p-1">0.00</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Renovations (Own Pocket)</td>
+                                    {% for item in renovations_own %}
+                                    {% if item %}
+                                    <td class="p-1">{{ item.amount }}</td>
+                                    {% else %}
+                                    <td class="p-1">0</td>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Renovations (Loan)</td>
+                                    {% for item in renovations_loan %}
+                                    {% if item %}
+                                    <td class="p-1">{{ item.amount }}</td>
+                                    {% else %}
+                                    <td class="p-1">0</td>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Repairs & Maintenance</td>
+                                    {% for item in repair_maintenance %}
+                                    {% if item %}
+                                    <td class="p-1">{{ item.amount }}</td>
+                                    {% else %}
+                                    <td class="p-1">0</td>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Special Expenses</td>
+                                    {% for item in special_expense %}
+                                    {% if item %}
+                                    <td class="p-1">{{ item.amount }}</td>
+                                    {% else %}
+                                    <td class="p-1">0</td>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Property Expenses</td>
+                                    {% for item in property_expense_per_year %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Total Property Expenses</td>
+                                    {% for item in total_property_expenses_per_year %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Pre Tax Cashflow</td>
+                                    {% for item in pre_tax_before_cash_flow %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Initial Capital Outflow</td>
+                                    {% for item in initial_capital_outflow %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Pre Tax Cash On Cash</td>
+                                    {% for item in tax_cash_on_cash %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Total Taxable Deductions</td>
+                                    {% for item in taxable_deduction %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Depreciation</td>
+                                    {% for item in depreciation %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Taxable Amount</td>
+                                    {% for item in taxable_amount %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Tax Credit</td>
+                                    {% for item in  tax_credit%}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">After Tax Cashflow</td>
+                                    {% for item in after_tax_cashflow %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">After Tax Cash On Cash</td>
+                                    {% for item in after_tax_cash_on_cash %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Income Per Month</td>
+                                    {% for item in income_per_month  %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="p-1">IRR</td>
+                                    <td class="p-1"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

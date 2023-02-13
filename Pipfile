@@ -21,6 +21,7 @@ crispy-tailwind = "*"
 scipy = "*"
 tzdata = "*"
 pytz = "*"
+pandas = "*"
 
 [dev-packages]
 
