@@ -76,7 +76,7 @@ class PropertyForm(forms.ModelForm):
 class InterestRateForm(forms.ModelForm):
     class Meta:
         model = InterestRates
-        fields = ['type', 'average_interest_rate']
+        fields = ['type', 'average_interest_rate', 'term']
 
     def save(self, commit=True, pk=None):
         instance = super().save(commit=False)

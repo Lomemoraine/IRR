@@ -118,49 +118,67 @@
                                 <tr class="border-b border-opacity-20">
                                     <td class="p-1">Property Value</td>
                                     {% for item in property_value %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr class="border-b border-opacity-20">
                                     <td class="p-1">Loan Amount</td>
                                     {% for item in outstanding_loan %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr class="border-b border-opacity-20">
                                     <td class="p-1">Equity</td>
                                     {% for item in outstanding_loan %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Gross Rental Income</td>
                                     {% for item in gross_rental_income %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Loan Principle</td>
                                     {% for item in loan_principal %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Loan Interest</td>
                                     {% for item in loan_interest %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Total Loan Payment</td>
-                                    <td class="p-1"></td>
+                                    {% for item in total_loan_payment %}
+                                    {% if item %}
+                                    <td class="p-1">{{ item }}</td>
+                                    {% endif %}
+                                    {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Additional Loan Payments</td>
                                     {% for item in additional_loan_payments %}
+                                    {% if item %}
                                     <td class="p-1">{{ item.amount }}</td>
-                                    {% empty %}
+                                    {% else %}
                                     <td class="p-1">0.00</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
@@ -206,78 +224,106 @@
                                 <tr>
                                     <td class="p-1">Property Expenses</td>
                                     {% for item in property_expense_per_year %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Total Property Expenses</td>
                                     {% for item in total_property_expenses_per_year %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Pre Tax Cashflow</td>
                                     {% for item in pre_tax_before_cash_flow %}
-                                    <td class="p-1">{{ item }}</td>
+                                    {% if item %}
+                                    <td class="p-1">{{ item }}</td>.
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Initial Capital Outflow</td>
                                     {% for item in initial_capital_outflow %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Pre Tax Cash On Cash</td>
                                     {% for item in tax_cash_on_cash %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Total Taxable Deductions</td>
                                     {% for item in taxable_deduction %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Depreciation</td>
                                     {% for item in depreciation %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Taxable Amount</td>
                                     {% for item in taxable_amount %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Tax Credit</td>
                                     {% for item in  tax_credit%}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">After Tax Cashflow</td>
                                     {% for item in after_tax_cashflow %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">After Tax Cash On Cash</td>
                                     {% for item in after_tax_cash_on_cash %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">Income Per Month</td>
                                     {% for item in income_per_month  %}
+                                    {% if item %}
                                     <td class="p-1">{{ item }}</td>
+                                    {% endif %}
                                     {% endfor %}
                                 </tr>
                                 <tr>
                                     <td class="p-1">IRR</td>
-                                    <td class="p-1"></td>
+                                    {% for item in irr %}
+                                    {% if item %}
+                                    <td class="p-1">{{ item }}%</td>
+                                    {% endif %}
+                                    {% endfor %}
                                 </tr>
                                 </tbody>
                             </table>
