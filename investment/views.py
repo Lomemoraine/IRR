@@ -205,8 +205,9 @@ def calc_property_value(property_id, years=30):
         prop = Property.objects.get(id=property_id)
         property_value_list = []
         for year in range(1, years + 1):
-            property_value = prop.purchase_price * ((float(1) + cgr) / 100) ** year
+            property_value = prop.purchase_price * ((float(1) + cgr / 100)) ** year
             property_value_list.append(round(property_value, 2))
+        print(property_value_list)
         return property_value_list
     except:
         None
