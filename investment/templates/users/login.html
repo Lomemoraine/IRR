@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="flex items-center justify-center mt-6">
     <div class="flex flex-col max-w-md p-6 rounded-md sm:p-10 dark:bg-gray-400 dark:text-gray-700">
@@ -9,7 +9,7 @@
         </div>
         <form novalidate="" action="" class="space-y-4 ng-untouched ng-pristine ng-valid" method ="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form|crispy }}
 
             <div class="space-y-2">
                 <div>

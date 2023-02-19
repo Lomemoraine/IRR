@@ -43,11 +43,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'investment.apps.InvestmentConfig',
     'investment',
+    'tailwind',
+    'theme',
+    "crispy_forms",
+    "crispy_tailwind",
+    'django_browser_reload',
     'cloudinary',
-    'django_browser_reload'
+    
 ]
 
+TAILWIND_APP_NAME = 'theme'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,7 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware'
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = 'mainpage.urls'
