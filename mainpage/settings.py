@@ -42,19 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'investment.apps.InvestmentConfig',
-    'bootstrap4',
     'investment',
-    'crispy_forms',
-    'crispy_tailwind',
     'cloudinary',
-    'tailwind',
-    'theme',
     'django_browser_reload'
 ]
 
-TAILWIND_APP_NAME = 'theme'
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-CRISPY_TEMPLATE_PACK = "tailwind"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,7 +65,7 @@ ROOT_URLCONF = 'mainpage.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['*'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,16 +84,16 @@ WSGI_APPLICATION = 'mainpage.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'irr',
-    #     'USER': 'raine',
-    #     'PASSWORD':'gift1234',
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'aine',
+        'USER': 'raine',
+        'PASSWORD':'gift1234',
+    }
 }
 
 # Password validation
@@ -146,9 +139,7 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-CRISPY_ALLOWED_TEMPLATES_PACKS = 'bootstrap4'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
