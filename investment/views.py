@@ -1,5 +1,5 @@
 # from django.http  import HttpResponse
-from typing import Any
+from typing import Any, List, Union
 from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
@@ -207,7 +207,6 @@ def calc_property_value(property_id, years=30):
         for year in range(1, years + 1):
             property_value = prop.purchase_price * ((float(1) + cgr / 100)) ** year
             property_value_list.append(round(property_value, 2))
-        print(property_value_list)
         return property_value_list
     except:
         None
@@ -215,26 +214,32 @@ def calc_property_value(property_id, years=30):
 
 def calc_outstanding_loan(property_id):
     try:
-        interest_rate = InterestRates.objects.get(property=property_id).average_interest_rate
-        prop = Property.objects.get(id=property_id)
-        outstanding_loan_per_year = []
-        for year in range(1, len(calc_property_value(property_id))+11):
-            loan = prop.bond_value * (1 + interest_rate) ** year
-            outstanding_loan_per_year.append(round(loan, 2))
+        rate = InterestRates.objects.get(property=property_id).average_interest_rate
+        interest_rate = rate/100
+        total_loan = calc_total_loan_payment(property_id=property_id)
+        term = InterestRates.objects.get(property_id=property_id).term
+        outstanding_loan_per_year: List[Union[int, Any]] = []
+        for total_loan, t in zip(total_loan, range(1, term+1)):
+            outstanding_loan = (total_loan / 12 * (1 - (1 + interest_rate / 12) ** (-(term - t) * 12))) / (interest_rate / 12)
+            outstanding_loan_per_year.append(round(outstanding_loan, 2))
+        print(outstanding_loan_per_year)
         return outstanding_loan_per_year
     except:
         None
 
 
 def calc_equity(property_id):
-    prop_value_year = calc_property_value(property_id=property_id)
-    outstanding_loan = calc_outstanding_loan(property_id=property_id)
-    equity_per_year = []
-    if prop_value_year and outstanding_loan:
-        for i in range(len(prop_value_year)):
-            equity = prop_value_year[i] - outstanding_loan[i]
-            equity_per_year.append(round(equity))
-    return equity_per_year
+    try:
+        prop_value_year = calc_property_value(property_id=property_id)
+        outstanding_loan = calc_outstanding_loan(property_id=property_id)
+        equity_per_year = []
+        if prop_value_year and outstanding_loan:
+            for prop_value, out_loan in zip(prop_value_year, outstanding_loan):
+                equity = prop_value - out_loan
+                equity_per_year.append(round(equity, 2))
+            return equity_per_year
+    except:
+        None
 
 
 def calc_gross_rental_income(property_id, years=30):
@@ -251,13 +256,13 @@ def calc_gross_rental_income(property_id, years=30):
 
 
 def calc_loan_interest(property_id):
+    # loan amount - principal
     try:
-        rate = InterestRates.objects.get(property_id=property_id).average_interest_rate
-        term = InterestRates.objects.get(property_id=property_id).term
-        outstanding_loan = calc_outstanding_loan(property_id=property_id)
+        loan_principal = calc_loan_principal(property_id=property_id)
+        loan_amount = calc_total_loan_payment(property_id=property_id)
         loan_interest_amt = []
-        for year in range(1, term + 1):
-            interest = outstanding_loan[year - 1] * rate
+        for principal, loan in zip(loan_principal, loan_amount):
+            interest = loan - principal
             loan_interest_amt.append(round(interest, 2))
         return loan_interest_amt
     except:
@@ -265,35 +270,57 @@ def calc_loan_interest(property_id):
 
 
 def calc_loan_principal(property_id):
+    # Year1 -> Bond value - loan amount
+    # Others -> loan amount[0] - loan amount [1]
     try:
+        bond_value = Property.objects.get(id=property_id).bond_value
         term = InterestRates.objects.get(property_id=property_id).term
         outstanding_loan = calc_outstanding_loan(property_id=property_id)
-        loan_interest = calc_loan_interest(property_id=property_id)
+        outstanding_loan.insert(0, bond_value)
         loan_principal = []
-        for year in range(1, term + 1):
-            principal = outstanding_loan[year - 1] - loan_interest[year - 1]
+        for year in range(1, term+1):
+            principal = outstanding_loan[year - 1] - outstanding_loan[year]
             loan_principal.append(round(principal, 2))
         return loan_principal
     except:
         None
 
 
-def calc_total_loan_payment(property_id):
+def calc_total_loan_payment(property_id, interest_change=None, new_interest_rate=None):
     try:
         bond_price = Property.objects.get(id=property_id).bond_value
         avg_interest_rate_id = InterestRates.objects.get(property_id=property_id).id
-        avg_interest_rate = InterestRates.objects.get(property_id=property_id).average_interest_rate
         term = InterestRates.objects.get(property_id=property_id).term
-        interest_rates = [rate.rate / 100 for rate in PeriodRate.objects.filter(interest_rate_id=avg_interest_rate_id)]
+        interest_rate = InterestRates.objects.get(property_id=property_id).average_interest_rate
+        # interest_rates = [rate.rate / 100 for rate in PeriodRate.objects.filter(interest_rate_id=avg_interest_rate_id)]
         total_loan_payment = []
-        for year in range(1, term + 1):
-            if year <= len(interest_rates):
-                interest_rate = interest_rates[year - 1]
+        for i in range(term):
+            if i > term:
+                total_loan_payment.append(0)
             else:
-                interest_rate = avg_interest_rate
-            loan_payment = bond_price * interest_rate / (1 - (1 + interest_rate) ** (term - year + 1))
-            total_loan_payment.append(round(loan_payment, 2))
-
+                if interest_change is None or new_interest_rate is None:
+                    x = (interest_rate / 100)/12
+                    y = term*12
+                    z = 1+x
+                    a = x*(z)**y
+                    b = z**y - 1
+                    c = a / b
+                    d = bond_price * c
+                    payment = d * 12
+                    # payment = (bond_price * x*z**y / z**y-1)
+                    for i in range(term):
+                        total_loan_payment.append(round(payment, 2))
+                    # print(total_loan_payment)
+                    # bond_price -= payment
+                else:
+                    if interest_change > term:
+                        raise ValueError("Interest change year cannot be greater than loan term.")
+                    if i == interest_change - 1:
+                        interest_rate = new_interest_rate / 100
+                        payment = bond_price * (interest_rate / 12 * ((1 + interest_rate / 12) ** (term - i * 12)) / (
+                            ((1 + interest_rate / 12) ** (term - i * 12)) - 1)) * 12
+                        total_loan_payment.append(round(payment, 2))
+                        bond_price -= payment
         return total_loan_payment
     except:
         None
