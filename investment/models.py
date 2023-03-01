@@ -174,12 +174,6 @@ class CapitalGrowthRates(models.Model):
         PeriodRate.objects.create(interest_rate=self, year=year, rate=rate)
 
 
-class PeriodRate(models.Model):
-    year = models.PositiveSmallIntegerField()
-    rate = models.FloatField()
-    interest_rate = models.ForeignKey(InterestRates, on_delete=models.CASCADE)
-
-
 class MonthlyExpense(models.Model):
     description = models.CharField(max_length=255, null=True)
     value = models.IntegerField(null=True)
@@ -228,9 +222,13 @@ class TaxOptions(models.Model):
     tax_rate = models.FloatField(null=True)
     annual_taxable_income = models.FloatField(null=False)
     maximum_tax_rate = models.IntegerField(null=False)
-    income = models.IntegerField(null=True)
-    rate = models.IntegerField(null=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+
+
+class TaxOptionsIncome(models.Model):
+    income = models.IntegerField(null=True, blank=True)
+    rate = models.IntegerField(null=True, blank=True)
+    tax_options = models.ForeignKey(TaxOptions, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class ManagementExpenses(models.Model):
@@ -253,14 +251,12 @@ class CapitalIncome(models.Model):
 
 
 class RentalIncome(models.Model):
-    rental_increase_type = models.CharField(null=True, max_length=50, default='Interest & capital', choices=(
+    rental_increase_type = models.CharField(null=True, max_length=50, default='capital', choices=(
         ('capital', 'capital'),
         ('inflation', 'inflation'),
         ('percent', 'percent'),
     ))
-    increase_percentage = models.IntegerField(null=True, default=0)
     average_rental_income_per_month = models.FloatField(null=True, default=True)
-    amount = models.IntegerField(default=True, null=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
@@ -268,3 +264,13 @@ class Comparison(models.Model):
     description = models.CharField(max_length=255, null=True)
     rate = models.IntegerField(null=True, default=0)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+
+
+class PeriodRate(models.Model):
+    year = models.PositiveSmallIntegerField()
+    rate = models.FloatField(blank=True, null=True)
+    amount = models.FloatField(blank=True, null=True)
+    interest_rate = models.ForeignKey(InterestRates, on_delete=models.CASCADE, blank=True, null=True)
+    inflation_rate = models.ForeignKey(InflationRates, on_delete=models.CASCADE, blank=True, null=True)
+    capital_growth = models.ForeignKey(CapitalGrowthRates, on_delete=models.CASCADE, blank=True, null=True)
+    rental_income = models.ForeignKey(RentalIncome, on_delete=models.CASCADE, blank=True, null=True)

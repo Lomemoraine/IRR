@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import *
 from .forms import *
+from .signals import *
 
 
 # Create your views here.
@@ -58,24 +59,6 @@ def log_in(request):
     return render(request, 'users/login.html', {'form': form, 'error': error})
 
 
-# def login_user(request):
-#     if request.method == 'POST':
-#         form = loginForm(request.POST)
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-
-#         user = authenticate(request, username=username, password=password)
-
-#         if user is not None:
-#             login(request, user)
-#             return redirect('administrator')
-#         else:
-#             messages.info(request, "Username or Password is incorrect")
-
-#     context = {}
-#     return render(request, 'users/login.html', context=context)
-
-
 @login_required(login_url='login')
 def log_out(request):
     logout(request)
@@ -90,6 +73,65 @@ def add_property(request):
         property_form = PropertyForm(request.POST)
         if property_form.is_valid():
             property_form.save()
+            property_item = property_form.instance
+
+            # Create interest rate options and corresponding rate per year
+            interest_rate = InterestRates.objects.create(type='Interest & capital', average_interest_rate=0,
+                                                         term=0, property=property_item)
+            [PeriodRate.objects.create(year=year, rate=0, interest_rate=interest_rate) for year in range(1, 31)]
+
+            # Create inflation rate and corresponding rates per year
+            inflation_rate = InflationRates.objects.create(average_interest_rate=0, property=property_item)
+            [PeriodRate.objects.create(year=year, rate=0, inflation_rate=inflation_rate) for year in range(1, 31)]
+
+            # Depreciation rate
+            Depreciation.objects.create(description='Description', type='Straight', value=0, rate=0, years=0,
+                                        property=property_item)
+
+            # Capital growth rate and corresponding rates per year
+            capital_growth = CapitalGrowthRates.objects.create(average_capital_growth_rate=0, property=property_item)
+            [PeriodRate.objects.create(year=year, rate=0, capital_growth=capital_growth) for year in range(1, 31)]
+
+            # Monthly expense
+            MonthlyExpense.objects.create(description='', value=0, property=property_item)
+
+            # Own renovations for 30 years
+            [OwnRenovations.objects.create(year=year, amount=0, income_per_year=0, property=property_item) for year in
+             range(1, 31)]
+
+            # Loan renovations for 30 years
+            [LoanRenovations.objects.create(year=year, amount=0, income_per_year=0, property=property_item) for year in
+             range(1, 31)]
+
+            # Repair and maintenance for 30 years
+            [RepairsMaintenance.objects.create(year=year, amount=0, property=property_item) for year in range(1, 31)]
+
+            # Special expenses for 30 years
+            [SpecialExpenses.objects.create(year=year, amount=0, property=property_item) for year in range(1, 31)]
+
+            # Tax options
+            tax_options = TaxOptions.objects.create(taxation_capacity='Personal', method='Marginal', tax_rate=0,
+                                                    annual_taxable_income=0, maximum_tax_rate=0, property=property_item)
+            [TaxOptionsIncome.objects.create(income=0, rate=0, tax_options=tax_options) for i in range(1, 6)]
+
+            # Management expenses
+            ManagementExpenses.objects.create(vacancy_rate=0, management_fee=0, management_fee_per_year=0,
+                                              property=property_item)
+
+            # Additional loan payments
+            [AdditionalLoanPayments.objects.create(year=year, amount=0) for year in range(1, 31)]
+
+            # Capital Income
+            [CapitalIncome.objects.create(year=year, amount=0) for year in range(1, 31)]
+
+            # Rental income and 30 year fields
+            rental_income = RentalIncome.objects.create(rental_increase_type='capital', average_rental_income_per_month=0,
+                                                        property=property_item)
+            [PeriodRate.objects.create(year=year, amount=0, rental_income=rental_income) for year in range(1, 31)]
+
+            # Comparison
+            Comparison.objects.create(description='', rate=0, property=property_item)
+
         return redirect('home')
 
     context = {

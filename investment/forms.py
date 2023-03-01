@@ -202,7 +202,7 @@ class taxoptionsForm(forms.ModelForm):
     class Meta:
         model = TaxOptions
         fields = ['taxation_capacity', 'method', 'tax_rate',
-                  'annual_taxable_income', 'maximum_tax_rate', 'income', 'rate']
+                  'annual_taxable_income', 'maximum_tax_rate']
 
     def save(self, commit=True, pk=None):
         instance = super().save(commit=False)
@@ -254,7 +254,7 @@ class CapitalincomeForm(forms.ModelForm):
 class RentalIncomeForm(forms.ModelForm):
     class Meta:
         model = RentalIncome
-        fields = ['rental_increase_type', 'increase_percentage', 'average_rental_income_per_month']
+        fields = ['rental_increase_type', 'average_rental_income_per_month']
 
     def save(self, commit=True, pk=None):
         instance = super().save(commit=False)

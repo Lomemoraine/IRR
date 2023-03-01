@@ -27,5 +27,6 @@ admin.site.register(AdditionalLoanPayments)
 admin.site.register(CapitalIncome)
 admin.site.register(RentalIncome)
 admin.site.register(Comparison)
+admin.site.register(TaxOptionsIncome)
 
 
