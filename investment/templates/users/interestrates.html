@@ -2,17 +2,28 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<section class="p-2 h-screen dark:bg-gray-800 dark:text-gray-50">
+<section class="p-1 h-full dark:bg-gray-800 dark:text-gray-50">
     <form action="" class="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" method="POST"
           novalidate="">
         {% csrf_token %}
         <h2 class="font-medium text-center dark:text-gray-200">Interest Rates</h2>
-        <fieldset class="grid grid-cols-12 gap-3 p-6 rounded-md shadow-sm dark:bg-gray-900">
-            <div class="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+        <fieldset class="p-3 rounded-md shadow-sm dark:bg-gray-900">
+            <div class="flex flex-row">
                 {% for field in form %}
-                <div class="col-span-full sm:col-span-3">
+                <div class="basis-1/4 px-4 ">
                     {{ field|as_crispy_field }}
                 </div>
+                {% endfor %}
+            </div>
+            <div class="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+                {% for field in period_rate %}
+                <div class="col-span-full sm:col-span-3 bg-gray-900">
+                    <label class="block font-bold text-white" name="{{ field.year.label }}">
+                        {{ field.year.label }} {{ field.year.value }}
+                    </label>
+                    <input class="bg-gray-800 text-black border border-gray-600 rounded-md p-2" type="text" value="{{ field.rate.value }}" name="{{ field.rate.label }}">
+                </div>
+
                 {% endfor %}
             </div>
         </fieldset>

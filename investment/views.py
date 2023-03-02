@@ -132,7 +132,7 @@ def add_property(request):
             # Comparison
             Comparison.objects.create(description='', rate=0, property=property_item)
 
-        return redirect('home')
+        return redirect('interestrates', pk=property_item.id)
 
     context = {
         'property_form': property_form
@@ -155,16 +155,18 @@ def edit_property(request, pk):
 
 @login_required(login_url='login')
 def interestview(request, pk):
-    exist_check = Property.objects.get(id=pk)
-    messages.error(request, 'Interest rate already exists') if exist_check else messages.success(request, 'Successful')
+    interest_rate = get_object_or_404(InterestRates, pk=pk)
     if request.method == 'POST':
-        form = InterestRateForm(request.POST)
-        if form.is_valid():
+        form = InterestRateForm(request.POST, instance=interest_rate)
+        period_rate = PeriodRateFormSet(request.POST, instance=interest_rate)
+        if form.is_valid() and period_rate.is_valid():
             form.save(pk=pk)
-            return redirect('propertyitem', id=pk)
+            period_rate.save(pk=pk)
+            return redirect('inflationrates', id=pk)
     else:
-        form = InterestRateForm()
-    return render(request, 'users/interestrates.html', {'form': form})
+        form = InterestRateForm(instance=interest_rate)
+        period_rate = PeriodRateFormSet(instance=interest_rate)
+    return render(request, 'users/interestrates.html', {'form': form, 'period_rate': period_rate})
 
 
 @login_required(login_url='login')
@@ -264,7 +266,6 @@ def calc_outstanding_loan(property_id):
         for total_loan, t in zip(total_loan, range(1, term+1)):
             outstanding_loan = (total_loan / 12 * (1 - (1 + interest_rate / 12) ** (-(term - t) * 12))) / (interest_rate / 12)
             outstanding_loan_per_year.append(round(outstanding_loan, 2))
-        print(outstanding_loan_per_year)
         return outstanding_loan_per_year
     except:
         None

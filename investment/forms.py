@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import *
-from django.forms import fields, widgets
+from django.forms import fields, widgets, inlineformset_factory
 
 
 class SignUpForm(UserCreationForm):
@@ -84,6 +84,11 @@ class InterestRateForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+PeriodRateFormSet = inlineformset_factory(
+    InterestRates, PeriodRate, fields=('year', 'rate'), extra=0, can_delete=False
+)
 
 
 class EditpropertyForm(forms.ModelForm):
