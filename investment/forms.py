@@ -85,7 +85,6 @@ class InterestRateForm(forms.ModelForm):
             instance.save()
         return instance
 
-
 PeriodRateFormSet = inlineformset_factory(
     InterestRates, PeriodRate, fields=('year', 'rate'), extra=0, can_delete=False
 )

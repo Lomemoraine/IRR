@@ -136,9 +136,9 @@ class InterestRates(models.Model):
         ('Interest & capital', 'Interest & capital'),
         ('Interest only', 'Interest only')
     )
-    type = models.CharField(max_length=255, null=True, choices=Choices)
-    average_interest_rate = models.FloatField(blank=True, default=1)
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, blank=True, default=1)
+    type = models.CharField(max_length=255, null=True, blank=True, choices=Choices)
+    average_interest_rate = models.FloatField(blank=True, default=1, null=True)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, blank=True, null=True, default=1)
     term = models.IntegerField(null=True, blank=True)
 
     def add_year_rate(self, year, rate):
