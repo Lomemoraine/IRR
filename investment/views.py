@@ -153,31 +153,23 @@ def edit_property(request, pk):
     return render(request, 'users/editproperty.html', {'form': form})
 
 
-# @login_required(login_url='login')
-# def interestview(request, pk):
-#     interest_rate = get_object_or_404(InterestRates, pk=pk)
-#     if request.method == 'POST':
-#         form = InterestRateForm(request.POST, instance=interest_rate)
-#         period_rate = PeriodRateFormSet(request.POST, instance=interest_rate)
-#         if form.is_valid() and period_rate.is_valid():
-#             form.save(pk=pk)
-#             period_rate.save(pk=pk)
-#             return redirect('inflationrates', id=pk)
-#     else:
-#         form = InterestRateForm(instance=interest_rate)
-#         period_rate = PeriodRateFormSet(instance=interest_rate)
-#     return render(request, 'users/interestrates.html', {'form': form, 'period_rate': period_rate})
-
 @login_required(login_url='login')
 def interestview(request, pk):
     interest_rate = get_object_or_404(InterestRates, pk=pk)
+    PeriodRateFormSet = inlineformset_factory(
+        InterestRates, PeriodRate, form=PeriodRateForm, extra=0, can_delete=False
+    )
     if request.method == 'POST':
         form = InterestRateForm(request.POST, instance=interest_rate)
         formset = PeriodRateFormSet(request.POST, instance=interest_rate)
+        print(formset)
         if form.is_valid() and formset.is_valid():
-            form.save(pk=pk)
-            formset.save(pk=pk)
+            form.save()
+            formset.save()
             return redirect('inflationrates', pk=pk)
+        else:
+            print(formset.errors)
+            print('Shit went down')
     else:
         form = InterestRateForm(instance=interest_rate)
         formset = PeriodRateFormSet(instance=interest_rate)
@@ -185,9 +177,9 @@ def interestview(request, pk):
     context = {
         'form': form,
         'formset': formset,
-        'formset_errors': formset.errors,
     }
     return render(request, 'users/interestrates.html', context)
+
 
 
 @login_required(login_url='login')
