@@ -121,10 +121,11 @@ def add_property(request):
                                               property=property_item)
 
             # Additional loan payments
-            [AdditionalLoanPayments.objects.create(year=year, amount=0) for year in range(1, 31)]
+            [AdditionalLoanPayments.objects.create(year=year, amount=0, property=property_item)
+             for year in range(1, 31)]
 
             # Capital Income
-            [CapitalIncome.objects.create(year=year, amount=0) for year in range(1, 31)]
+            [CapitalIncome.objects.create(year=year, amount=0, property=property_item) for year in range(1, 31)]
 
             # Rental income and 30 year fields
             rental_income = RentalIncome.objects.create(rental_increase_type='capital',
@@ -764,14 +765,18 @@ def additional_loan_payments_view(request, pk): #todo not doen
                                               extra=0, can_delete=False)
     if request.method == 'POST':
         formset = add_loans_formset(request.POST, instance=property_item)
+        print(formset)
         if formset.is_valid():
             formset.save()
-            return redirect('capitalincome', pk=pk)
+            return redirect('Capitalincome', pk=pk)
         print(formset.errors)
-    else:
-        formset = add_loans_formset(instance=property_item)
+    formset = add_loans_formset(instance=property_item)
+    print(formset)
 
-    context = {'add_loans_formset': formset, 'property': property_item}
+    context = {
+        'formset': formset,
+        'property': property_item
+    }
     return render(request, 'users/Additionalloanpayments.html', context)
 
 
@@ -783,7 +788,7 @@ def capital_income_view(request, pk):
         formset = capital_income_formset(request.POST, instance=property_item)
         if formset.is_valid():
             formset.save()
-            return redirect('rentalincome', pk=pk)
+            return redirect('RentalIncome', pk=pk)
         print(formset.errors)
     formset = capital_income_formset(instance=property_item)
 
@@ -811,11 +816,14 @@ def rental_income_view(request, pk):
 
 
 def comparison_view(request, pk):
+    property_item = Property.objects.get(pk=pk)
+    comparison_formset = inlineformset_factory(Property, Comparison, form=comparisonForm, extra=0, can_delete=False)
     if request.method == 'POST':
-        myform = comparisonForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
+        formset = comparison_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
             return redirect('propertyitem', id=pk)
-    else:
-        myform = comparisonForm()
-    return render(request, 'users/comparison.html', {'myform': myform})
+        print(formset.errors)
+    formset = comparison_formset(instance=property_item)
+
+    return render(request, 'users/comparison.html', {'formset': formset})

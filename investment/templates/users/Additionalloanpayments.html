@@ -3,21 +3,19 @@
 {% block content %}
 
 <section class="p-2 h-screen dark:bg-gray-800 dark:text-gray-50">
-    <form action="" class="container w-1/2 flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" method="POST"
+    <form action="" class="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" method="POST"
           novalidate="">
         {% csrf_token %}
-        <h2 class="font-medium text-center dark:text-gray-200">Additional Loan Payments</h2>
-        <fieldset class="p-6 rounded-md shadow-sm dark:bg-gray-900">
-            <div class="flex flex-row">
-                {{ add_loans_formset.management_form }}
-                {% for field in add_loans_formset %}
-                <div class="flex-1 sm:w-1/3 px-3 mx-2 py-1">
-                    <p>Meeeh</p>
+        <h2 class="font-medium text-center dark:text-gray-200">Additional Loan Repayments</h2>
+        <fieldset class="grid grid-cols-12 gap-3 p-6 rounded-md shadow-sm dark:bg-gray-900">
+            <div class="flex flex-wrap">
+                {{ formset.management_form }}
+                {% for field in formset %}
+                <div class="flex-1 sm:w-1/3 p-2">
                     {{ field }}
                 </div>
                 {% endfor %}
             </div>
-            {{ property }}
         </fieldset>
         <button class="w-screen px-8 py-3 font-semibold rounded-md dark:bg-gray-100 dark:text-gray-900"
                 type="submit">
@@ -27,4 +25,3 @@
 </section>
 
 {% endblock%}
-{#form is diplaying incorrectly#}
