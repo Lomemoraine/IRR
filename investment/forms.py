@@ -116,15 +116,13 @@ class InflationRateForm(forms.ModelForm):
         return instance
 
 
-
 class DepreciationForm(forms.ModelForm):
     class Meta:
         model = Depreciation
         fields = ['description', 'type', 'value', 'rate', 'years']
 
-    def save(self, commit=True, pk=None):
-        instance = super().save(commit=False)
-        instance.property_id = pk
+    def save(self, commit=True):
+        instance = super(DepreciationForm, self).save(commit=False)
         if commit:
             instance.save()
         return instance
@@ -135,9 +133,8 @@ class CapitalGrowthRatesForm(forms.ModelForm):
         model = CapitalGrowthRates
         fields = ['average_capital_growth_rate']
 
-    def save(self, commit=True, pk=None):
-        instance = super().save(commit=False)
-        instance.property_id = pk
+    def save(self, commit=True):
+        instance = super(CapitalGrowthRatesForm, self).save(commit=False)
         if commit:
             instance.save()
         return instance

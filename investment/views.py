@@ -610,6 +610,7 @@ def inflationview(request, pk):
 
 
 def depreciation_view(request, pk):
+    # Todo Clean this up
     depreciation_formset = modelformset_factory(Depreciation, form=DepreciationForm, extra=0)
     if request.method == 'POST':
         formset = depreciation_formset(request.POST)
@@ -627,18 +628,27 @@ def depreciation_view(request, pk):
     return render(request, 'users/depreciation.html', context)
 
 
-def CapitalGrowthview(request, pk):
-    exist_check = Property.objects.get(id=pk)
-    messages.error(request, 'Average Capital Growth Rate already exists') if exist_check else messages.success(request,
-                                                                                                               'Successful')
+def capital_growth_view(request, pk):
+    capital_growth = get_object_or_404(CapitalGrowthRates, pk=pk)
+    PeriodRateCGR = inlineformset_factory(CapitalGrowthRates, PeriodRate, form=PeriodRateForm, extra=0,
+                                          can_delete=False)
     if request.method == 'POST':
-        myform = CapitalGrowthRatesForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = CapitalGrowthRatesForm()
-    return render(request, 'users/capitalgrowth.html', {'myform': myform})
+        cgr_form = CapitalGrowthRatesForm(request.POST, instance=capital_growth)
+        cgr_formset = PeriodRateCGR(request.POST, instance=capital_growth)
+        if cgr_form.is_valid():
+            cgr_form.save()
+        if cgr_formset.is_valid():
+            cgr_formset.save()
+            return redirect('monthlyexpense', pk=pk)
+        print(cgr_formset.errors)
+    cgr_form = CapitalGrowthRatesForm(instance=capital_growth)
+    cgr_formset = PeriodRateCGR(instance=capital_growth)
+
+    context = {
+        'cgr_form': cgr_form,
+        'cgr_formset': cgr_formset
+    }
+    return render(request, 'users/capitalgrowth.html', context)
 
 
 def MonthlyExpenseview(request, pk):
