@@ -653,7 +653,7 @@ def capital_growth_view(request, pk):
 def monthly_expense_view(request, pk):
     property_item = Property.objects.get(pk=pk)
     expense_formset = inlineformset_factory(Property, MonthlyExpense, form=MonthlyExpenseForm, extra=2,
-                                             can_delete=False)
+                                            can_delete=False)
     if request.method == 'POST':
         formset = expense_formset(request.POST, instance=property_item)
         if formset.is_valid():
@@ -699,28 +699,39 @@ def loan_renovations_view(request, pk):
 
 
 def repairs_maintenance_view(request, pk):
+    property_item = Property.objects.get(pk=pk)
+    repairs_formset = inlineformset_factory(Property, RepairsMaintenance, form=repairs_maintenanceForm, extra=0,
+                                            can_delete=False)
     if request.method == 'POST':
-        myform = repairs_maintenanceForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = repairs_maintenanceForm()
-    return render(request, 'users/repairs_maintenance.html', {'myform': myform})
+        formset = repairs_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
+            return redirect('specialexpenses', pk=pk)
+        print(formset.errors)
+    formset = repairs_formset(instance=property_item)
+
+    context = {'repairs_formset': formset}
+    return render(request, 'users/repairs_maintenance.html', context)
 
 
-def specialexpensesview(request, pk):
+def special_expenses_view(request, pk):
+    property_item = Property.objects.get(pk=pk)
+    special_expenses_formset = inlineformset_factory(Property, SpecialExpenses, form=specialexpensesForm, extra=0,
+                                                     can_delete=False)
     if request.method == 'POST':
-        myform = specialexpensesForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = specialexpensesForm()
-    return render(request, 'users/specialexpenses.html', {'myform': myform})
+        formset = special_expenses_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
+            return redirect('taxoptions', pk=pk)
+        print(formset.errors)
+    formset = special_expenses_formset(instance=property_item)
+
+    context = {'special_expenses_formset': formset}
+    return render(request, 'users/specialexpenses.html', context)
 
 
-def taxoptionsview(request, pk):
+def tax_options_view(request, pk): #Todo incomplete
+
     if request.method == 'POST':
         myform = taxoptionsForm(request.POST)
         if myform.is_valid():
@@ -731,18 +742,23 @@ def taxoptionsview(request, pk):
     return render(request, 'users/taxoptions.html', {'myform': myform})
 
 
-def managementexpensesview(request, pk):
+def management_expenses_view(request, pk):
+    property_item = Property.objects.get(pk=pk)
+    management_expenses_formset = inlineformset_factory(Property, ManagementExpenses, form=managementexpensesForm, 
+                                                        extra=0, can_delete=False)
     if request.method == 'POST':
-        myform = managementexpensesForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = managementexpensesForm()
-    return render(request, 'users/managementexpenses.html', {'myform': myform})
+        formset = management_expenses_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
+            return redirect('Additionalloanpayments', pk=pk)
+        print(formset)
+    formset = management_expenses_formset(instance=property_item)
+
+    context = {'management_expenses_formset': formset}
+    return render(request, 'users/managementexpenses.html', context)
 
 
-def Additionalloanpaymentsview(request, pk):
+def additional_loan_payments_view(request, pk):
     if request.method == 'POST':
         myform = AdditionalloanpaymentsForm(request.POST)
         if myform.is_valid():
@@ -753,7 +769,7 @@ def Additionalloanpaymentsview(request, pk):
     return render(request, 'users/Additionalloanpayments.html', {'myform': myform})
 
 
-def Capitalincomeview(request, pk):
+def capital_income_view(request, pk):
     if request.method == 'POST':
         myform = CapitalincomeForm(request.POST)
         if myform.is_valid():
@@ -764,7 +780,7 @@ def Capitalincomeview(request, pk):
     return render(request, 'users/Capitalincome.html', {'myform': myform})
 
 
-def RentalIncomeview(request, pk):
+def rental_income_view(request, pk):
     exist_check = Property.objects.get(id=pk)
     messages.error(request, 'Inflation rate already exists') if exist_check else messages.success(request, 'Successful')
     if request.method == 'POST':
@@ -777,7 +793,7 @@ def RentalIncomeview(request, pk):
     return render(request, 'users/RentalIncome.html', {'myform': myform})
 
 
-def comparisonview(request, pk):
+def comparison_view(request, pk):
     if request.method == 'POST':
         myform = comparisonForm(request.POST)
         if myform.is_valid():
