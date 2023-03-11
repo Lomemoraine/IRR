@@ -16,8 +16,8 @@ urlpatterns = [
     path('property/<str:id>/', views.view_one_property, name="propertyitem"),
 
     # Others
-    path('addimages/<int:pk>/', views.addimages, name="addimages"),
-    path('interestrates/<int:pk>/', views.interestview, name="interestrates"),
+    path('addimages/<int:pk>/', views.add_images, name="addimages"),
+    path('interestrates/<int:pk>/', views.interest_view, name="interestrates"),
     path('inflationrates/<int:pk>/', views.inflation_view, name="inflationrates"),
     path('depreciation/<int:pk>/', views.depreciation_view, name="depreciation"),
     path('capitalgrowth/<int:pk>/', views.capital_growth_view, name="capitalgrowth"),

@@ -203,11 +203,22 @@ class specialexpensesForm(forms.ModelForm):
 class taxoptionsForm(forms.ModelForm):
     class Meta:
         model = TaxOptions
-        fields = ['taxation_capacity', 'method', 'tax_rate',
-                  'annual_taxable_income', 'maximum_tax_rate']
+        fields = ['taxation_capacity', 'method', 'tax_rate', 'maximum_tax_rate']
 
     def save(self, commit=True):
         instance = super(taxoptionsForm, self).save(commit=False)
+        if commit:
+            instance.save()
+        return instance
+
+
+class TaxOptionsIncomeForm(forms.ModelForm):
+    class Meta:
+        model = TaxOptionsIncome
+        fields = ['income', 'rate']
+
+    def save(self, commit=True):
+        instance = super(TaxOptionsIncomeForm, self).save(commit=False)
         if commit:
             instance.save()
         return instance

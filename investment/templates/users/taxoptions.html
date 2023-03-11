@@ -9,9 +9,17 @@
         <h2 class="font-medium text-center dark:text-gray-200">Tax Options</h2>
         <fieldset class="grid grid-cols-12 gap-3 p-6 rounded-md shadow-sm dark:bg-gray-900">
             <div class="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
-                {% for field in myform %}
+                {% for field in tax_form %}
                 <div class="col-span-full sm:col-span-3">
                     {{ field|as_crispy_field }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="py-3 grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+                {{ tax_formset.management_form }}
+                {% for field in tax_formset %}
+                <div class="col-span-full sm:col-span-3">
+                    {{ field }}
                 </div>
                 {% endfor %}
             </div>

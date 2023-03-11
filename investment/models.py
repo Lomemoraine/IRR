@@ -226,8 +226,8 @@ class TaxOptions(models.Model):
 
 
 class TaxOptionsIncome(models.Model):
-    income = models.IntegerField(null=True, blank=True)
-    rate = models.IntegerField(null=True, blank=True)
+    income = models.FloatField(null=True, blank=True)
+    rate = models.FloatField(null=True, blank=True)
     tax_options = models.ForeignKey(TaxOptions, on_delete=models.CASCADE, null=True, blank=True)
 
 

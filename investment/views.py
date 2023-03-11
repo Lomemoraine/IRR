@@ -158,7 +158,7 @@ def edit_property(request, pk):
 
 
 @login_required(login_url='login')
-def interestview(request, pk):
+def interest_view(request, pk):
     interest_rate = get_object_or_404(InterestRates, pk=pk)
     PeriodRateFormSet = inlineformset_factory(
         InterestRates, PeriodRate, form=PeriodRateForm, extra=0, can_delete=False
@@ -184,7 +184,7 @@ def interestview(request, pk):
 
 
 @login_required(login_url='login')
-def addimages(request, pk):
+def add_images(request, pk):
     if request.method == 'POST':
         data = request.POST
         images = request.FILES.getlist('images')
@@ -732,15 +732,25 @@ def special_expenses_view(request, pk):
 
 
 def tax_options_view(request, pk): #Todo incomplete
-
+    tax_options = get_object_or_404(TaxOptions, pk=pk)
+    tax_options_income_formset = inlineformset_factory(TaxOptions, TaxOptionsIncome, form=TaxOptionsIncomeForm,
+                                                       extra=2, can_delete=False)
     if request.method == 'POST':
-        myform = taxoptionsForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
+        tax_form = taxoptionsForm(request.POST, instance=tax_options)
+        tax_formset = tax_options_income_formset(request.POST, instance=tax_options)
+        if tax_formset.is_valid() and tax_form.is_valid():
+            tax_form.save()
+            tax_formset.save()
             return redirect('propertyitem', id=pk)
-    else:
-        myform = taxoptionsForm()
-    return render(request, 'users/taxoptions.html', {'myform': myform})
+        print(tax_formset.errors)
+    tax_form = taxoptionsForm(instance=tax_options)
+    tax_formset = tax_options_income_formset(instance=tax_options)
+
+    context = {
+        'tax_form': tax_form,
+        'tax_formset': tax_formset
+    }
+    return render(request, 'users/taxoptions.html', context)
 
 
 def management_expenses_view(request, pk):
