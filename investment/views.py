@@ -1,5 +1,7 @@
 # from django.http  import HttpResponse
 from typing import Any, List, Union
+
+from django.forms import modelformset_factory
 from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
@@ -85,8 +87,8 @@ def add_property(request):
             [PeriodRate.objects.create(year=year, rate=0, inflation_rate=inflation_rate) for year in range(1, 31)]
 
             # Depreciation rate
-            Depreciation.objects.create(description='Description', type='Straight', value=0, rate=0, years=0,
-                                        property=property_item)
+            [Depreciation.objects.create(description='Description', type='Straight', value=0, rate=0, years=0,
+                                         property=property_item, ) for x in range(1, 5)]
 
             # Capital growth rate and corresponding rates per year
             capital_growth = CapitalGrowthRates.objects.create(average_capital_growth_rate=0, property=property_item)
@@ -125,7 +127,8 @@ def add_property(request):
             [CapitalIncome.objects.create(year=year, amount=0) for year in range(1, 31)]
 
             # Rental income and 30 year fields
-            rental_income = RentalIncome.objects.create(rental_increase_type='capital', average_rental_income_per_month=0,
+            rental_income = RentalIncome.objects.create(rental_increase_type='capital',
+                                                        average_rental_income_per_month=0,
                                                         property=property_item)
             [PeriodRate.objects.create(year=year, amount=0, rental_income=rental_income) for year in range(1, 31)]
 
@@ -162,14 +165,12 @@ def interestview(request, pk):
     if request.method == 'POST':
         form = InterestRateForm(request.POST, instance=interest_rate)
         formset = PeriodRateFormSet(request.POST, instance=interest_rate)
-        print(formset)
         if form.is_valid() and formset.is_valid():
             form.save()
             formset.save()
             return redirect('inflationrates', pk=pk)
         else:
             print(formset.errors)
-            print('Shit went down')
     else:
         form = InterestRateForm(instance=interest_rate)
         formset = PeriodRateFormSet(instance=interest_rate)
@@ -179,7 +180,6 @@ def interestview(request, pk):
         'formset': formset,
     }
     return render(request, 'users/interestrates.html', context)
-
 
 
 @login_required(login_url='login')
@@ -272,12 +272,13 @@ def calc_property_value(property_id, years=30):
 def calc_outstanding_loan(property_id):
     try:
         rate = InterestRates.objects.get(property=property_id).average_interest_rate
-        interest_rate = rate/100
+        interest_rate = rate / 100
         total_loan = calc_total_loan_payment(property_id=property_id)
         term = InterestRates.objects.get(property_id=property_id).term
         outstanding_loan_per_year: List[Union[int, Any]] = []
-        for total_loan, t in zip(total_loan, range(1, term+1)):
-            outstanding_loan = (total_loan / 12 * (1 - (1 + interest_rate / 12) ** (-(term - t) * 12))) / (interest_rate / 12)
+        for total_loan, t in zip(total_loan, range(1, term + 1)):
+            outstanding_loan = (total_loan / 12 * (1 - (1 + interest_rate / 12) ** (-(term - t) * 12))) / (
+                    interest_rate / 12)
             outstanding_loan_per_year.append(round(outstanding_loan, 2))
         return outstanding_loan_per_year
     except:
@@ -326,15 +327,13 @@ def calc_loan_interest(property_id):
 
 
 def calc_loan_principal(property_id):
-    # Year1 -> Bond value - loan amount
-    # Others -> loan amount[0] - loan amount [1]
     try:
         bond_value = Property.objects.get(id=property_id).bond_value
         term = InterestRates.objects.get(property_id=property_id).term
         outstanding_loan = calc_outstanding_loan(property_id=property_id)
         outstanding_loan.insert(0, bond_value)
         loan_principal = []
-        for year in range(1, term+1):
+        for year in range(1, term + 1):
             principal = outstanding_loan[year - 1] - outstanding_loan[year]
             loan_principal.append(round(principal, 2))
         return loan_principal
@@ -355,11 +354,11 @@ def calc_total_loan_payment(property_id, interest_change=None, new_interest_rate
                 total_loan_payment.append(0)
             else:
                 if interest_change is None or new_interest_rate is None:
-                    x = (interest_rate / 100)/12
-                    y = term*12
-                    z = 1+x
-                    a = x*(z)**y
-                    b = z**y - 1
+                    x = (interest_rate / 100) / 12
+                    y = term * 12
+                    z = 1 + x
+                    a = x * (z) ** y
+                    b = z ** y - 1
                     c = a / b
                     d = bond_price * c
                     payment = d * 12
@@ -374,7 +373,7 @@ def calc_total_loan_payment(property_id, interest_change=None, new_interest_rate
                     if i == interest_change - 1:
                         interest_rate = new_interest_rate / 100
                         payment = bond_price * (interest_rate / 12 * ((1 + interest_rate / 12) ** (term - i * 12)) / (
-                            ((1 + interest_rate / 12) ** (term - i * 12)) - 1)) * 12
+                                ((1 + interest_rate / 12) ** (term - i * 12)) - 1)) * 12
                         total_loan_payment.append(round(payment, 2))
                         bond_price -= payment
         return total_loan_payment
@@ -484,13 +483,13 @@ def calc_depreciation(property_id):
         depreciation_type = Depreciation.objects.get(property_id=property_id).type
 
         if depreciation_type == 'straight':
-            annual_depreciation = purchase_price * (rate/100)
+            annual_depreciation = purchase_price * (rate / 100)
             total_depreciation = annual_depreciation * years
             remaining_value = purchase_price - total_depreciation
 
             depreciation_schedule = []
             for year in range(1, years + 1):
-                depreciation = (purchase_price-remaining_value)/years
+                depreciation = (purchase_price - remaining_value) / years
                 depreciation_schedule.append(depreciation)
             return depreciation_schedule
         else:
@@ -498,7 +497,7 @@ def calc_depreciation(property_id):
             book_value = purchase_price
             for year in range(1, years + 1):
                 depreciation = (book_value * rate) / 100
-                book_value = book_value-depreciation
+                book_value = book_value - depreciation
                 depreciation_schedule.append(depreciation)
             return depreciation_schedule
     except:
@@ -568,7 +567,6 @@ def calc_after_tax_cash_on_cash(property_id, years=30):
         None
 
 
-import pandas as pd
 import numpy_financial as np
 
 
@@ -580,8 +578,8 @@ def calc_irr(property_id, years=30):
             after_tax_cashflow.insert(0, -initial_investment)
         irr_list = []
         for year in range(years):
-            sliced_cashflow = after_tax_cashflow[:year+1]
-            irr = round(np.irr(sliced_cashflow)*100, 2)
+            sliced_cashflow = after_tax_cashflow[:year + 1]
+            irr = round(np.irr(sliced_cashflow) * 100, 2)
             irr_list.append(irr)
         return irr_list
     except:
@@ -589,27 +587,44 @@ def calc_irr(property_id, years=30):
 
 
 def inflationview(request, pk):
-    exist_check = Property.objects.get(id=pk)
-    messages.error(request, 'Inflation rate already exists') if exist_check else messages.success(request, 'Successful')
+    inflation_rate = get_object_or_404(InflationRates, pk=pk)
+    PeriodRateInflationFormSet = inlineformset_factory(
+        InflationRates, PeriodRate, form=PeriodRateForm, extra=0, can_delete=False, )
     if request.method == 'POST':
-        myform = InflationRateForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = InflationRateForm()
-    return render(request, 'users/inflationrates.html', {'myform': myform})
+        inflation_form = InflationRateForm(request.POST, instance=inflation_rate)
+        inflation_formset = PeriodRateInflationFormSet(request.POST, instance=inflation_rate)
+        if inflation_form.is_valid():
+            inflation_form.save()
+        if inflation_formset.is_valid():
+            inflation_formset.save()
+            return redirect('depreciation', pk=pk)
+        print(inflation_formset.errors, 'formset not saved')
+    inflation_form = InflationRateForm(instance=inflation_rate)
+    inflation_formset = PeriodRateInflationFormSet(instance=inflation_rate)
+
+    context = {
+        'inflation_form': inflation_form,
+        'inflation_formset': inflation_formset
+    }
+    return render(request, 'users/inflationrates.html', context)
 
 
-def depreciationview(request, pk):
+def depreciation_view(request, pk):
+    depreciation_formset = modelformset_factory(Depreciation, form=DepreciationForm, extra=0)
     if request.method == 'POST':
-        myform = DepreciationForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
+        formset = depreciation_formset(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return redirect('capitalgrowth', pk=pk)
+        print(formset.errors)
     else:
-        myform = DepreciationForm()
-    return render(request, 'users/depreciation.html', {'myform': myform})
+        formset = depreciation_formset()
+
+    context = {
+        'depreciation_formset': formset,
+    }
+
+    return render(request, 'users/depreciation.html', context)
 
 
 def CapitalGrowthview(request, pk):

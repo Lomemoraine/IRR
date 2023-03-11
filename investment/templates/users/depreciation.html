@@ -7,15 +7,37 @@
           novalidate="">
         {% csrf_token %}
         <h2 class="font-medium text-center dark:text-gray-200">Depreciation</h2>
-        <fieldset class="grid grid-cols-12 gap-3 p-6 rounded-md shadow-sm dark:bg-gray-900">
-            <div class="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
-                {% for field in myform %}
-                <div class="col-span-full sm:col-span-3">
-                    {{ field|as_crispy_field }}
-                </div>
-                {% endfor %}
-            </div>
-        </fieldset>
+        <table class="min-w-full text-xs text-white dark:bg-gray-900">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col class="w-24">
+            </colgroup>
+            <thead class="dark:bg-gray-700">
+            <tr class="text-left">
+                <th class="p-3">Description</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">Value</th>
+                <th class="p-3">Rate</th>
+                <th class="p-3">Years</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{depreciation_formset.management_form}}
+            {% for item in depreciation_formset %}
+            <tr class="">
+                <td class="p-3">{{ item.description }}</td>
+                <td class="p-3">{{ item.type }}</td>
+                <td class="p-3">{{ item.value }}</td>
+                <td class="p-3">{{ item.rate }}</td>
+                <td class="p-3">{{ item.years }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
         <button class="w-screen px-8 py-3 font-semibold rounded-md dark:bg-gray-100 dark:text-gray-900"
                 type="submit">
             Submit

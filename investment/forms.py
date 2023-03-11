@@ -97,13 +97,6 @@ class InterestRateForm(forms.ModelForm):
         return instance
 
 
-# PeriodRateFormSet = inlineformset_factory(
-#     InterestRates, PeriodRate,
-#     form=PeriodRateForm,
-#     extra=0, can_delete=False
-# )
-
-
 class EditpropertyForm(forms.ModelForm):
     class Meta:
         model = Property
@@ -116,12 +109,12 @@ class InflationRateForm(forms.ModelForm):
         model = InflationRates
         fields = ['average_interest_rate']
 
-    def save(self, commit=True, pk=None):
-        instance = super().save(commit=False)
-        instance.property_id = pk
+    def save(self, commit=True):
+        instance = super(InflationRateForm, self).save(commit=False)
         if commit:
             instance.save()
         return instance
+
 
 
 class DepreciationForm(forms.ModelForm):
