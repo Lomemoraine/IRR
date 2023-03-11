@@ -95,7 +95,7 @@ def add_property(request):
             [PeriodRate.objects.create(year=year, rate=0, capital_growth=capital_growth) for year in range(1, 31)]
 
             # Monthly expense
-            MonthlyExpense.objects.create(description='', value=0, property=property_item)
+            [MonthlyExpense.objects.create(description='', value=0, property=property_item) for x in range(1, 3)]
 
             # Own renovations for 30 years
             [OwnRenovations.objects.create(year=year, amount=0, income_per_year=0, property=property_item) for year in
@@ -586,7 +586,7 @@ def calc_irr(property_id, years=30):
         None
 
 
-def inflationview(request, pk):
+def inflation_view(request, pk):
     inflation_rate = get_object_or_404(InflationRates, pk=pk)
     PeriodRateInflationFormSet = inlineformset_factory(
         InflationRates, PeriodRate, form=PeriodRateForm, extra=0, can_delete=False, )
@@ -650,40 +650,55 @@ def capital_growth_view(request, pk):
     return render(request, 'users/capitalgrowth.html', context)
 
 
-def MonthlyExpenseview(request, pk):
+def monthly_expense_view(request, pk):
+    property_item = Property.objects.get(pk=pk)
+    expense_formset = inlineformset_factory(Property, MonthlyExpense, form=MonthlyExpenseForm, extra=2,
+                                             can_delete=False)
     if request.method == 'POST':
-        myform = MonthlyExpenseForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = MonthlyExpenseForm()
-    return render(request, 'users/MonthlyExpense.html', {'myform': myform})
+        formset = expense_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
+            return redirect('ownrenovations', pk=pk)
+        print(formset.errors)
+    formset = expense_formset(instance=property_item)
+
+    context = {'expense_formset': formset}
+    return render(request, 'users/MonthlyExpense.html', context)
 
 
-def OwnRenovationsview(request, pk):
+def own_renovations_view(request, pk):
+    property_item = Property.objects.get(pk=pk)
+    own_renovations_formset = inlineformset_factory(Property, OwnRenovations, form=OwnRenovationsForm,
+                                                    can_delete=False, extra=1)
     if request.method == 'POST':
-        myform = OwnRenovationsForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = OwnRenovationsForm()
-    return render(request, 'users/ownrenovations.html', {'myform': myform})
+        formset = own_renovations_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
+            return redirect('loanrenovations', pk=pk)
+        print(formset.errors)
+    formset = own_renovations_formset(instance=property_item)
+
+    context = {'own_renovations_formset': formset}
+    return render(request, 'users/ownrenovations.html', context)
 
 
-def LoanRenovationsview(request, pk):
+def loan_renovations_view(request, pk):
+    property_item = Property.objects.get(pk=pk)
+    loan_renovations_formset = inlineformset_factory(Property, LoanRenovations, form=LoanRenovationsForm,
+                                                     extra=0, can_delete=False)
     if request.method == 'POST':
-        myform = LoanRenovationsForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = LoanRenovationsForm()
-    return render(request, 'users/loanrenovations.html', {'myform': myform})
+        formset = loan_renovations_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
+            return redirect('repairs_maintenance', pk=pk)
+        print(formset.errors)
+    formset = loan_renovations_formset(instance=property_item)
+
+    context = {'loan_renovations_formset': formset}
+    return render(request, 'users/loanrenovations.html', context)
 
 
-def repairs_maintenanceview(request, pk):
+def repairs_maintenance_view(request, pk):
     if request.method == 'POST':
         myform = repairs_maintenanceForm(request.POST)
         if myform.is_valid():

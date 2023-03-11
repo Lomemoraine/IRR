@@ -176,7 +176,7 @@ class CapitalGrowthRates(models.Model):
 
 class MonthlyExpense(models.Model):
     description = models.CharField(max_length=255, null=True)
-    value = models.IntegerField(null=True)
+    value = models.FloatField(null=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
 
 
