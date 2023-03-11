@@ -1,16 +1,10 @@
-# from django.http  import HttpResponse
 from typing import Any, List, Union
-
-from django.forms import modelformset_factory
+import numpy_financial as np
 from django.urls import reverse
-from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import *
 from .forms import *
-from .signals import *
 
 
 # Create your views here.
@@ -88,7 +82,7 @@ def add_property(request):
 
             # Depreciation rate
             [Depreciation.objects.create(description='Description', type='Straight', value=0, rate=0, years=0,
-                                         property=property_item, ) for x in range(1, 5)]
+                                         property=property_item) for x in range(1, 5)]
 
             # Capital growth rate and corresponding rates per year
             capital_growth = CapitalGrowthRates.objects.create(average_capital_growth_rate=0, property=property_item)
@@ -256,18 +250,18 @@ def view_one_property(request, id):
 
 # Calculations for properties
 
-
 def calc_property_value(property_id, years=30):
     try:
         cgr = CapitalGrowthRates.objects.get(property=property_id).average_capital_growth_rate
         prop = Property.objects.get(id=property_id)
         property_value_list = []
         for year in range(1, years + 1):
-            property_value = prop.purchase_price * ((float(1) + cgr / 100)) ** year
+            property_value = prop.purchase_price * (float(1) + cgr / 100) ** year
             property_value_list.append(round(property_value, 2))
         return property_value_list
-    except:
-        None
+    except(CapitalGrowthRates.DoesNotExist, Property.DoesNotExist) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_outstanding_loan(property_id):
@@ -282,8 +276,9 @@ def calc_outstanding_loan(property_id):
                     interest_rate / 12)
             outstanding_loan_per_year.append(round(outstanding_loan, 2))
         return outstanding_loan_per_year
-    except:
-        None
+    except(InterestRates.DoesNotExist, Property.DoesNotExist) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_equity(property_id):
@@ -296,8 +291,9 @@ def calc_equity(property_id):
                 equity = prop_value - out_loan
                 equity_per_year.append(round(equity, 2))
             return equity_per_year
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_gross_rental_income(property_id, years=30):
@@ -309,8 +305,9 @@ def calc_gross_rental_income(property_id, years=30):
             income = rental_income - mgmnt_expenses
             list_income.append(round(income))
         return list_income
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_loan_interest(property_id):
@@ -323,8 +320,9 @@ def calc_loan_interest(property_id):
             interest = loan - principal
             loan_interest_amt.append(round(interest, 2))
         return loan_interest_amt
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_loan_principal(property_id):
@@ -338,8 +336,9 @@ def calc_loan_principal(property_id):
             principal = outstanding_loan[year - 1] - outstanding_loan[year]
             loan_principal.append(round(principal, 2))
         return loan_principal
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_total_loan_payment(property_id, interest_change=None, new_interest_rate=None):
@@ -348,7 +347,8 @@ def calc_total_loan_payment(property_id, interest_change=None, new_interest_rate
         avg_interest_rate_id = InterestRates.objects.get(property_id=property_id).id
         term = InterestRates.objects.get(property_id=property_id).term
         interest_rate = InterestRates.objects.get(property_id=property_id).average_interest_rate
-        # interest_rates = [rate.rate / 100 for rate in PeriodRate.objects.filter(interest_rate_id=avg_interest_rate_id)]
+        # interest_rates = [rate.rate / 100 for rate in PeriodRate.objects.filter(
+        # interest_rate_id=avg_interest_rate_id)]
         total_loan_payment = []
         for i in range(term):
             if i > term:
@@ -358,7 +358,7 @@ def calc_total_loan_payment(property_id, interest_change=None, new_interest_rate
                     x = (interest_rate / 100) / 12
                     y = term * 12
                     z = 1 + x
-                    a = x * (z) ** y
+                    a = x * z ** y
                     b = z ** y - 1
                     c = a / b
                     d = bond_price * c
@@ -378,8 +378,9 @@ def calc_total_loan_payment(property_id, interest_change=None, new_interest_rate
                         total_loan_payment.append(round(payment, 2))
                         bond_price -= payment
         return total_loan_payment
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_property_expenses_per_year(property_id, years=30):
@@ -390,8 +391,9 @@ def calc_property_expenses_per_year(property_id, years=30):
             expenses = monthly_expense * 12
             property_expenses_per_year.append(round(expenses, 2))
         return property_expenses_per_year
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_total_property_expenses_per_year(property_id, years=30):
@@ -414,8 +416,9 @@ def calc_total_property_expenses_per_year(property_id, years=30):
             expenses += repairs_maintenance[year - 1].amount if year <= len(repairs_maintenance) else 0
             total_property_expenses_per_year.append(round(expenses, 2))
         return total_property_expenses_per_year
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_pre_tax_cash_flow(property_id, years=30):
@@ -429,8 +432,9 @@ def calc_pre_tax_cash_flow(property_id, years=30):
             cash_flow += total_expenses[year - 1] if year <= len(total_expenses) else 0
             pre_tax_cash_flow_per_year.append(round(cash_flow, 2))
         return pre_tax_cash_flow_per_year
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_initial_capital_outflow(property_id, years=30):
@@ -442,8 +446,9 @@ def calc_initial_capital_outflow(property_id, years=30):
             outflow = deposit + other_costs
             initial_capital_outflow_per_year.append(round(outflow, 2))
         return initial_capital_outflow_per_year
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_pre_tax_cash_on_cash(property_id, years=30):
@@ -455,8 +460,9 @@ def calc_pre_tax_cash_on_cash(property_id, years=30):
             cash_on_cash = (pre_tax_cash_flow_per_year[year - 1] / initial_capital_outflow_per_year[year - 1]) * 100
             pre_tax_cashoncash.append(round(cash_on_cash, 2))
         return pre_tax_cashoncash
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_taxable_deductions(property_id, years=30):
@@ -471,8 +477,9 @@ def calc_taxable_deductions(property_id, years=30):
                 deductions += total_property_expenses[year - 1] if year <= len(total_property_expenses) else 0
                 taxable_deductions.append(round(deductions, 2))
         return taxable_deductions
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_depreciation(property_id):
@@ -501,8 +508,9 @@ def calc_depreciation(property_id):
                 book_value = book_value - depreciation
                 depreciation_schedule.append(depreciation)
             return depreciation_schedule
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_taxable_amount(property_id, years=30):
@@ -514,8 +522,9 @@ def calc_taxable_amount(property_id, years=30):
             amount = gross_rental_income[year - 1] - taxable_deductions[year - 1]
             taxable_amount.append(round(amount, 2))
         return taxable_amount
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_tax_credits(property_id, years=30):
@@ -526,8 +535,9 @@ def calc_tax_credits(property_id, years=30):
             credit = taxable_deductions[year - 1] * 0.3
             tax_credits.append(round(credit, 2))
         return tax_credits
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_after_tax_cashflow(property_id, years=30):
@@ -539,8 +549,9 @@ def calc_after_tax_cashflow(property_id, years=30):
             cashflow = pre_tax_cashflow[year - 1] - tax_credits[year - 1]
             after_tax_cashflow.append(round(cashflow, 2))
         return after_tax_cashflow
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_income_per_month(property_id, years=30):
@@ -551,8 +562,9 @@ def calc_income_per_month(property_id, years=30):
             income = after_tax_cashflow[year - 1] / 12
             income_per_month.append(round(income, 2))
         return income_per_month
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_after_tax_cash_on_cash(property_id, years=30):
@@ -564,11 +576,9 @@ def calc_after_tax_cash_on_cash(property_id, years=30):
             cash_on_cash = (after_tax_cashflow[year - 1] / initial_cash_outflow[year - 1]) * 100
             after_tax_cash_on_cash.append(round(cash_on_cash, 2))
         return after_tax_cash_on_cash
-    except:
-        None
-
-
-import numpy_financial as np
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def calc_irr(property_id, years=30):
@@ -583,8 +593,9 @@ def calc_irr(property_id, years=30):
             irr = round(np.irr(sliced_cashflow) * 100, 2)
             irr_list.append(irr)
         return irr_list
-    except:
-        None
+    except (TypeError, AttributeError) as e:
+        print(f"Error: {e}")
+        return None
 
 
 def inflation_view(request, pk):
