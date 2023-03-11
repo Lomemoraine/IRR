@@ -158,12 +158,12 @@ class Depreciation(models.Model):
         ('Straight', 'Straight'),
         ('Diminishing', 'Diminishing')
     )
-    description = models.CharField(blank=True, max_length=255)
-    type = models.CharField(choices=Choices, max_length=255)
-    value = models.FloatField(blank=True, default=1)
-    rate = models.FloatField(blank=True, default=1)
-    years = models.PositiveSmallIntegerField()
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True)
+    description = models.CharField(blank=True, max_length=255, null=True)
+    type = models.CharField(choices=Choices, max_length=255, null=True, blank=True)
+    value = models.FloatField(blank=True, default=1, null=True)
+    rate = models.FloatField(blank=True, default=1, null=True)
+    years = models.PositiveSmallIntegerField(null=True, blank=True)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class CapitalGrowthRates(models.Model):

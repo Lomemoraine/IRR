@@ -610,21 +610,20 @@ def inflationview(request, pk):
 
 
 def depreciation_view(request, pk):
-    # Todo Clean this up
-    depreciation_formset = modelformset_factory(Depreciation, form=DepreciationForm, extra=0)
+    property_item = Property.objects.get(pk=pk)
+    depreciation_formset = inlineformset_factory(Property, Depreciation, form=DepreciationForm, extra=0,
+                                                 can_delete=False)
     if request.method == 'POST':
-        formset = depreciation_formset(request.POST)
+        formset = depreciation_formset(request.POST, instance=property_item)
         if formset.is_valid():
             formset.save()
             return redirect('capitalgrowth', pk=pk)
         print(formset.errors)
-    else:
-        formset = depreciation_formset()
+    formset = depreciation_formset(instance=property_item)
 
     context = {
         'depreciation_formset': formset,
     }
-
     return render(request, 'users/depreciation.html', context)
 
 

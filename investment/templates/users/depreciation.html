@@ -29,6 +29,7 @@
             {{depreciation_formset.management_form}}
             {% for item in depreciation_formset %}
             <tr class="">
+                <td class="p-3 text-white hidden">{{ item.id }}</td>
                 <td class="p-3">{{ item.description }}</td>
                 <td class="p-3">{{ item.type }}</td>
                 <td class="p-3">{{ item.value }}</td>

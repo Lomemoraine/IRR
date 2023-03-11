@@ -119,7 +119,7 @@ class InflationRateForm(forms.ModelForm):
 class DepreciationForm(forms.ModelForm):
     class Meta:
         model = Depreciation
-        fields = ['description', 'type', 'value', 'rate', 'years']
+        fields = ['id', 'description', 'type', 'value', 'rate', 'years']
 
     def save(self, commit=True):
         instance = super(DepreciationForm, self).save(commit=False)
