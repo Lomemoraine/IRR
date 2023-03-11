@@ -228,7 +228,7 @@ class managementexpensesForm(forms.ModelForm):
 class AdditionalloanpaymentsForm(forms.ModelForm):
     class Meta:
         model = AdditionalLoanPayments
-        fields = ['amount']
+        fields = ['year', 'amount']
 
     def save(self, commit=True):
         instance = super(AdditionalloanpaymentsForm, self).save(commit=False)

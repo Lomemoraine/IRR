@@ -751,46 +751,63 @@ def management_expenses_view(request, pk):
         if formset.is_valid():
             formset.save()
             return redirect('Additionalloanpayments', pk=pk)
-        print(formset)
+        print(formset.errors)
     formset = management_expenses_formset(instance=property_item)
 
     context = {'management_expenses_formset': formset}
     return render(request, 'users/managementexpenses.html', context)
 
 
-def additional_loan_payments_view(request, pk):
+def additional_loan_payments_view(request, pk): #todo not doen
+    property_item = Property.objects.get(pk=pk)
+    add_loans_formset = inlineformset_factory(Property, AdditionalLoanPayments, form=AdditionalloanpaymentsForm,
+                                              extra=0, can_delete=False)
     if request.method == 'POST':
-        myform = AdditionalloanpaymentsForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
+        formset = add_loans_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
+            return redirect('capitalincome', pk=pk)
+        print(formset.errors)
     else:
-        myform = AdditionalloanpaymentsForm()
-    return render(request, 'users/Additionalloanpayments.html', {'myform': myform})
+        formset = add_loans_formset(instance=property_item)
+
+    context = {'add_loans_formset': formset, 'property': property_item}
+    return render(request, 'users/Additionalloanpayments.html', context)
 
 
 def capital_income_view(request, pk):
+    property_item = Property.objects.get(pk=pk)
+    capital_income_formset = inlineformset_factory(Property, CapitalIncome, form=CapitalincomeForm, extra=0,
+                                                   can_delete=False)
     if request.method == 'POST':
-        myform = CapitalincomeForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = CapitalincomeForm()
-    return render(request, 'users/Capitalincome.html', {'myform': myform})
+        formset = capital_income_formset(request.POST, instance=property_item)
+        if formset.is_valid():
+            formset.save()
+            return redirect('rentalincome', pk=pk)
+        print(formset.errors)
+    formset = capital_income_formset(instance=property_item)
+
+    context = {'capital_income_formset': formset}
+    return render(request, 'users/Capitalincome.html', context)
 
 
 def rental_income_view(request, pk):
-    exist_check = Property.objects.get(id=pk)
-    messages.error(request, 'Inflation rate already exists') if exist_check else messages.success(request, 'Successful')
+    rental_income = get_object_or_404(RentalIncome, pk=pk)
+    rental_income_formset = inlineformset_factory(RentalIncome, PeriodRate, fields=['year', 'amount'], extra=0,
+                                                  can_delete=False)
     if request.method == 'POST':
-        myform = RentalIncomeForm(request.POST)
-        if myform.is_valid():
-            myform.save(pk=pk)
-            return redirect('propertyitem', id=pk)
-    else:
-        myform = RentalIncomeForm()
-    return render(request, 'users/RentalIncome.html', {'myform': myform})
+        rental_form = RentalIncomeForm(request.POST, instance=rental_income)
+        rental_formset = rental_income_formset(request.POST, instance=rental_income)
+        if rental_form.is_valid() and rental_formset.is_valid():
+            rental_form.save()
+            rental_formset.save()
+            return redirect('comparison', pk=pk)
+        print(rental_formset.errors, rental_form.errors)
+    rental_form = RentalIncomeForm(instance=rental_income)
+    rental_formset = rental_income_formset(instance=rental_income)
+
+    context = {'rental_form': rental_form, 'rental_formset': rental_formset}
+    return render(request, 'users/RentalIncome.html', context)
 
 
 def comparison_view(request, pk):
