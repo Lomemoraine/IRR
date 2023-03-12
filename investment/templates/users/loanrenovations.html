@@ -8,10 +8,10 @@
         {% csrf_token %}
         <h2 class="font-medium text-center dark:text-gray-200">Loan Renovations</h2>
         <fieldset class="grid grid-cols-12 gap-3 p-6 rounded-md shadow-sm dark:bg-gray-900">
-            <div class="flex flex-wrap">
+            <div class="flex flex-wrap item-center justify-center">
                 {{ loan_renovations_formset.management_form }}
                 {% for field in loan_renovations_formset %}
-                <div class="flex-1 sm:w-1/3 px-3 mx-2 py-1">
+                <div class="flex-1 sm:w-1/3 px-3 mx-2 p-2">
                     {{ field }}
                 </div>
                 {% endfor %}
