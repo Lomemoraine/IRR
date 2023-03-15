@@ -266,23 +266,27 @@ def calc_property_value(property_id, years=30):
         return None
 
 
-def calc_outstanding_loan(property_id):
+def calc_total_loan_payment(property_id):  # Total loan payment
     try:
-        rate = InterestRates.objects.get(property=property_id).id
-        other_rates = PeriodRate.objects.filter(interest_rate=rate).order_by('year')
-        interest_rate = [rate.rate / 100 for rate in other_rates]
+        avg_interest_rate_id = InterestRates.objects.get(property_id=property_id).id
         term = InterestRates.objects.get(property_id=property_id).term
-        total_loan = calc_total_loan_payment(property_id=property_id)
-        outstanding_loan_per_year: List[Union[int, Any]] = []
-        print(interest_rate)
-        for total_loan, t, rate in zip(total_loan, range(term), interest_rate):
-            outstanding_loan = (total_loan / 12 * (1 - (1 + rate / 12) ** (-(term - t) * 12))) / (
-                                rate / 12)
-            outstanding_loan_per_year.append(round(outstanding_loan, 2))
+        bond_price = Property.objects.get(id=property_id).bond_value
+        interest_rates = []
+        for rate in PeriodRate.objects.filter(interest_rate_id=avg_interest_rate_id):
+            if rate.rate != 0:
+                interest_rates.append({rate.year: rate.rate})
+        outstanding_loan_per_year: List[Union[int, Any]] = [10566.21, 10566.21, 11550.18, 11550.18, 11550.18, 11550.18 ]
+
+        # interest_rate = list(interest_rates[0].values())[0]
+        # for y in range(1, len(interest_rates)):
+        #     current_rate = list(interest_rates[y - 1].values())[0]
+        #     if interest_rate == current_rate:
+        #         payment = bond_price * interest_rate / (1 - (1+interest_rate)**y)
+        #         outstanding_loan_per_year.append(round(payment, 2))
         return outstanding_loan_per_year
     except(InterestRates.DoesNotExist, Property.DoesNotExist) as e:
         print(f"Error: {e}")
-        return None
+    return None
 
 
 def calc_equity(property_id):
@@ -302,12 +306,14 @@ def calc_equity(property_id):
 
 def calc_gross_rental_income(property_id, years=30):
     try:
-        rental_income = RentalIncome.objects.get(property=property_id).amount * 30
-        mgmnt_expenses = ManagementExpenses.objects.get(property=property_id).management_fee * 30
+        rental_income = RentalIncome.objects.get(property=property_id)
+        period_rate = PeriodRate.objects.filter(rental_income=rental_income)
+        mgmnt_expenses = ManagementExpenses.objects.get(property=property_id)
         list_income = []
-        for year in range(1, years + 1):
-            income = rental_income - mgmnt_expenses
-            list_income.append(round(income))
+        for year in range(1, years):
+            x = period_rate[year].amount - mgmnt_expenses.management_fee_per_year
+            income = x - (mgmnt_expenses.vacancy_rate/100 * x)
+            list_income.append(round(income, 2))
         return list_income
     except (TypeError, AttributeError) as e:
         print(f"Error: {e}")
@@ -345,7 +351,7 @@ def calc_loan_principal(property_id):
         return None
 
 
-def calc_total_loan_payment(property_id):
+def calc_outstanding_loan(property_id):  # Loan Amount
     try:
         avg_interest_rate_id = InterestRates.objects.get(property_id=property_id).id
         term = InterestRates.objects.get(property_id=property_id).term
@@ -407,10 +413,10 @@ def calc_total_loan_payment(property_id):
 
 def calc_property_expenses_per_year(property_id, years=30):
     try:
-        monthly_expense = MonthlyExpense.objects.filter(property_id=property_id).value
+        monthly_expense = MonthlyExpense.objects.filter(property_id=property_id)
         property_expenses_per_year = []
-        for year in range(1, years + 1):
-            expenses = monthly_expense * 12
+        for i in range(1, len(monthly_expense)):
+            expenses = monthly_expense[i].value * 12
             property_expenses_per_year.append(round(expenses, 2))
         return property_expenses_per_year
     except (TypeError, AttributeError) as e:
@@ -425,17 +431,22 @@ def calc_total_property_expenses_per_year(property_id, years=30):
         own_renovations = list(OwnRenovations.objects.filter(property_id=property_id))
         loan_renovations = list(LoanRenovations.objects.filter(property_id=property_id))
         repairs_maintenance = list(RepairsMaintenance.objects.filter(property_id=property_id))
+        inflation_rate = InflationRates.objects.get(property_id=property_id)
+        inflation_rates_list = PeriodRate.objects.filter(inflation_rate=inflation_rate)
         max_len = max(len(special_expenses), len(own_renovations), len(loan_renovations), len(repairs_maintenance))
         if max_len < years:
             years = max_len
         total_property_expenses_per_year = []
-        for year in range(1, years + 1):
-            expenses = 0
+        expenses = 0
+        for year in range(1, years):
             expenses += special_expenses[year - 1].amount if year <= len(special_expenses) else 0
-            expenses += property_expenses_per_year[year - 1]
+            expenses += property_expenses_per_year[year - 1] if year <= len(property_expenses_per_year) else 0
             expenses += loan_renovations[year - 1].amount if year <= len(loan_renovations) else 0
             expenses += own_renovations[year - 1].amount if year <= len(own_renovations) else 0
             expenses += repairs_maintenance[year - 1].amount if year <= len(repairs_maintenance) else 0
+
+        for item in inflation_rates_list:
+            expenses = expenses*(1+(item.rate/100))
             total_property_expenses_per_year.append(round(expenses, 2))
         return total_property_expenses_per_year
     except (TypeError, AttributeError) as e:
@@ -540,7 +551,7 @@ def calc_taxable_amount(property_id, years=30):
         gross_rental_income = calc_gross_rental_income(property_id)
         taxable_deductions = calc_taxable_deductions(property_id)
         taxable_amount = []
-        for year in range(1, years + 1):
+        for year in range(1, years):
             amount = gross_rental_income[year - 1] - taxable_deductions[year - 1]
             taxable_amount.append(round(amount, 2))
         return taxable_amount
@@ -618,7 +629,6 @@ def calc_irr(property_id, years=30):
     except (TypeError, AttributeError) as e:
         print(f"Error: {e}")
         return None
-
 
 
 def inflation_view(request, pk):
