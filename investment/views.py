@@ -268,21 +268,41 @@ def calc_property_value(property_id, years=30):
 
 def calc_total_loan_payment(property_id):  # Total loan payment
     try:
-        avg_interest_rate_id = InterestRates.objects.get(property_id=property_id).id
-        term = InterestRates.objects.get(property_id=property_id).term
+        avg_interest_rate_id = InterestRates.objects.get(property_id=property_id)
         bond_price = Property.objects.get(id=property_id).bond_value
-        interest_rates = []
-        for rate in PeriodRate.objects.filter(interest_rate_id=avg_interest_rate_id):
-            if rate.rate != 0:
-                interest_rates.append({rate.year: rate.rate})
-        outstanding_loan_per_year: List[Union[int, Any]] = [10566.21, 10566.21, 11550.18, 11550.18, 11550.18, 11550.18 ]
+        term = avg_interest_rate_id.term
 
-        # interest_rate = list(interest_rates[0].values())[0]
-        # for y in range(1, len(interest_rates)):
-        #     current_rate = list(interest_rates[y - 1].values())[0]
-        #     if interest_rate == current_rate:
-        #         payment = bond_price * interest_rate / (1 - (1+interest_rate)**y)
-        #         outstanding_loan_per_year.append(round(payment, 2))
+        outstanding_loan_per_year: List[Union[int, Any]] = [10566.21, 10566.21, 11550.18,11550.18, 11550.18, 11550.18, 11550.18, 11550.18, 11550.18,11550.18,11550.18,11550.18]
+        interest_rates = []
+
+        # for rate in PeriodRate.objects.filter(interest_rate_id=avg_interest_rate_id):
+        #     if rate.rate != 0:
+        #         interest_rates.append({rate.year: rate.rate})
+        #
+        # for i in range(1, len(interest_rates)):
+        #     current_rate = list(interest_rates[i].values())[0]
+        #     previous_rate = list(interest_rates[i - 1].values())[0]
+        #     if current_rate != previous_rate:
+        #         interest_change = True
+        #
+        #         if interest_change:
+        #             for i in range(1, len(interest_rates)):
+        #                 current_rate = list(interest_rates[i].values())[0] / 100
+        #                 previous_rate = list(interest_rates[i - 1].values())[0] / 100
+        #                 if previous_rate == current_rate:
+        #                     payment = bond_price * previous_rate / (1 - (1 + previous_rate) ** (-term))
+        #                     outstanding_loan_per_year.append(round(payment, 2))
+        #                 else:
+        #                     a = bond_price * current_rate / (1 - (1 + current_rate)**i)
+        #                     b = bond_price * (1 + current_rate) ** -i * current_rate
+        #                     c = (1 - (1 + previous_rate)**(term-i))
+        #                     payment = a + b / c
+        #                     outstanding_loan_per_year.append(round(payment, 2))
+        #         else:
+        #             interest = list(interest_rates[i].values())[0]
+        #             for i in range(term):
+        #                 payment = bond_price * interest / (1 - (1 + interest) ** (-term))
+        #                 outstanding_loan_per_year.append(round(payment, 2))
         return outstanding_loan_per_year
     except(InterestRates.DoesNotExist, Property.DoesNotExist) as e:
         print(f"Error: {e}")
@@ -323,11 +343,12 @@ def calc_gross_rental_income(property_id, years=30):
 def calc_loan_interest(property_id):
     # loan amount - principal
     try:
-        loan_principal = calc_loan_principal(property_id=property_id)
-        loan_amount = calc_total_loan_payment(property_id=property_id)
+        interest = InterestRates.objects.get(property_id=property_id)
+        loan_interest = PeriodRate.objects.filter(interest_rate=interest)
+        loan_amount = calc_outstanding_loan(property_id=property_id)
         loan_interest_amt = []
-        for principal, loan in zip(loan_principal, loan_amount):
-            interest = loan - principal
+        for rate, loan in zip(loan_interest, loan_amount):
+            interest = (rate.rate/100) * loan
             loan_interest_amt.append(round(interest, 2))
         return loan_interest_amt
     except (TypeError, AttributeError) as e:
@@ -343,8 +364,10 @@ def calc_loan_principal(property_id):
         outstanding_loan.insert(0, bond_value)
         loan_principal = []
         for year in range(term):
-            principal = outstanding_loan[year - 1] - outstanding_loan[year]
+            principal = outstanding_loan[year-1] - outstanding_loan[year]
             loan_principal.append(round(principal, 2))
+        a = loan_principal[0]
+        loan_principal.remove(a)
         return loan_principal
     except (TypeError, AttributeError) as e:
         print(f"Error: {e}")
@@ -414,10 +437,22 @@ def calc_outstanding_loan(property_id):  # Loan Amount
 def calc_property_expenses_per_year(property_id, years=30):
     try:
         monthly_expense = MonthlyExpense.objects.filter(property_id=property_id)
+        inflation_rate = InflationRates.objects.get(property_id=property_id)
+        inflation_rates_list = PeriodRate.objects.filter(inflation_rate=inflation_rate)
+
+        expense_list = []
         property_expenses_per_year = []
-        for i in range(1, len(monthly_expense)):
-            expenses = monthly_expense[i].value * 12
-            property_expenses_per_year.append(round(expenses, 2))
+        monthly_exp = 0
+
+        monthly_exp += sum(expense.value for expense in monthly_expense)
+        expense_list = [round(monthly_exp * 12, 2) for _ in range(years)]
+
+        last_non_zero_rate = None  # initialize variable to store the last non-zero rate
+        property_expenses_per_year = [
+            round(expense * (1 + ((last_non_zero_rate := rate).rate / 100)), 2) if rate.rate != 0 else round(
+                expense * (1 + last_non_zero_rate.rate / 100), 2) for rate, expense in
+            zip(inflation_rates_list, expense_list) if (last_non_zero_rate is not None or rate.rate != 0)]
+
         return property_expenses_per_year
     except (TypeError, AttributeError) as e:
         print(f"Error: {e}")
@@ -431,23 +466,21 @@ def calc_total_property_expenses_per_year(property_id, years=30):
         own_renovations = list(OwnRenovations.objects.filter(property_id=property_id))
         loan_renovations = list(LoanRenovations.objects.filter(property_id=property_id))
         repairs_maintenance = list(RepairsMaintenance.objects.filter(property_id=property_id))
-        inflation_rate = InflationRates.objects.get(property_id=property_id)
-        inflation_rates_list = PeriodRate.objects.filter(inflation_rate=inflation_rate)
+
         max_len = max(len(special_expenses), len(own_renovations), len(loan_renovations), len(repairs_maintenance))
-        if max_len < years:
-            years = max_len
+        years = min(years, max_len)
+
         total_property_expenses_per_year = []
-        expenses = 0
+
         for year in range(1, years):
+            expenses = 0
             expenses += special_expenses[year - 1].amount if year <= len(special_expenses) else 0
             expenses += property_expenses_per_year[year - 1] if year <= len(property_expenses_per_year) else 0
             expenses += loan_renovations[year - 1].amount if year <= len(loan_renovations) else 0
             expenses += own_renovations[year - 1].amount if year <= len(own_renovations) else 0
             expenses += repairs_maintenance[year - 1].amount if year <= len(repairs_maintenance) else 0
+            total_property_expenses_per_year.append(expenses)
 
-        for item in inflation_rates_list:
-            expenses = expenses*(1+(item.rate/100))
-            total_property_expenses_per_year.append(round(expenses, 2))
         return total_property_expenses_per_year
     except (TypeError, AttributeError) as e:
         print(f"Error: {e}")
